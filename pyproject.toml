@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "memtracker-nccl"
+version = "0.1.0"
+description = "CPU-only PyTorch memory estimation with explicit NCCL allocation assumptions"
+requires-python = ">=3.11"
+dependencies = ["torch==2.14.1"]
+
+[tool.setuptools.packages.find]
+where = ["src"]

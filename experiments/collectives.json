@@ -1,0 +1,2492 @@
+{
+  "description": "CPU-only fake collectives with assumed NCCL P2P transport configurations; not GPU measurements",
+  "scenarios": {
+    "tensor_only": {
+      "profile": {
+        "name": "explicit-allowance",
+        "buffers": [
+          {
+            "name": "persistent-allowance",
+            "size_bytes": 0,
+            "provenance": "zero-overhead comparison, not a measurement"
+          }
+        ],
+        "assumptions": [
+          "Caller provides locally owned persistent bytes, excluding existing tensor storage.",
+          "A zero allowance omits NCCL overhead; it is not evidence of zero usage."
+        ],
+        "excluded": [
+          "Anything absent from the supplied measurement/assumption; no automatic topology extrapolation."
+        ],
+        "confidence": "user-supplied; accuracy depends on provenance",
+        "persistent_bytes": 0
+      },
+      "tracker": {
+        "schema_version": 1,
+        "torch_version": "2.14.1",
+        "accounting": "live tensor storage plus modeled external allocations; not reserved GPU memory",
+        "current": {},
+        "peak": {
+          "cpu": {
+            "tensor_bytes": 603979776,
+            "external_bytes": 0,
+            "external_by_category": {},
+            "combined_bytes": 603979776,
+            "sequence": 2,
+            "event": "tensor_update"
+          }
+        },
+        "tensor_peak_bytes": {
+          "cpu": 603979776
+        },
+        "external_peak_bytes": {
+          "cpu": 0
+        },
+        "live_external_allocations": {},
+        "events": []
+      }
+    },
+    "p2p_4_channels": {
+      "profile": {
+        "name": "nccl-2.28.9-local-p2p",
+        "buffers": [
+          {
+            "name": "channel-0/send-0",
+            "size_bytes": 2097152,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-0/recv-0",
+            "size_bytes": 10485760,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-1/send-0",
+            "size_bytes": 2097152,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-1/recv-0",
+            "size_bytes": 10485760,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-2/send-0",
+            "size_bytes": 2097152,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-2/recv-0",
+            "size_bytes": 10485760,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-3/send-0",
+            "size_bytes": 2097152,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-3/recv-0",
+            "size_bytes": 10485760,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          }
+        ],
+        "assumptions": [
+          "Caller supplies channels=4, local send connections/channel=1, receive connections/channel=1.",
+          "P2P read=False; direct/IPC/cuMem P2P setup path, no intermediate rank or memcpy staging.",
+          "Protocol bytes: SIMPLE=4194304, LL=524288, LL128=4915200; defaults from https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/init.cc#L636-L650 and src/include/device.h.",
+          "Header=4096 and request alignment=2097152 from https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/include/comm.h#L32-L63.",
+          "All declared connections become resident at first modeled use and persist to communicator destruction.",
+          "Only locally owned storage is counted; imported remote mappings and existing user buffers are excluded from allocation events."
+        ],
+        "excluded": [
+          "Communicator/device metadata, work FIFO and CUDA context/library overhead.",
+          "Network-plugin, NVLS, CollNet, GIN and CUDA graph allocations.",
+          "Physical allocator granularity beyond the specified source request alignment.",
+          "Additional transport connections, topology selection and split-communicator sharing."
+        ],
+        "confidence": "source formula under explicit assumptions; not GPU calibrated",
+        "persistent_bytes": 50331648
+      },
+      "tracker": {
+        "schema_version": 1,
+        "torch_version": "2.14.1",
+        "accounting": "live tensor storage plus modeled external allocations; not reserved GPU memory",
+        "current": {},
+        "peak": {
+          "cpu": {
+            "tensor_bytes": 603979776,
+            "external_bytes": 50331648,
+            "external_by_category": {
+              "NCCL": 50331648
+            },
+            "combined_bytes": 654311424,
+            "sequence": 10,
+            "event": "tensor_update"
+          }
+        },
+        "tensor_peak_bytes": {
+          "cpu": 603979776
+        },
+        "external_peak_bytes": {
+          "cpu": 50331648
+        },
+        "live_external_allocations": {},
+        "events": [
+          {
+            "sequence": 2,
+            "event": "external_alloc",
+            "allocation_id": "nccl/e8a12ceae5f8433183a98936aa87f550/1",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-0/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 2097152,
+                "external_by_category": {
+                  "NCCL": 2097152
+                },
+                "combined_bytes": 69206016
+              }
+            }
+          },
+          {
+            "sequence": 3,
+            "event": "external_alloc",
+            "allocation_id": "nccl/e8a12ceae5f8433183a98936aa87f550/2",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-0/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 12582912,
+                "external_by_category": {
+                  "NCCL": 12582912
+                },
+                "combined_bytes": 79691776
+              }
+            }
+          },
+          {
+            "sequence": 4,
+            "event": "external_alloc",
+            "allocation_id": "nccl/e8a12ceae5f8433183a98936aa87f550/3",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-1/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 14680064,
+                "external_by_category": {
+                  "NCCL": 14680064
+                },
+                "combined_bytes": 81788928
+              }
+            }
+          },
+          {
+            "sequence": 5,
+            "event": "external_alloc",
+            "allocation_id": "nccl/e8a12ceae5f8433183a98936aa87f550/4",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-1/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 25165824,
+                "external_by_category": {
+                  "NCCL": 25165824
+                },
+                "combined_bytes": 92274688
+              }
+            }
+          },
+          {
+            "sequence": 6,
+            "event": "external_alloc",
+            "allocation_id": "nccl/e8a12ceae5f8433183a98936aa87f550/5",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-2/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 27262976,
+                "external_by_category": {
+                  "NCCL": 27262976
+                },
+                "combined_bytes": 94371840
+              }
+            }
+          },
+          {
+            "sequence": 7,
+            "event": "external_alloc",
+            "allocation_id": "nccl/e8a12ceae5f8433183a98936aa87f550/6",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-2/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 37748736,
+                "external_by_category": {
+                  "NCCL": 37748736
+                },
+                "combined_bytes": 104857600
+              }
+            }
+          },
+          {
+            "sequence": 8,
+            "event": "external_alloc",
+            "allocation_id": "nccl/e8a12ceae5f8433183a98936aa87f550/7",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-3/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 39845888,
+                "external_by_category": {
+                  "NCCL": 39845888
+                },
+                "combined_bytes": 106954752
+              }
+            }
+          },
+          {
+            "sequence": 9,
+            "event": "external_alloc",
+            "allocation_id": "nccl/e8a12ceae5f8433183a98936aa87f550/8",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-3/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 50331648,
+                "external_by_category": {
+                  "NCCL": 50331648
+                },
+                "combined_bytes": 117440512
+              }
+            }
+          },
+          {
+            "sequence": 15,
+            "event": "external_free",
+            "allocation_id": "nccl/e8a12ceae5f8433183a98936aa87f550/8",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-3/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 39845888,
+                "external_by_category": {
+                  "NCCL": 39845888
+                },
+                "combined_bytes": 39845888
+              }
+            }
+          },
+          {
+            "sequence": 16,
+            "event": "external_free",
+            "allocation_id": "nccl/e8a12ceae5f8433183a98936aa87f550/7",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-3/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 37748736,
+                "external_by_category": {
+                  "NCCL": 37748736
+                },
+                "combined_bytes": 37748736
+              }
+            }
+          },
+          {
+            "sequence": 17,
+            "event": "external_free",
+            "allocation_id": "nccl/e8a12ceae5f8433183a98936aa87f550/6",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-2/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 27262976,
+                "external_by_category": {
+                  "NCCL": 27262976
+                },
+                "combined_bytes": 27262976
+              }
+            }
+          },
+          {
+            "sequence": 18,
+            "event": "external_free",
+            "allocation_id": "nccl/e8a12ceae5f8433183a98936aa87f550/5",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-2/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 25165824,
+                "external_by_category": {
+                  "NCCL": 25165824
+                },
+                "combined_bytes": 25165824
+              }
+            }
+          },
+          {
+            "sequence": 19,
+            "event": "external_free",
+            "allocation_id": "nccl/e8a12ceae5f8433183a98936aa87f550/4",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-1/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 14680064,
+                "external_by_category": {
+                  "NCCL": 14680064
+                },
+                "combined_bytes": 14680064
+              }
+            }
+          },
+          {
+            "sequence": 20,
+            "event": "external_free",
+            "allocation_id": "nccl/e8a12ceae5f8433183a98936aa87f550/3",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-1/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 12582912,
+                "external_by_category": {
+                  "NCCL": 12582912
+                },
+                "combined_bytes": 12582912
+              }
+            }
+          },
+          {
+            "sequence": 21,
+            "event": "external_free",
+            "allocation_id": "nccl/e8a12ceae5f8433183a98936aa87f550/2",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-0/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 2097152,
+                "external_by_category": {
+                  "NCCL": 2097152
+                },
+                "combined_bytes": 2097152
+              }
+            }
+          },
+          {
+            "sequence": 22,
+            "event": "external_free",
+            "allocation_id": "nccl/e8a12ceae5f8433183a98936aa87f550/1",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-0/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {}
+          }
+        ]
+      }
+    },
+    "p2p_16_channels": {
+      "profile": {
+        "name": "nccl-2.28.9-local-p2p",
+        "buffers": [
+          {
+            "name": "channel-0/send-0",
+            "size_bytes": 2097152,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-0/recv-0",
+            "size_bytes": 10485760,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-1/send-0",
+            "size_bytes": 2097152,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-1/recv-0",
+            "size_bytes": 10485760,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-2/send-0",
+            "size_bytes": 2097152,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-2/recv-0",
+            "size_bytes": 10485760,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-3/send-0",
+            "size_bytes": 2097152,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-3/recv-0",
+            "size_bytes": 10485760,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-4/send-0",
+            "size_bytes": 2097152,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-4/recv-0",
+            "size_bytes": 10485760,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-5/send-0",
+            "size_bytes": 2097152,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-5/recv-0",
+            "size_bytes": 10485760,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-6/send-0",
+            "size_bytes": 2097152,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-6/recv-0",
+            "size_bytes": 10485760,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-7/send-0",
+            "size_bytes": 2097152,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-7/recv-0",
+            "size_bytes": 10485760,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-8/send-0",
+            "size_bytes": 2097152,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-8/recv-0",
+            "size_bytes": 10485760,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-9/send-0",
+            "size_bytes": 2097152,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-9/recv-0",
+            "size_bytes": 10485760,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-10/send-0",
+            "size_bytes": 2097152,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-10/recv-0",
+            "size_bytes": 10485760,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-11/send-0",
+            "size_bytes": 2097152,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-11/recv-0",
+            "size_bytes": 10485760,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-12/send-0",
+            "size_bytes": 2097152,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-12/recv-0",
+            "size_bytes": 10485760,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-13/send-0",
+            "size_bytes": 2097152,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-13/recv-0",
+            "size_bytes": 10485760,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-14/send-0",
+            "size_bytes": 2097152,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-14/recv-0",
+            "size_bytes": 10485760,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-15/send-0",
+            "size_bytes": 2097152,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          },
+          {
+            "name": "channel-15/recv-0",
+            "size_bytes": 10485760,
+            "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411"
+          }
+        ],
+        "assumptions": [
+          "Caller supplies channels=16, local send connections/channel=1, receive connections/channel=1.",
+          "P2P read=False; direct/IPC/cuMem P2P setup path, no intermediate rank or memcpy staging.",
+          "Protocol bytes: SIMPLE=4194304, LL=524288, LL128=4915200; defaults from https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/init.cc#L636-L650 and src/include/device.h.",
+          "Header=4096 and request alignment=2097152 from https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/include/comm.h#L32-L63.",
+          "All declared connections become resident at first modeled use and persist to communicator destruction.",
+          "Only locally owned storage is counted; imported remote mappings and existing user buffers are excluded from allocation events."
+        ],
+        "excluded": [
+          "Communicator/device metadata, work FIFO and CUDA context/library overhead.",
+          "Network-plugin, NVLS, CollNet, GIN and CUDA graph allocations.",
+          "Physical allocator granularity beyond the specified source request alignment.",
+          "Additional transport connections, topology selection and split-communicator sharing."
+        ],
+        "confidence": "source formula under explicit assumptions; not GPU calibrated",
+        "persistent_bytes": 201326592
+      },
+      "tracker": {
+        "schema_version": 1,
+        "torch_version": "2.14.1",
+        "accounting": "live tensor storage plus modeled external allocations; not reserved GPU memory",
+        "current": {},
+        "peak": {
+          "cpu": {
+            "tensor_bytes": 603979776,
+            "external_bytes": 201326592,
+            "external_by_category": {
+              "NCCL": 201326592
+            },
+            "combined_bytes": 805306368,
+            "sequence": 34,
+            "event": "tensor_update"
+          }
+        },
+        "tensor_peak_bytes": {
+          "cpu": 603979776
+        },
+        "external_peak_bytes": {
+          "cpu": 201326592
+        },
+        "live_external_allocations": {},
+        "events": [
+          {
+            "sequence": 2,
+            "event": "external_alloc",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/1",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-0/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 2097152,
+                "external_by_category": {
+                  "NCCL": 2097152
+                },
+                "combined_bytes": 69206016
+              }
+            }
+          },
+          {
+            "sequence": 3,
+            "event": "external_alloc",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/2",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-0/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 12582912,
+                "external_by_category": {
+                  "NCCL": 12582912
+                },
+                "combined_bytes": 79691776
+              }
+            }
+          },
+          {
+            "sequence": 4,
+            "event": "external_alloc",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/3",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-1/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 14680064,
+                "external_by_category": {
+                  "NCCL": 14680064
+                },
+                "combined_bytes": 81788928
+              }
+            }
+          },
+          {
+            "sequence": 5,
+            "event": "external_alloc",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/4",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-1/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 25165824,
+                "external_by_category": {
+                  "NCCL": 25165824
+                },
+                "combined_bytes": 92274688
+              }
+            }
+          },
+          {
+            "sequence": 6,
+            "event": "external_alloc",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/5",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-2/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 27262976,
+                "external_by_category": {
+                  "NCCL": 27262976
+                },
+                "combined_bytes": 94371840
+              }
+            }
+          },
+          {
+            "sequence": 7,
+            "event": "external_alloc",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/6",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-2/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 37748736,
+                "external_by_category": {
+                  "NCCL": 37748736
+                },
+                "combined_bytes": 104857600
+              }
+            }
+          },
+          {
+            "sequence": 8,
+            "event": "external_alloc",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/7",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-3/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 39845888,
+                "external_by_category": {
+                  "NCCL": 39845888
+                },
+                "combined_bytes": 106954752
+              }
+            }
+          },
+          {
+            "sequence": 9,
+            "event": "external_alloc",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/8",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-3/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 50331648,
+                "external_by_category": {
+                  "NCCL": 50331648
+                },
+                "combined_bytes": 117440512
+              }
+            }
+          },
+          {
+            "sequence": 10,
+            "event": "external_alloc",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/9",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-4/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 52428800,
+                "external_by_category": {
+                  "NCCL": 52428800
+                },
+                "combined_bytes": 119537664
+              }
+            }
+          },
+          {
+            "sequence": 11,
+            "event": "external_alloc",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/10",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-4/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 62914560,
+                "external_by_category": {
+                  "NCCL": 62914560
+                },
+                "combined_bytes": 130023424
+              }
+            }
+          },
+          {
+            "sequence": 12,
+            "event": "external_alloc",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/11",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-5/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 65011712,
+                "external_by_category": {
+                  "NCCL": 65011712
+                },
+                "combined_bytes": 132120576
+              }
+            }
+          },
+          {
+            "sequence": 13,
+            "event": "external_alloc",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/12",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-5/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 75497472,
+                "external_by_category": {
+                  "NCCL": 75497472
+                },
+                "combined_bytes": 142606336
+              }
+            }
+          },
+          {
+            "sequence": 14,
+            "event": "external_alloc",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/13",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-6/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 77594624,
+                "external_by_category": {
+                  "NCCL": 77594624
+                },
+                "combined_bytes": 144703488
+              }
+            }
+          },
+          {
+            "sequence": 15,
+            "event": "external_alloc",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/14",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-6/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 88080384,
+                "external_by_category": {
+                  "NCCL": 88080384
+                },
+                "combined_bytes": 155189248
+              }
+            }
+          },
+          {
+            "sequence": 16,
+            "event": "external_alloc",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/15",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-7/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 90177536,
+                "external_by_category": {
+                  "NCCL": 90177536
+                },
+                "combined_bytes": 157286400
+              }
+            }
+          },
+          {
+            "sequence": 17,
+            "event": "external_alloc",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/16",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-7/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 100663296,
+                "external_by_category": {
+                  "NCCL": 100663296
+                },
+                "combined_bytes": 167772160
+              }
+            }
+          },
+          {
+            "sequence": 18,
+            "event": "external_alloc",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/17",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-8/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 102760448,
+                "external_by_category": {
+                  "NCCL": 102760448
+                },
+                "combined_bytes": 169869312
+              }
+            }
+          },
+          {
+            "sequence": 19,
+            "event": "external_alloc",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/18",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-8/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 113246208,
+                "external_by_category": {
+                  "NCCL": 113246208
+                },
+                "combined_bytes": 180355072
+              }
+            }
+          },
+          {
+            "sequence": 20,
+            "event": "external_alloc",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/19",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-9/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 115343360,
+                "external_by_category": {
+                  "NCCL": 115343360
+                },
+                "combined_bytes": 182452224
+              }
+            }
+          },
+          {
+            "sequence": 21,
+            "event": "external_alloc",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/20",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-9/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 125829120,
+                "external_by_category": {
+                  "NCCL": 125829120
+                },
+                "combined_bytes": 192937984
+              }
+            }
+          },
+          {
+            "sequence": 22,
+            "event": "external_alloc",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/21",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-10/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 127926272,
+                "external_by_category": {
+                  "NCCL": 127926272
+                },
+                "combined_bytes": 195035136
+              }
+            }
+          },
+          {
+            "sequence": 23,
+            "event": "external_alloc",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/22",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-10/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 138412032,
+                "external_by_category": {
+                  "NCCL": 138412032
+                },
+                "combined_bytes": 205520896
+              }
+            }
+          },
+          {
+            "sequence": 24,
+            "event": "external_alloc",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/23",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-11/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 140509184,
+                "external_by_category": {
+                  "NCCL": 140509184
+                },
+                "combined_bytes": 207618048
+              }
+            }
+          },
+          {
+            "sequence": 25,
+            "event": "external_alloc",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/24",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-11/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 150994944,
+                "external_by_category": {
+                  "NCCL": 150994944
+                },
+                "combined_bytes": 218103808
+              }
+            }
+          },
+          {
+            "sequence": 26,
+            "event": "external_alloc",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/25",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-12/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 153092096,
+                "external_by_category": {
+                  "NCCL": 153092096
+                },
+                "combined_bytes": 220200960
+              }
+            }
+          },
+          {
+            "sequence": 27,
+            "event": "external_alloc",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/26",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-12/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 163577856,
+                "external_by_category": {
+                  "NCCL": 163577856
+                },
+                "combined_bytes": 230686720
+              }
+            }
+          },
+          {
+            "sequence": 28,
+            "event": "external_alloc",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/27",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-13/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 165675008,
+                "external_by_category": {
+                  "NCCL": 165675008
+                },
+                "combined_bytes": 232783872
+              }
+            }
+          },
+          {
+            "sequence": 29,
+            "event": "external_alloc",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/28",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-13/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 176160768,
+                "external_by_category": {
+                  "NCCL": 176160768
+                },
+                "combined_bytes": 243269632
+              }
+            }
+          },
+          {
+            "sequence": 30,
+            "event": "external_alloc",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/29",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-14/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 178257920,
+                "external_by_category": {
+                  "NCCL": 178257920
+                },
+                "combined_bytes": 245366784
+              }
+            }
+          },
+          {
+            "sequence": 31,
+            "event": "external_alloc",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/30",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-14/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 188743680,
+                "external_by_category": {
+                  "NCCL": 188743680
+                },
+                "combined_bytes": 255852544
+              }
+            }
+          },
+          {
+            "sequence": 32,
+            "event": "external_alloc",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/31",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-15/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 190840832,
+                "external_by_category": {
+                  "NCCL": 190840832
+                },
+                "combined_bytes": 257949696
+              }
+            }
+          },
+          {
+            "sequence": 33,
+            "event": "external_alloc",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/32",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-15/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 67108864,
+                "external_bytes": 201326592,
+                "external_by_category": {
+                  "NCCL": 201326592
+                },
+                "combined_bytes": 268435456
+              }
+            }
+          },
+          {
+            "sequence": 39,
+            "event": "external_free",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/32",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-15/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 190840832,
+                "external_by_category": {
+                  "NCCL": 190840832
+                },
+                "combined_bytes": 190840832
+              }
+            }
+          },
+          {
+            "sequence": 40,
+            "event": "external_free",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/31",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-15/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 188743680,
+                "external_by_category": {
+                  "NCCL": 188743680
+                },
+                "combined_bytes": 188743680
+              }
+            }
+          },
+          {
+            "sequence": 41,
+            "event": "external_free",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/30",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-14/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 178257920,
+                "external_by_category": {
+                  "NCCL": 178257920
+                },
+                "combined_bytes": 178257920
+              }
+            }
+          },
+          {
+            "sequence": 42,
+            "event": "external_free",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/29",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-14/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 176160768,
+                "external_by_category": {
+                  "NCCL": 176160768
+                },
+                "combined_bytes": 176160768
+              }
+            }
+          },
+          {
+            "sequence": 43,
+            "event": "external_free",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/28",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-13/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 165675008,
+                "external_by_category": {
+                  "NCCL": 165675008
+                },
+                "combined_bytes": 165675008
+              }
+            }
+          },
+          {
+            "sequence": 44,
+            "event": "external_free",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/27",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-13/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 163577856,
+                "external_by_category": {
+                  "NCCL": 163577856
+                },
+                "combined_bytes": 163577856
+              }
+            }
+          },
+          {
+            "sequence": 45,
+            "event": "external_free",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/26",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-12/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 153092096,
+                "external_by_category": {
+                  "NCCL": 153092096
+                },
+                "combined_bytes": 153092096
+              }
+            }
+          },
+          {
+            "sequence": 46,
+            "event": "external_free",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/25",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-12/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 150994944,
+                "external_by_category": {
+                  "NCCL": 150994944
+                },
+                "combined_bytes": 150994944
+              }
+            }
+          },
+          {
+            "sequence": 47,
+            "event": "external_free",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/24",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-11/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 140509184,
+                "external_by_category": {
+                  "NCCL": 140509184
+                },
+                "combined_bytes": 140509184
+              }
+            }
+          },
+          {
+            "sequence": 48,
+            "event": "external_free",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/23",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-11/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 138412032,
+                "external_by_category": {
+                  "NCCL": 138412032
+                },
+                "combined_bytes": 138412032
+              }
+            }
+          },
+          {
+            "sequence": 49,
+            "event": "external_free",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/22",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-10/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 127926272,
+                "external_by_category": {
+                  "NCCL": 127926272
+                },
+                "combined_bytes": 127926272
+              }
+            }
+          },
+          {
+            "sequence": 50,
+            "event": "external_free",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/21",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-10/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 125829120,
+                "external_by_category": {
+                  "NCCL": 125829120
+                },
+                "combined_bytes": 125829120
+              }
+            }
+          },
+          {
+            "sequence": 51,
+            "event": "external_free",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/20",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-9/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 115343360,
+                "external_by_category": {
+                  "NCCL": 115343360
+                },
+                "combined_bytes": 115343360
+              }
+            }
+          },
+          {
+            "sequence": 52,
+            "event": "external_free",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/19",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-9/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 113246208,
+                "external_by_category": {
+                  "NCCL": 113246208
+                },
+                "combined_bytes": 113246208
+              }
+            }
+          },
+          {
+            "sequence": 53,
+            "event": "external_free",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/18",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-8/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 102760448,
+                "external_by_category": {
+                  "NCCL": 102760448
+                },
+                "combined_bytes": 102760448
+              }
+            }
+          },
+          {
+            "sequence": 54,
+            "event": "external_free",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/17",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-8/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 100663296,
+                "external_by_category": {
+                  "NCCL": 100663296
+                },
+                "combined_bytes": 100663296
+              }
+            }
+          },
+          {
+            "sequence": 55,
+            "event": "external_free",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/16",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-7/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 90177536,
+                "external_by_category": {
+                  "NCCL": 90177536
+                },
+                "combined_bytes": 90177536
+              }
+            }
+          },
+          {
+            "sequence": 56,
+            "event": "external_free",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/15",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-7/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 88080384,
+                "external_by_category": {
+                  "NCCL": 88080384
+                },
+                "combined_bytes": 88080384
+              }
+            }
+          },
+          {
+            "sequence": 57,
+            "event": "external_free",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/14",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-6/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 77594624,
+                "external_by_category": {
+                  "NCCL": 77594624
+                },
+                "combined_bytes": 77594624
+              }
+            }
+          },
+          {
+            "sequence": 58,
+            "event": "external_free",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/13",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-6/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 75497472,
+                "external_by_category": {
+                  "NCCL": 75497472
+                },
+                "combined_bytes": 75497472
+              }
+            }
+          },
+          {
+            "sequence": 59,
+            "event": "external_free",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/12",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-5/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 65011712,
+                "external_by_category": {
+                  "NCCL": 65011712
+                },
+                "combined_bytes": 65011712
+              }
+            }
+          },
+          {
+            "sequence": 60,
+            "event": "external_free",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/11",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-5/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 62914560,
+                "external_by_category": {
+                  "NCCL": 62914560
+                },
+                "combined_bytes": 62914560
+              }
+            }
+          },
+          {
+            "sequence": 61,
+            "event": "external_free",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/10",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-4/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 52428800,
+                "external_by_category": {
+                  "NCCL": 52428800
+                },
+                "combined_bytes": 52428800
+              }
+            }
+          },
+          {
+            "sequence": 62,
+            "event": "external_free",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/9",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-4/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 50331648,
+                "external_by_category": {
+                  "NCCL": 50331648
+                },
+                "combined_bytes": 50331648
+              }
+            }
+          },
+          {
+            "sequence": 63,
+            "event": "external_free",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/8",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-3/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 39845888,
+                "external_by_category": {
+                  "NCCL": 39845888
+                },
+                "combined_bytes": 39845888
+              }
+            }
+          },
+          {
+            "sequence": 64,
+            "event": "external_free",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/7",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-3/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 37748736,
+                "external_by_category": {
+                  "NCCL": 37748736
+                },
+                "combined_bytes": 37748736
+              }
+            }
+          },
+          {
+            "sequence": 65,
+            "event": "external_free",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/6",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-2/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 27262976,
+                "external_by_category": {
+                  "NCCL": 27262976
+                },
+                "combined_bytes": 27262976
+              }
+            }
+          },
+          {
+            "sequence": 66,
+            "event": "external_free",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/5",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-2/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 25165824,
+                "external_by_category": {
+                  "NCCL": 25165824
+                },
+                "combined_bytes": 25165824
+              }
+            }
+          },
+          {
+            "sequence": 67,
+            "event": "external_free",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/4",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-1/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 14680064,
+                "external_by_category": {
+                  "NCCL": 14680064
+                },
+                "combined_bytes": 14680064
+              }
+            }
+          },
+          {
+            "sequence": 68,
+            "event": "external_free",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/3",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-1/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 12582912,
+                "external_by_category": {
+                  "NCCL": 12582912
+                },
+                "combined_bytes": 12582912
+              }
+            }
+          },
+          {
+            "sequence": 69,
+            "event": "external_free",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/2",
+            "allocation": {
+              "size_bytes": 10485760,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-0/recv-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {
+              "cpu": {
+                "tensor_bytes": 0,
+                "external_bytes": 2097152,
+                "external_by_category": {
+                  "NCCL": 2097152
+                },
+                "combined_bytes": 2097152
+              }
+            }
+          },
+          {
+            "sequence": 70,
+            "event": "external_free",
+            "allocation_id": "nccl/d2ad922c108242a589d273d9657e4099/1",
+            "allocation": {
+              "size_bytes": 2097152,
+              "device": "cpu",
+              "category": "NCCL",
+              "metadata": {
+                "communicator": "dp",
+                "buffer": "channel-0/send-0",
+                "lifetime": "persistent",
+                "provenance": "https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L346-L349; https://github.com/NVIDIA/nccl/blob/v2.28.9-1/src/transport/p2p.cc#L408-L411",
+                "confidence": "source formula under explicit assumptions; not GPU calibrated"
+              }
+            },
+            "devices": {}
+          }
+        ]
+      }
+    }
+  }
+}

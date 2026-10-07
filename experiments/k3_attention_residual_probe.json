@@ -1,0 +1,45 @@
+{
+  "source_commit": "948d65c868c5fa8f0290bcf9e54b69f004721f54",
+  "source_file_sha256": "37f27337dc7b17de3dee5c3a64fbcd797c58fa23767248627a717bd1716e0e13",
+  "executed": "Exact _apply_attention_residual function body, fake forward and backward",
+  "substitutions": "torch.nn.Linear and RMSNorm only supply weight/eps attributes; function never calls their forward",
+  "tokens": 8192,
+  "dim": 7168,
+  "residual_entries": 8,
+  "output_shape": [
+    8192,
+    7168
+  ],
+  "accounting": {
+    "schema_version": 1,
+    "torch_version": "2.14.1",
+    "accounting": "live tensor storage plus modeled external allocations; not reserved GPU memory",
+    "current": {
+      "cpu": {
+        "tensor_bytes": 2231427072,
+        "external_bytes": 0,
+        "external_by_category": {},
+        "combined_bytes": 2231427072
+      }
+    },
+    "peak": {
+      "cpu": {
+        "tensor_bytes": 13858037764,
+        "external_bytes": 0,
+        "external_by_category": {},
+        "combined_bytes": 13858037764,
+        "sequence": 71,
+        "event": "tensor_update"
+      }
+    },
+    "tensor_peak_bytes": {
+      "cpu": 13858037764
+    },
+    "external_peak_bytes": {
+      "cpu": 0
+    },
+    "live_external_allocations": {},
+    "events": []
+  },
+  "coverage": "Only attention residual helper, NOT KDA/MLA, MoE, or full training graph"
+}
