@@ -25,6 +25,16 @@ class K3Tests(unittest.TestCase):
         b = simulate(pp=1, nccl_mib_per_communicator=16)
         self.assertEqual(b["stages"][0]["partial_envelope_bytes"] - a["stages"][0]["partial_envelope_bytes"], 3*16*2**20)
 
+    def test_optional_backing_and_other_allowance_remain_partial(self):
+        baseline = simulate(pp=1, allocator_mode="fixed")
+        overhead = simulate(pp=1, allocator_mode="fixed", other_memory_mib=100)
+        a = baseline["stages"][0]["partial_backing_envelope_bytes"]
+        b = overhead["stages"][0]["partial_backing_envelope_bytes"]
+        self.assertEqual(b-a, 100*2**20)
+        self.assertGreaterEqual(a, baseline["stages"][0]["partial_envelope_bytes"])
+        self.assertIsNone(overhead["coverage"]["full_training_peak_bytes"])
+        self.assertIsNone(overhead["coverage"]["oom_prediction"])
+
     def test_invalid_mesh_rejected(self):
         with self.assertRaises(ValueError):
             simulate(dp=63, ep=8)

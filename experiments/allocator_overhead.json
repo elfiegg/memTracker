@@ -1,0 +1,3262 @@
+{
+  "schema_version": 1,
+  "kind": "synthetic CPU scenarios, not GPU predictions",
+  "fragmentation": {
+    "fixed": {
+      "model": {
+        "config": {
+          "expandable_segments": false
+        },
+        "confidence": "deterministic source-informed approximation; not GPU calibrated",
+        "source": "https://github.com/pytorch/pytorch/blob/v2.8.0/c10/cuda/CUDACachingAllocator.cpp",
+        "source_pin": "PyTorch v2.8.0 native CUDACachingAllocator (independent of runtime torch)",
+        "rules": {
+          "request_rounding_bytes": 512,
+          "small_request_max_bytes": 1048576,
+          "small_segment_bytes": 2097152,
+          "medium_request_below_bytes": 10485760,
+          "medium_segment_bytes": 20971520,
+          "large_segment_rounding_bytes": 2097152,
+          "expandable_small_chunk_bytes": 2097152,
+          "expandable_large_chunk_bytes": 20971520
+        },
+        "assumptions": [
+          "Best fit within explicit device, pool, stream and rounded small/large class.",
+          "All reusable gaps split at rounded request boundaries; adjacent gaps coalesce.",
+          "One expandable virtual range per device/pool/stream/size class; no live relocation.",
+          "Expandable mapping first reuses mapped gaps, then holes, then grows the free tail.",
+          "Completion tokens are explicit caller inputs; empty_cache does not synchronize them.",
+          "Zero-size ids have no backing; segment_count counts physically backed segments."
+        ],
+        "excluded": [
+          "Exact native splitting thresholds and nondefault allocator configuration knobs.",
+          "cudaMallocAsync, CUDA graph lifetime rules, IPC and peer mappings.",
+          "CUDA stream/event inference, scheduling, automatic synchronization and GC.",
+          "Device capacity, virtual-address limits, allocation failure/retry and OOM prediction.",
+          "CUDA context, NCCL and other library allocations; provide them in external ledgers.",
+          "Hardware measurements or byte-exact parity with any installed PyTorch build."
+        ]
+      },
+      "checkpoints": [
+        {
+          "phase": "allocator_3x16",
+          "requested_bytes": 50331648,
+          "allocated_bytes": 50331648,
+          "pending_free_bytes": 0,
+          "reserved_bytes": 50331648,
+          "cached_bytes": 0,
+          "segment_count": 3,
+          "pools": {
+            "default": {
+              "requested_bytes": 50331648,
+              "allocated_bytes": 50331648,
+              "pending_free_bytes": 0,
+              "reserved_bytes": 50331648,
+              "cached_bytes": 0,
+              "segment_count": 3
+            }
+          },
+          "segments": [
+            {
+              "segment_id": 1,
+              "pool": "default",
+              "stream": "default",
+              "size_class": "large",
+              "virtual_extent_bytes": 16777216,
+              "reserved_bytes": 16777216,
+              "chunk_size_bytes": 0,
+              "mapped_ranges": [
+                [
+                  0,
+                  16777216
+                ]
+              ],
+              "cached_ranges": [],
+              "blocks": [
+                {
+                  "allocation_id": "old-0",
+                  "offset_bytes": 0,
+                  "size_bytes": 16777216,
+                  "requested_bytes": 16777216,
+                  "state": "active",
+                  "tokens": []
+                }
+              ]
+            },
+            {
+              "segment_id": 2,
+              "pool": "default",
+              "stream": "default",
+              "size_class": "large",
+              "virtual_extent_bytes": 16777216,
+              "reserved_bytes": 16777216,
+              "chunk_size_bytes": 0,
+              "mapped_ranges": [
+                [
+                  0,
+                  16777216
+                ]
+              ],
+              "cached_ranges": [],
+              "blocks": [
+                {
+                  "allocation_id": "old-1",
+                  "offset_bytes": 0,
+                  "size_bytes": 16777216,
+                  "requested_bytes": 16777216,
+                  "state": "active",
+                  "tokens": []
+                }
+              ]
+            },
+            {
+              "segment_id": 3,
+              "pool": "default",
+              "stream": "default",
+              "size_class": "large",
+              "virtual_extent_bytes": 16777216,
+              "reserved_bytes": 16777216,
+              "chunk_size_bytes": 0,
+              "mapped_ranges": [
+                [
+                  0,
+                  16777216
+                ]
+              ],
+              "cached_ranges": [],
+              "blocks": [
+                {
+                  "allocation_id": "old-2",
+                  "offset_bytes": 0,
+                  "size_bytes": 16777216,
+                  "requested_bytes": 16777216,
+                  "state": "active",
+                  "tokens": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "phase": "allocator_3x14",
+          "requested_bytes": 44040192,
+          "allocated_bytes": 44040192,
+          "pending_free_bytes": 0,
+          "reserved_bytes": 50331648,
+          "cached_bytes": 6291456,
+          "segment_count": 3,
+          "pools": {
+            "default": {
+              "requested_bytes": 44040192,
+              "allocated_bytes": 44040192,
+              "pending_free_bytes": 0,
+              "reserved_bytes": 50331648,
+              "cached_bytes": 6291456,
+              "segment_count": 3
+            }
+          },
+          "segments": [
+            {
+              "segment_id": 1,
+              "pool": "default",
+              "stream": "default",
+              "size_class": "large",
+              "virtual_extent_bytes": 16777216,
+              "reserved_bytes": 16777216,
+              "chunk_size_bytes": 0,
+              "mapped_ranges": [
+                [
+                  0,
+                  16777216
+                ]
+              ],
+              "cached_ranges": [
+                [
+                  14680064,
+                  16777216
+                ]
+              ],
+              "blocks": [
+                {
+                  "allocation_id": "new-0",
+                  "offset_bytes": 0,
+                  "size_bytes": 14680064,
+                  "requested_bytes": 14680064,
+                  "state": "active",
+                  "tokens": []
+                }
+              ]
+            },
+            {
+              "segment_id": 2,
+              "pool": "default",
+              "stream": "default",
+              "size_class": "large",
+              "virtual_extent_bytes": 16777216,
+              "reserved_bytes": 16777216,
+              "chunk_size_bytes": 0,
+              "mapped_ranges": [
+                [
+                  0,
+                  16777216
+                ]
+              ],
+              "cached_ranges": [
+                [
+                  14680064,
+                  16777216
+                ]
+              ],
+              "blocks": [
+                {
+                  "allocation_id": "new-1",
+                  "offset_bytes": 0,
+                  "size_bytes": 14680064,
+                  "requested_bytes": 14680064,
+                  "state": "active",
+                  "tokens": []
+                }
+              ]
+            },
+            {
+              "segment_id": 3,
+              "pool": "default",
+              "stream": "default",
+              "size_class": "large",
+              "virtual_extent_bytes": 16777216,
+              "reserved_bytes": 16777216,
+              "chunk_size_bytes": 0,
+              "mapped_ranges": [
+                [
+                  0,
+                  16777216
+                ]
+              ],
+              "cached_ranges": [
+                [
+                  14680064,
+                  16777216
+                ]
+              ],
+              "blocks": [
+                {
+                  "allocation_id": "new-2",
+                  "offset_bytes": 0,
+                  "size_bytes": 14680064,
+                  "requested_bytes": 14680064,
+                  "state": "active",
+                  "tokens": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "phase": "allocator_fragmentation",
+          "requested_bytes": 49283072,
+          "allocated_bytes": 49283072,
+          "pending_free_bytes": 0,
+          "reserved_bytes": 71303168,
+          "cached_bytes": 22020096,
+          "segment_count": 4,
+          "pools": {
+            "default": {
+              "requested_bytes": 49283072,
+              "allocated_bytes": 49283072,
+              "pending_free_bytes": 0,
+              "reserved_bytes": 71303168,
+              "cached_bytes": 22020096,
+              "segment_count": 4
+            }
+          },
+          "segments": [
+            {
+              "segment_id": 1,
+              "pool": "default",
+              "stream": "default",
+              "size_class": "large",
+              "virtual_extent_bytes": 16777216,
+              "reserved_bytes": 16777216,
+              "chunk_size_bytes": 0,
+              "mapped_ranges": [
+                [
+                  0,
+                  16777216
+                ]
+              ],
+              "cached_ranges": [
+                [
+                  14680064,
+                  16777216
+                ]
+              ],
+              "blocks": [
+                {
+                  "allocation_id": "new-0",
+                  "offset_bytes": 0,
+                  "size_bytes": 14680064,
+                  "requested_bytes": 14680064,
+                  "state": "active",
+                  "tokens": []
+                }
+              ]
+            },
+            {
+              "segment_id": 2,
+              "pool": "default",
+              "stream": "default",
+              "size_class": "large",
+              "virtual_extent_bytes": 16777216,
+              "reserved_bytes": 16777216,
+              "chunk_size_bytes": 0,
+              "mapped_ranges": [
+                [
+                  0,
+                  16777216
+                ]
+              ],
+              "cached_ranges": [
+                [
+                  14680064,
+                  16777216
+                ]
+              ],
+              "blocks": [
+                {
+                  "allocation_id": "new-1",
+                  "offset_bytes": 0,
+                  "size_bytes": 14680064,
+                  "requested_bytes": 14680064,
+                  "state": "active",
+                  "tokens": []
+                }
+              ]
+            },
+            {
+              "segment_id": 3,
+              "pool": "default",
+              "stream": "default",
+              "size_class": "large",
+              "virtual_extent_bytes": 16777216,
+              "reserved_bytes": 16777216,
+              "chunk_size_bytes": 0,
+              "mapped_ranges": [
+                [
+                  0,
+                  16777216
+                ]
+              ],
+              "cached_ranges": [
+                [
+                  14680064,
+                  16777216
+                ]
+              ],
+              "blocks": [
+                {
+                  "allocation_id": "new-2",
+                  "offset_bytes": 0,
+                  "size_bytes": 14680064,
+                  "requested_bytes": 14680064,
+                  "state": "active",
+                  "tokens": []
+                }
+              ]
+            },
+            {
+              "segment_id": 4,
+              "pool": "default",
+              "stream": "default",
+              "size_class": "large",
+              "virtual_extent_bytes": 20971520,
+              "reserved_bytes": 20971520,
+              "chunk_size_bytes": 0,
+              "mapped_ranges": [
+                [
+                  0,
+                  20971520
+                ]
+              ],
+              "cached_ranges": [
+                [
+                  5242880,
+                  20971520
+                ]
+              ],
+              "blocks": [
+                {
+                  "allocation_id": "extra",
+                  "offset_bytes": 0,
+                  "size_bytes": 5242880,
+                  "requested_bytes": 5242880,
+                  "state": "active",
+                  "tokens": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "phase": "cached_after_free",
+          "requested_bytes": 0,
+          "allocated_bytes": 0,
+          "pending_free_bytes": 0,
+          "reserved_bytes": 71303168,
+          "cached_bytes": 71303168,
+          "segment_count": 4,
+          "pools": {
+            "default": {
+              "requested_bytes": 0,
+              "allocated_bytes": 0,
+              "pending_free_bytes": 0,
+              "reserved_bytes": 71303168,
+              "cached_bytes": 71303168,
+              "segment_count": 4
+            }
+          },
+          "segments": [
+            {
+              "segment_id": 1,
+              "pool": "default",
+              "stream": "default",
+              "size_class": "large",
+              "virtual_extent_bytes": 16777216,
+              "reserved_bytes": 16777216,
+              "chunk_size_bytes": 0,
+              "mapped_ranges": [
+                [
+                  0,
+                  16777216
+                ]
+              ],
+              "cached_ranges": [
+                [
+                  0,
+                  16777216
+                ]
+              ],
+              "blocks": []
+            },
+            {
+              "segment_id": 2,
+              "pool": "default",
+              "stream": "default",
+              "size_class": "large",
+              "virtual_extent_bytes": 16777216,
+              "reserved_bytes": 16777216,
+              "chunk_size_bytes": 0,
+              "mapped_ranges": [
+                [
+                  0,
+                  16777216
+                ]
+              ],
+              "cached_ranges": [
+                [
+                  0,
+                  16777216
+                ]
+              ],
+              "blocks": []
+            },
+            {
+              "segment_id": 3,
+              "pool": "default",
+              "stream": "default",
+              "size_class": "large",
+              "virtual_extent_bytes": 16777216,
+              "reserved_bytes": 16777216,
+              "chunk_size_bytes": 0,
+              "mapped_ranges": [
+                [
+                  0,
+                  16777216
+                ]
+              ],
+              "cached_ranges": [
+                [
+                  0,
+                  16777216
+                ]
+              ],
+              "blocks": []
+            },
+            {
+              "segment_id": 4,
+              "pool": "default",
+              "stream": "default",
+              "size_class": "large",
+              "virtual_extent_bytes": 20971520,
+              "reserved_bytes": 20971520,
+              "chunk_size_bytes": 0,
+              "mapped_ranges": [
+                [
+                  0,
+                  20971520
+                ]
+              ],
+              "cached_ranges": [
+                [
+                  0,
+                  20971520
+                ]
+              ],
+              "blocks": []
+            }
+          ]
+        },
+        {
+          "phase": "allocator_released",
+          "requested_bytes": 0,
+          "allocated_bytes": 0,
+          "pending_free_bytes": 0,
+          "reserved_bytes": 0,
+          "cached_bytes": 0,
+          "segment_count": 0,
+          "pools": {},
+          "segments": []
+        }
+      ]
+    },
+    "expandable": {
+      "model": {
+        "config": {
+          "expandable_segments": true
+        },
+        "confidence": "deterministic source-informed approximation; not GPU calibrated",
+        "source": "https://github.com/pytorch/pytorch/blob/v2.8.0/c10/cuda/CUDACachingAllocator.cpp",
+        "source_pin": "PyTorch v2.8.0 native CUDACachingAllocator (independent of runtime torch)",
+        "rules": {
+          "request_rounding_bytes": 512,
+          "small_request_max_bytes": 1048576,
+          "small_segment_bytes": 2097152,
+          "medium_request_below_bytes": 10485760,
+          "medium_segment_bytes": 20971520,
+          "large_segment_rounding_bytes": 2097152,
+          "expandable_small_chunk_bytes": 2097152,
+          "expandable_large_chunk_bytes": 20971520
+        },
+        "assumptions": [
+          "Best fit within explicit device, pool, stream and rounded small/large class.",
+          "All reusable gaps split at rounded request boundaries; adjacent gaps coalesce.",
+          "One expandable virtual range per device/pool/stream/size class; no live relocation.",
+          "Expandable mapping first reuses mapped gaps, then holes, then grows the free tail.",
+          "Completion tokens are explicit caller inputs; empty_cache does not synchronize them.",
+          "Zero-size ids have no backing; segment_count counts physically backed segments."
+        ],
+        "excluded": [
+          "Exact native splitting thresholds and nondefault allocator configuration knobs.",
+          "cudaMallocAsync, CUDA graph lifetime rules, IPC and peer mappings.",
+          "CUDA stream/event inference, scheduling, automatic synchronization and GC.",
+          "Device capacity, virtual-address limits, allocation failure/retry and OOM prediction.",
+          "CUDA context, NCCL and other library allocations; provide them in external ledgers.",
+          "Hardware measurements or byte-exact parity with any installed PyTorch build."
+        ]
+      },
+      "checkpoints": [
+        {
+          "phase": "allocator_3x16",
+          "requested_bytes": 50331648,
+          "allocated_bytes": 50331648,
+          "pending_free_bytes": 0,
+          "reserved_bytes": 62914560,
+          "cached_bytes": 12582912,
+          "segment_count": 1,
+          "pools": {
+            "default": {
+              "requested_bytes": 50331648,
+              "allocated_bytes": 50331648,
+              "pending_free_bytes": 0,
+              "reserved_bytes": 62914560,
+              "cached_bytes": 12582912,
+              "segment_count": 1
+            }
+          },
+          "segments": [
+            {
+              "segment_id": 1,
+              "pool": "default",
+              "stream": "default",
+              "size_class": "large",
+              "virtual_extent_bytes": 62914560,
+              "reserved_bytes": 62914560,
+              "chunk_size_bytes": 20971520,
+              "mapped_ranges": [
+                [
+                  0,
+                  62914560
+                ]
+              ],
+              "cached_ranges": [
+                [
+                  50331648,
+                  62914560
+                ]
+              ],
+              "blocks": [
+                {
+                  "allocation_id": "old-0",
+                  "offset_bytes": 0,
+                  "size_bytes": 16777216,
+                  "requested_bytes": 16777216,
+                  "state": "active",
+                  "tokens": []
+                },
+                {
+                  "allocation_id": "old-1",
+                  "offset_bytes": 16777216,
+                  "size_bytes": 16777216,
+                  "requested_bytes": 16777216,
+                  "state": "active",
+                  "tokens": []
+                },
+                {
+                  "allocation_id": "old-2",
+                  "offset_bytes": 33554432,
+                  "size_bytes": 16777216,
+                  "requested_bytes": 16777216,
+                  "state": "active",
+                  "tokens": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "phase": "allocator_3x14",
+          "requested_bytes": 44040192,
+          "allocated_bytes": 44040192,
+          "pending_free_bytes": 0,
+          "reserved_bytes": 62914560,
+          "cached_bytes": 18874368,
+          "segment_count": 1,
+          "pools": {
+            "default": {
+              "requested_bytes": 44040192,
+              "allocated_bytes": 44040192,
+              "pending_free_bytes": 0,
+              "reserved_bytes": 62914560,
+              "cached_bytes": 18874368,
+              "segment_count": 1
+            }
+          },
+          "segments": [
+            {
+              "segment_id": 1,
+              "pool": "default",
+              "stream": "default",
+              "size_class": "large",
+              "virtual_extent_bytes": 62914560,
+              "reserved_bytes": 62914560,
+              "chunk_size_bytes": 20971520,
+              "mapped_ranges": [
+                [
+                  0,
+                  62914560
+                ]
+              ],
+              "cached_ranges": [
+                [
+                  44040192,
+                  62914560
+                ]
+              ],
+              "blocks": [
+                {
+                  "allocation_id": "new-0",
+                  "offset_bytes": 0,
+                  "size_bytes": 14680064,
+                  "requested_bytes": 14680064,
+                  "state": "active",
+                  "tokens": []
+                },
+                {
+                  "allocation_id": "new-1",
+                  "offset_bytes": 14680064,
+                  "size_bytes": 14680064,
+                  "requested_bytes": 14680064,
+                  "state": "active",
+                  "tokens": []
+                },
+                {
+                  "allocation_id": "new-2",
+                  "offset_bytes": 29360128,
+                  "size_bytes": 14680064,
+                  "requested_bytes": 14680064,
+                  "state": "active",
+                  "tokens": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "phase": "allocator_fragmentation",
+          "requested_bytes": 49283072,
+          "allocated_bytes": 49283072,
+          "pending_free_bytes": 0,
+          "reserved_bytes": 62914560,
+          "cached_bytes": 13631488,
+          "segment_count": 1,
+          "pools": {
+            "default": {
+              "requested_bytes": 49283072,
+              "allocated_bytes": 49283072,
+              "pending_free_bytes": 0,
+              "reserved_bytes": 62914560,
+              "cached_bytes": 13631488,
+              "segment_count": 1
+            }
+          },
+          "segments": [
+            {
+              "segment_id": 1,
+              "pool": "default",
+              "stream": "default",
+              "size_class": "large",
+              "virtual_extent_bytes": 62914560,
+              "reserved_bytes": 62914560,
+              "chunk_size_bytes": 20971520,
+              "mapped_ranges": [
+                [
+                  0,
+                  62914560
+                ]
+              ],
+              "cached_ranges": [
+                [
+                  49283072,
+                  62914560
+                ]
+              ],
+              "blocks": [
+                {
+                  "allocation_id": "new-0",
+                  "offset_bytes": 0,
+                  "size_bytes": 14680064,
+                  "requested_bytes": 14680064,
+                  "state": "active",
+                  "tokens": []
+                },
+                {
+                  "allocation_id": "new-1",
+                  "offset_bytes": 14680064,
+                  "size_bytes": 14680064,
+                  "requested_bytes": 14680064,
+                  "state": "active",
+                  "tokens": []
+                },
+                {
+                  "allocation_id": "new-2",
+                  "offset_bytes": 29360128,
+                  "size_bytes": 14680064,
+                  "requested_bytes": 14680064,
+                  "state": "active",
+                  "tokens": []
+                },
+                {
+                  "allocation_id": "extra",
+                  "offset_bytes": 44040192,
+                  "size_bytes": 5242880,
+                  "requested_bytes": 5242880,
+                  "state": "active",
+                  "tokens": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "phase": "cached_after_free",
+          "requested_bytes": 0,
+          "allocated_bytes": 0,
+          "pending_free_bytes": 0,
+          "reserved_bytes": 62914560,
+          "cached_bytes": 62914560,
+          "segment_count": 1,
+          "pools": {
+            "default": {
+              "requested_bytes": 0,
+              "allocated_bytes": 0,
+              "pending_free_bytes": 0,
+              "reserved_bytes": 62914560,
+              "cached_bytes": 62914560,
+              "segment_count": 1
+            }
+          },
+          "segments": [
+            {
+              "segment_id": 1,
+              "pool": "default",
+              "stream": "default",
+              "size_class": "large",
+              "virtual_extent_bytes": 62914560,
+              "reserved_bytes": 62914560,
+              "chunk_size_bytes": 20971520,
+              "mapped_ranges": [
+                [
+                  0,
+                  62914560
+                ]
+              ],
+              "cached_ranges": [
+                [
+                  0,
+                  62914560
+                ]
+              ],
+              "blocks": []
+            }
+          ]
+        },
+        {
+          "phase": "allocator_released",
+          "requested_bytes": 0,
+          "allocated_bytes": 0,
+          "pending_free_bytes": 0,
+          "reserved_bytes": 0,
+          "cached_bytes": 0,
+          "segment_count": 0,
+          "pools": {
+            "default": {
+              "requested_bytes": 0,
+              "allocated_bytes": 0,
+              "pending_free_bytes": 0,
+              "reserved_bytes": 0,
+              "cached_bytes": 0,
+              "segment_count": 0
+            }
+          },
+          "segments": [
+            {
+              "segment_id": 1,
+              "pool": "default",
+              "stream": "default",
+              "size_class": "large",
+              "virtual_extent_bytes": 62914560,
+              "reserved_bytes": 0,
+              "chunk_size_bytes": 20971520,
+              "mapped_ranges": [],
+              "cached_ranges": [],
+              "blocks": []
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "combined": {
+    "fixed_early": {
+      "allocator": {
+        "model": {
+          "config": {
+            "expandable_segments": false
+          },
+          "confidence": "deterministic source-informed approximation; not GPU calibrated",
+          "source": "https://github.com/pytorch/pytorch/blob/v2.8.0/c10/cuda/CUDACachingAllocator.cpp",
+          "source_pin": "PyTorch v2.8.0 native CUDACachingAllocator (independent of runtime torch)",
+          "rules": {
+            "request_rounding_bytes": 512,
+            "small_request_max_bytes": 1048576,
+            "small_segment_bytes": 2097152,
+            "medium_request_below_bytes": 10485760,
+            "medium_segment_bytes": 20971520,
+            "large_segment_rounding_bytes": 2097152,
+            "expandable_small_chunk_bytes": 2097152,
+            "expandable_large_chunk_bytes": 20971520
+          },
+          "assumptions": [
+            "Best fit within explicit device, pool, stream and rounded small/large class.",
+            "All reusable gaps split at rounded request boundaries; adjacent gaps coalesce.",
+            "One expandable virtual range per device/pool/stream/size class; no live relocation.",
+            "Expandable mapping first reuses mapped gaps, then holes, then grows the free tail.",
+            "Completion tokens are explicit caller inputs; empty_cache does not synchronize them.",
+            "Zero-size ids have no backing; segment_count counts physically backed segments."
+          ],
+          "excluded": [
+            "Exact native splitting thresholds and nondefault allocator configuration knobs.",
+            "cudaMallocAsync, CUDA graph lifetime rules, IPC and peer mappings.",
+            "CUDA stream/event inference, scheduling, automatic synchronization and GC.",
+            "Device capacity, virtual-address limits, allocation failure/retry and OOM prediction.",
+            "CUDA context, NCCL and other library allocations; provide them in external ledgers.",
+            "Hardware measurements or byte-exact parity with any installed PyTorch build."
+          ]
+        },
+        "current": {
+          "cpu": {
+            "requested_bytes": 0,
+            "allocated_bytes": 0,
+            "pending_free_bytes": 0,
+            "reserved_bytes": 0,
+            "cached_bytes": 0,
+            "segment_count": 0,
+            "pools": {},
+            "segments": []
+          }
+        }
+      },
+      "resident": {
+        "accounting": "modeled allocator reserved backing plus modeled external allocations; not a measurement",
+        "current": {
+          "cpu": {
+            "reserved_bytes": 0,
+            "external_bytes": 0,
+            "external_by_category": {},
+            "combined_bytes": 0
+          }
+        },
+        "peak": {
+          "cpu": {
+            "reserved_bytes": 27262976,
+            "external_bytes": 15728640,
+            "external_by_category": {
+              "CUDA context": 4194304,
+              "NCCL": 8388608,
+              "External library workspace": 3145728
+            },
+            "combined_bytes": 42991616,
+            "sequence": 4,
+            "event": "external_alloc"
+          }
+        },
+        "assumptions": [
+          "CPU FakeTensor device labels represent hypothetical CUDA allocations.",
+          "Storage resize modeled as allocate-before-free; streams/pools/completion must be supplied.",
+          "External entries must be disjoint from modeled allocator backing."
+        ]
+      },
+      "schema_version": 1,
+      "torch_version": "2.14.1",
+      "accounting": "live tensor storage plus modeled external allocations; not reserved GPU memory",
+      "current": {},
+      "peak": {
+        "cpu": {
+          "tensor_bytes": 26214400,
+          "external_bytes": 15728640,
+          "external_by_category": {
+            "CUDA context": 4194304,
+            "NCCL": 8388608,
+            "External library workspace": 3145728
+          },
+          "combined_bytes": 41943040,
+          "sequence": 4,
+          "event": "external_alloc"
+        }
+      },
+      "tensor_peak_bytes": {
+        "cpu": 26214400
+      },
+      "external_peak_bytes": {
+        "cpu": 16777216
+      },
+      "live_external_allocations": {},
+      "events": [
+        {
+          "sequence": 1,
+          "event": "external_alloc",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 0,
+              "external_bytes": 4194304,
+              "external_by_category": {
+                "CUDA context": 4194304
+              },
+              "combined_bytes": 4194304
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 0,
+              "external_bytes": 4194304,
+              "external_by_category": {
+                "CUDA context": 4194304
+              },
+              "combined_bytes": 4194304
+            }
+          }
+        },
+        {
+          "sequence": 2,
+          "event": "external_alloc",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 0,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 12582912
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 0,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 12582912
+            }
+          }
+        },
+        {
+          "sequence": 3,
+          "event": "tensor_update",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 26214400,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 38797312
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 27262976,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 39845888
+            }
+          }
+        },
+        {
+          "sequence": 4,
+          "event": "external_alloc",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 26214400,
+              "external_bytes": 15728640,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608,
+                "External library workspace": 3145728
+              },
+              "combined_bytes": 41943040
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 27262976,
+              "external_bytes": 15728640,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608,
+                "External library workspace": 3145728
+              },
+              "combined_bytes": 42991616
+            }
+          }
+        },
+        {
+          "sequence": 5,
+          "event": "external_free",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 26214400,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 38797312
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 27262976,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 39845888
+            }
+          }
+        },
+        {
+          "sequence": 6,
+          "event": "tensor_update",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 0,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 12582912
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 27262976,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 39845888
+            }
+          }
+        },
+        {
+          "sequence": 7,
+          "event": "allocator_empty_cache",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 0,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 12582912
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 0,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 12582912
+            }
+          }
+        },
+        {
+          "sequence": 8,
+          "event": "tensor_update",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 1048576,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 13631488
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 14680064
+            }
+          }
+        },
+        {
+          "sequence": 9,
+          "event": "external_alloc",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 1048576,
+              "external_bytes": 14680064,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 10485760
+              },
+              "combined_bytes": 15728640
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 14680064,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 10485760
+              },
+              "combined_bytes": 16777216
+            }
+          }
+        },
+        {
+          "sequence": 10,
+          "event": "external_alloc",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 1048576,
+              "external_bytes": 16777216,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 12582912
+              },
+              "combined_bytes": 17825792
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 16777216,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 12582912
+              },
+              "combined_bytes": 18874368
+            }
+          }
+        },
+        {
+          "sequence": 11,
+          "event": "allocator_record_stream",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 1048576,
+              "external_bytes": 16777216,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 12582912
+              },
+              "combined_bytes": 17825792
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 16777216,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 12582912
+              },
+              "combined_bytes": 18874368
+            }
+          }
+        },
+        {
+          "sequence": 12,
+          "event": "tensor_update",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 0,
+              "external_bytes": 16777216,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 12582912
+              },
+              "combined_bytes": 16777216
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 16777216,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 12582912
+              },
+              "combined_bytes": 18874368
+            }
+          }
+        },
+        {
+          "sequence": 13,
+          "event": "external_free",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 0,
+              "external_bytes": 14680064,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 10485760
+              },
+              "combined_bytes": 14680064
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 14680064,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 10485760
+              },
+              "combined_bytes": 16777216
+            }
+          }
+        },
+        {
+          "sequence": 14,
+          "event": "external_free",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 0,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 12582912
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 14680064
+            }
+          }
+        },
+        {
+          "sequence": 15,
+          "event": "allocator_complete_stream",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 0,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 12582912
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 14680064
+            }
+          }
+        },
+        {
+          "sequence": 16,
+          "event": "external_free",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 0,
+              "external_bytes": 4194304,
+              "external_by_category": {
+                "CUDA context": 4194304
+              },
+              "combined_bytes": 4194304
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 4194304,
+              "external_by_category": {
+                "CUDA context": 4194304
+              },
+              "combined_bytes": 6291456
+            }
+          }
+        },
+        {
+          "sequence": 17,
+          "event": "external_free",
+          "devices": {},
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 0,
+              "external_by_category": {},
+              "combined_bytes": 2097152
+            }
+          }
+        },
+        {
+          "sequence": 18,
+          "event": "allocator_empty_cache",
+          "devices": {},
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 0,
+              "external_bytes": 0,
+              "external_by_category": {},
+              "combined_bytes": 0
+            }
+          }
+        }
+      ],
+      "inputs": {
+        "expandable_segments": false,
+        "late_nccl": false,
+        "nccl": {
+          "name": "explicit-allowance",
+          "buffers": [
+            {
+              "name": "persistent-allowance",
+              "size_bytes": 8388608,
+              "provenance": "Synthetic 8 MiB allowance; not measured NCCL"
+            }
+          ],
+          "assumptions": [
+            "Caller provides locally owned persistent bytes, excluding existing tensor storage.",
+            "A zero allowance omits NCCL overhead; it is not evidence of zero usage."
+          ],
+          "excluded": [
+            "Anything absent from the supplied measurement/assumption; no automatic topology extrapolation."
+          ],
+          "confidence": "user-supplied; accuracy depends on provenance",
+          "persistent_bytes": 8388608
+        },
+        "other": {
+          "components": {
+            "context": {
+              "name": "context",
+              "size_bytes": 4194304,
+              "category": "CUDA context",
+              "evidence": "assumed",
+              "provenance": "Synthetic scenario"
+            },
+            "workspace": {
+              "name": "workspace",
+              "size_bytes": 3145728,
+              "category": "External library workspace",
+              "evidence": "assumed",
+              "provenance": "Synthetic externally owned workspace"
+            }
+          },
+          "active": [],
+          "assumptions": [
+            "All components are disjoint from tensors, allocator backing, and NCCL profiles.",
+            "Unspecified components are omitted, not predicted zero."
+          ]
+        }
+      }
+    },
+    "fixed_late": {
+      "allocator": {
+        "model": {
+          "config": {
+            "expandable_segments": false
+          },
+          "confidence": "deterministic source-informed approximation; not GPU calibrated",
+          "source": "https://github.com/pytorch/pytorch/blob/v2.8.0/c10/cuda/CUDACachingAllocator.cpp",
+          "source_pin": "PyTorch v2.8.0 native CUDACachingAllocator (independent of runtime torch)",
+          "rules": {
+            "request_rounding_bytes": 512,
+            "small_request_max_bytes": 1048576,
+            "small_segment_bytes": 2097152,
+            "medium_request_below_bytes": 10485760,
+            "medium_segment_bytes": 20971520,
+            "large_segment_rounding_bytes": 2097152,
+            "expandable_small_chunk_bytes": 2097152,
+            "expandable_large_chunk_bytes": 20971520
+          },
+          "assumptions": [
+            "Best fit within explicit device, pool, stream and rounded small/large class.",
+            "All reusable gaps split at rounded request boundaries; adjacent gaps coalesce.",
+            "One expandable virtual range per device/pool/stream/size class; no live relocation.",
+            "Expandable mapping first reuses mapped gaps, then holes, then grows the free tail.",
+            "Completion tokens are explicit caller inputs; empty_cache does not synchronize them.",
+            "Zero-size ids have no backing; segment_count counts physically backed segments."
+          ],
+          "excluded": [
+            "Exact native splitting thresholds and nondefault allocator configuration knobs.",
+            "cudaMallocAsync, CUDA graph lifetime rules, IPC and peer mappings.",
+            "CUDA stream/event inference, scheduling, automatic synchronization and GC.",
+            "Device capacity, virtual-address limits, allocation failure/retry and OOM prediction.",
+            "CUDA context, NCCL and other library allocations; provide them in external ledgers.",
+            "Hardware measurements or byte-exact parity with any installed PyTorch build."
+          ]
+        },
+        "current": {
+          "cpu": {
+            "requested_bytes": 0,
+            "allocated_bytes": 0,
+            "pending_free_bytes": 0,
+            "reserved_bytes": 0,
+            "cached_bytes": 0,
+            "segment_count": 0,
+            "pools": {},
+            "segments": []
+          }
+        }
+      },
+      "resident": {
+        "accounting": "modeled allocator reserved backing plus modeled external allocations; not a measurement",
+        "current": {
+          "cpu": {
+            "reserved_bytes": 0,
+            "external_bytes": 0,
+            "external_by_category": {},
+            "combined_bytes": 0
+          }
+        },
+        "peak": {
+          "cpu": {
+            "reserved_bytes": 27262976,
+            "external_bytes": 7340032,
+            "external_by_category": {
+              "CUDA context": 4194304,
+              "External library workspace": 3145728
+            },
+            "combined_bytes": 34603008,
+            "sequence": 3,
+            "event": "external_alloc"
+          }
+        },
+        "assumptions": [
+          "CPU FakeTensor device labels represent hypothetical CUDA allocations.",
+          "Storage resize modeled as allocate-before-free; streams/pools/completion must be supplied.",
+          "External entries must be disjoint from modeled allocator backing."
+        ]
+      },
+      "schema_version": 1,
+      "torch_version": "2.14.1",
+      "accounting": "live tensor storage plus modeled external allocations; not reserved GPU memory",
+      "current": {},
+      "peak": {
+        "cpu": {
+          "tensor_bytes": 26214400,
+          "external_bytes": 7340032,
+          "external_by_category": {
+            "CUDA context": 4194304,
+            "External library workspace": 3145728
+          },
+          "combined_bytes": 33554432,
+          "sequence": 3,
+          "event": "external_alloc"
+        }
+      },
+      "tensor_peak_bytes": {
+        "cpu": 26214400
+      },
+      "external_peak_bytes": {
+        "cpu": 16777216
+      },
+      "live_external_allocations": {},
+      "events": [
+        {
+          "sequence": 1,
+          "event": "external_alloc",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 0,
+              "external_bytes": 4194304,
+              "external_by_category": {
+                "CUDA context": 4194304
+              },
+              "combined_bytes": 4194304
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 0,
+              "external_bytes": 4194304,
+              "external_by_category": {
+                "CUDA context": 4194304
+              },
+              "combined_bytes": 4194304
+            }
+          }
+        },
+        {
+          "sequence": 2,
+          "event": "tensor_update",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 26214400,
+              "external_bytes": 4194304,
+              "external_by_category": {
+                "CUDA context": 4194304
+              },
+              "combined_bytes": 30408704
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 27262976,
+              "external_bytes": 4194304,
+              "external_by_category": {
+                "CUDA context": 4194304
+              },
+              "combined_bytes": 31457280
+            }
+          }
+        },
+        {
+          "sequence": 3,
+          "event": "external_alloc",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 26214400,
+              "external_bytes": 7340032,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "External library workspace": 3145728
+              },
+              "combined_bytes": 33554432
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 27262976,
+              "external_bytes": 7340032,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "External library workspace": 3145728
+              },
+              "combined_bytes": 34603008
+            }
+          }
+        },
+        {
+          "sequence": 4,
+          "event": "external_free",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 26214400,
+              "external_bytes": 4194304,
+              "external_by_category": {
+                "CUDA context": 4194304
+              },
+              "combined_bytes": 30408704
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 27262976,
+              "external_bytes": 4194304,
+              "external_by_category": {
+                "CUDA context": 4194304
+              },
+              "combined_bytes": 31457280
+            }
+          }
+        },
+        {
+          "sequence": 5,
+          "event": "tensor_update",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 0,
+              "external_bytes": 4194304,
+              "external_by_category": {
+                "CUDA context": 4194304
+              },
+              "combined_bytes": 4194304
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 27262976,
+              "external_bytes": 4194304,
+              "external_by_category": {
+                "CUDA context": 4194304
+              },
+              "combined_bytes": 31457280
+            }
+          }
+        },
+        {
+          "sequence": 6,
+          "event": "allocator_empty_cache",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 0,
+              "external_bytes": 4194304,
+              "external_by_category": {
+                "CUDA context": 4194304
+              },
+              "combined_bytes": 4194304
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 0,
+              "external_bytes": 4194304,
+              "external_by_category": {
+                "CUDA context": 4194304
+              },
+              "combined_bytes": 4194304
+            }
+          }
+        },
+        {
+          "sequence": 7,
+          "event": "tensor_update",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 1048576,
+              "external_bytes": 4194304,
+              "external_by_category": {
+                "CUDA context": 4194304
+              },
+              "combined_bytes": 5242880
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 4194304,
+              "external_by_category": {
+                "CUDA context": 4194304
+              },
+              "combined_bytes": 6291456
+            }
+          }
+        },
+        {
+          "sequence": 8,
+          "event": "external_alloc",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 1048576,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 13631488
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 14680064
+            }
+          }
+        },
+        {
+          "sequence": 9,
+          "event": "external_alloc",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 1048576,
+              "external_bytes": 14680064,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 10485760
+              },
+              "combined_bytes": 15728640
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 14680064,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 10485760
+              },
+              "combined_bytes": 16777216
+            }
+          }
+        },
+        {
+          "sequence": 10,
+          "event": "external_alloc",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 1048576,
+              "external_bytes": 16777216,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 12582912
+              },
+              "combined_bytes": 17825792
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 16777216,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 12582912
+              },
+              "combined_bytes": 18874368
+            }
+          }
+        },
+        {
+          "sequence": 11,
+          "event": "allocator_record_stream",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 1048576,
+              "external_bytes": 16777216,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 12582912
+              },
+              "combined_bytes": 17825792
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 16777216,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 12582912
+              },
+              "combined_bytes": 18874368
+            }
+          }
+        },
+        {
+          "sequence": 12,
+          "event": "tensor_update",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 0,
+              "external_bytes": 16777216,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 12582912
+              },
+              "combined_bytes": 16777216
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 16777216,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 12582912
+              },
+              "combined_bytes": 18874368
+            }
+          }
+        },
+        {
+          "sequence": 13,
+          "event": "external_free",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 0,
+              "external_bytes": 14680064,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 10485760
+              },
+              "combined_bytes": 14680064
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 14680064,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 10485760
+              },
+              "combined_bytes": 16777216
+            }
+          }
+        },
+        {
+          "sequence": 14,
+          "event": "external_free",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 0,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 12582912
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 14680064
+            }
+          }
+        },
+        {
+          "sequence": 15,
+          "event": "allocator_complete_stream",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 0,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 12582912
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 14680064
+            }
+          }
+        },
+        {
+          "sequence": 16,
+          "event": "external_free",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 0,
+              "external_bytes": 4194304,
+              "external_by_category": {
+                "CUDA context": 4194304
+              },
+              "combined_bytes": 4194304
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 4194304,
+              "external_by_category": {
+                "CUDA context": 4194304
+              },
+              "combined_bytes": 6291456
+            }
+          }
+        },
+        {
+          "sequence": 17,
+          "event": "external_free",
+          "devices": {},
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 0,
+              "external_by_category": {},
+              "combined_bytes": 2097152
+            }
+          }
+        },
+        {
+          "sequence": 18,
+          "event": "allocator_empty_cache",
+          "devices": {},
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 0,
+              "external_bytes": 0,
+              "external_by_category": {},
+              "combined_bytes": 0
+            }
+          }
+        }
+      ],
+      "inputs": {
+        "expandable_segments": false,
+        "late_nccl": true,
+        "nccl": {
+          "name": "explicit-allowance",
+          "buffers": [
+            {
+              "name": "persistent-allowance",
+              "size_bytes": 8388608,
+              "provenance": "Synthetic 8 MiB allowance; not measured NCCL"
+            }
+          ],
+          "assumptions": [
+            "Caller provides locally owned persistent bytes, excluding existing tensor storage.",
+            "A zero allowance omits NCCL overhead; it is not evidence of zero usage."
+          ],
+          "excluded": [
+            "Anything absent from the supplied measurement/assumption; no automatic topology extrapolation."
+          ],
+          "confidence": "user-supplied; accuracy depends on provenance",
+          "persistent_bytes": 8388608
+        },
+        "other": {
+          "components": {
+            "context": {
+              "name": "context",
+              "size_bytes": 4194304,
+              "category": "CUDA context",
+              "evidence": "assumed",
+              "provenance": "Synthetic scenario"
+            },
+            "workspace": {
+              "name": "workspace",
+              "size_bytes": 3145728,
+              "category": "External library workspace",
+              "evidence": "assumed",
+              "provenance": "Synthetic externally owned workspace"
+            }
+          },
+          "active": [],
+          "assumptions": [
+            "All components are disjoint from tensors, allocator backing, and NCCL profiles.",
+            "Unspecified components are omitted, not predicted zero."
+          ]
+        }
+      }
+    },
+    "expandable_early": {
+      "allocator": {
+        "model": {
+          "config": {
+            "expandable_segments": true
+          },
+          "confidence": "deterministic source-informed approximation; not GPU calibrated",
+          "source": "https://github.com/pytorch/pytorch/blob/v2.8.0/c10/cuda/CUDACachingAllocator.cpp",
+          "source_pin": "PyTorch v2.8.0 native CUDACachingAllocator (independent of runtime torch)",
+          "rules": {
+            "request_rounding_bytes": 512,
+            "small_request_max_bytes": 1048576,
+            "small_segment_bytes": 2097152,
+            "medium_request_below_bytes": 10485760,
+            "medium_segment_bytes": 20971520,
+            "large_segment_rounding_bytes": 2097152,
+            "expandable_small_chunk_bytes": 2097152,
+            "expandable_large_chunk_bytes": 20971520
+          },
+          "assumptions": [
+            "Best fit within explicit device, pool, stream and rounded small/large class.",
+            "All reusable gaps split at rounded request boundaries; adjacent gaps coalesce.",
+            "One expandable virtual range per device/pool/stream/size class; no live relocation.",
+            "Expandable mapping first reuses mapped gaps, then holes, then grows the free tail.",
+            "Completion tokens are explicit caller inputs; empty_cache does not synchronize them.",
+            "Zero-size ids have no backing; segment_count counts physically backed segments."
+          ],
+          "excluded": [
+            "Exact native splitting thresholds and nondefault allocator configuration knobs.",
+            "cudaMallocAsync, CUDA graph lifetime rules, IPC and peer mappings.",
+            "CUDA stream/event inference, scheduling, automatic synchronization and GC.",
+            "Device capacity, virtual-address limits, allocation failure/retry and OOM prediction.",
+            "CUDA context, NCCL and other library allocations; provide them in external ledgers.",
+            "Hardware measurements or byte-exact parity with any installed PyTorch build."
+          ]
+        },
+        "current": {
+          "cpu": {
+            "requested_bytes": 0,
+            "allocated_bytes": 0,
+            "pending_free_bytes": 0,
+            "reserved_bytes": 0,
+            "cached_bytes": 0,
+            "segment_count": 0,
+            "pools": {
+              "default": {
+                "requested_bytes": 0,
+                "allocated_bytes": 0,
+                "pending_free_bytes": 0,
+                "reserved_bytes": 0,
+                "cached_bytes": 0,
+                "segment_count": 0
+              }
+            },
+            "segments": [
+              {
+                "segment_id": 1,
+                "pool": "default",
+                "stream": "default",
+                "size_class": "large",
+                "virtual_extent_bytes": 41943040,
+                "reserved_bytes": 0,
+                "chunk_size_bytes": 20971520,
+                "mapped_ranges": [],
+                "cached_ranges": [],
+                "blocks": []
+              },
+              {
+                "segment_id": 2,
+                "pool": "default",
+                "stream": "default",
+                "size_class": "small",
+                "virtual_extent_bytes": 2097152,
+                "reserved_bytes": 0,
+                "chunk_size_bytes": 2097152,
+                "mapped_ranges": [],
+                "cached_ranges": [],
+                "blocks": []
+              }
+            ]
+          }
+        }
+      },
+      "resident": {
+        "accounting": "modeled allocator reserved backing plus modeled external allocations; not a measurement",
+        "current": {
+          "cpu": {
+            "reserved_bytes": 0,
+            "external_bytes": 0,
+            "external_by_category": {},
+            "combined_bytes": 0
+          }
+        },
+        "peak": {
+          "cpu": {
+            "reserved_bytes": 41943040,
+            "external_bytes": 15728640,
+            "external_by_category": {
+              "CUDA context": 4194304,
+              "NCCL": 8388608,
+              "External library workspace": 3145728
+            },
+            "combined_bytes": 57671680,
+            "sequence": 4,
+            "event": "external_alloc"
+          }
+        },
+        "assumptions": [
+          "CPU FakeTensor device labels represent hypothetical CUDA allocations.",
+          "Storage resize modeled as allocate-before-free; streams/pools/completion must be supplied.",
+          "External entries must be disjoint from modeled allocator backing."
+        ]
+      },
+      "schema_version": 1,
+      "torch_version": "2.14.1",
+      "accounting": "live tensor storage plus modeled external allocations; not reserved GPU memory",
+      "current": {},
+      "peak": {
+        "cpu": {
+          "tensor_bytes": 26214400,
+          "external_bytes": 15728640,
+          "external_by_category": {
+            "CUDA context": 4194304,
+            "NCCL": 8388608,
+            "External library workspace": 3145728
+          },
+          "combined_bytes": 41943040,
+          "sequence": 4,
+          "event": "external_alloc"
+        }
+      },
+      "tensor_peak_bytes": {
+        "cpu": 26214400
+      },
+      "external_peak_bytes": {
+        "cpu": 16777216
+      },
+      "live_external_allocations": {},
+      "events": [
+        {
+          "sequence": 1,
+          "event": "external_alloc",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 0,
+              "external_bytes": 4194304,
+              "external_by_category": {
+                "CUDA context": 4194304
+              },
+              "combined_bytes": 4194304
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 0,
+              "external_bytes": 4194304,
+              "external_by_category": {
+                "CUDA context": 4194304
+              },
+              "combined_bytes": 4194304
+            }
+          }
+        },
+        {
+          "sequence": 2,
+          "event": "external_alloc",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 0,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 12582912
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 0,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 12582912
+            }
+          }
+        },
+        {
+          "sequence": 3,
+          "event": "tensor_update",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 26214400,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 38797312
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 41943040,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 54525952
+            }
+          }
+        },
+        {
+          "sequence": 4,
+          "event": "external_alloc",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 26214400,
+              "external_bytes": 15728640,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608,
+                "External library workspace": 3145728
+              },
+              "combined_bytes": 41943040
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 41943040,
+              "external_bytes": 15728640,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608,
+                "External library workspace": 3145728
+              },
+              "combined_bytes": 57671680
+            }
+          }
+        },
+        {
+          "sequence": 5,
+          "event": "external_free",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 26214400,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 38797312
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 41943040,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 54525952
+            }
+          }
+        },
+        {
+          "sequence": 6,
+          "event": "tensor_update",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 0,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 12582912
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 41943040,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 54525952
+            }
+          }
+        },
+        {
+          "sequence": 7,
+          "event": "allocator_empty_cache",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 0,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 12582912
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 0,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 12582912
+            }
+          }
+        },
+        {
+          "sequence": 8,
+          "event": "tensor_update",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 1048576,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 13631488
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 14680064
+            }
+          }
+        },
+        {
+          "sequence": 9,
+          "event": "external_alloc",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 1048576,
+              "external_bytes": 14680064,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 10485760
+              },
+              "combined_bytes": 15728640
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 14680064,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 10485760
+              },
+              "combined_bytes": 16777216
+            }
+          }
+        },
+        {
+          "sequence": 10,
+          "event": "external_alloc",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 1048576,
+              "external_bytes": 16777216,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 12582912
+              },
+              "combined_bytes": 17825792
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 16777216,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 12582912
+              },
+              "combined_bytes": 18874368
+            }
+          }
+        },
+        {
+          "sequence": 11,
+          "event": "allocator_record_stream",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 1048576,
+              "external_bytes": 16777216,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 12582912
+              },
+              "combined_bytes": 17825792
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 16777216,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 12582912
+              },
+              "combined_bytes": 18874368
+            }
+          }
+        },
+        {
+          "sequence": 12,
+          "event": "tensor_update",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 0,
+              "external_bytes": 16777216,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 12582912
+              },
+              "combined_bytes": 16777216
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 16777216,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 12582912
+              },
+              "combined_bytes": 18874368
+            }
+          }
+        },
+        {
+          "sequence": 13,
+          "event": "external_free",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 0,
+              "external_bytes": 14680064,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 10485760
+              },
+              "combined_bytes": 14680064
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 14680064,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 10485760
+              },
+              "combined_bytes": 16777216
+            }
+          }
+        },
+        {
+          "sequence": 14,
+          "event": "external_free",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 0,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 12582912
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 14680064
+            }
+          }
+        },
+        {
+          "sequence": 15,
+          "event": "allocator_complete_stream",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 0,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 12582912
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 14680064
+            }
+          }
+        },
+        {
+          "sequence": 16,
+          "event": "external_free",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 0,
+              "external_bytes": 4194304,
+              "external_by_category": {
+                "CUDA context": 4194304
+              },
+              "combined_bytes": 4194304
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 4194304,
+              "external_by_category": {
+                "CUDA context": 4194304
+              },
+              "combined_bytes": 6291456
+            }
+          }
+        },
+        {
+          "sequence": 17,
+          "event": "external_free",
+          "devices": {},
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 0,
+              "external_by_category": {},
+              "combined_bytes": 2097152
+            }
+          }
+        },
+        {
+          "sequence": 18,
+          "event": "allocator_empty_cache",
+          "devices": {},
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 0,
+              "external_bytes": 0,
+              "external_by_category": {},
+              "combined_bytes": 0
+            }
+          }
+        }
+      ],
+      "inputs": {
+        "expandable_segments": true,
+        "late_nccl": false,
+        "nccl": {
+          "name": "explicit-allowance",
+          "buffers": [
+            {
+              "name": "persistent-allowance",
+              "size_bytes": 8388608,
+              "provenance": "Synthetic 8 MiB allowance; not measured NCCL"
+            }
+          ],
+          "assumptions": [
+            "Caller provides locally owned persistent bytes, excluding existing tensor storage.",
+            "A zero allowance omits NCCL overhead; it is not evidence of zero usage."
+          ],
+          "excluded": [
+            "Anything absent from the supplied measurement/assumption; no automatic topology extrapolation."
+          ],
+          "confidence": "user-supplied; accuracy depends on provenance",
+          "persistent_bytes": 8388608
+        },
+        "other": {
+          "components": {
+            "context": {
+              "name": "context",
+              "size_bytes": 4194304,
+              "category": "CUDA context",
+              "evidence": "assumed",
+              "provenance": "Synthetic scenario"
+            },
+            "workspace": {
+              "name": "workspace",
+              "size_bytes": 3145728,
+              "category": "External library workspace",
+              "evidence": "assumed",
+              "provenance": "Synthetic externally owned workspace"
+            }
+          },
+          "active": [],
+          "assumptions": [
+            "All components are disjoint from tensors, allocator backing, and NCCL profiles.",
+            "Unspecified components are omitted, not predicted zero."
+          ]
+        }
+      }
+    },
+    "expandable_late": {
+      "allocator": {
+        "model": {
+          "config": {
+            "expandable_segments": true
+          },
+          "confidence": "deterministic source-informed approximation; not GPU calibrated",
+          "source": "https://github.com/pytorch/pytorch/blob/v2.8.0/c10/cuda/CUDACachingAllocator.cpp",
+          "source_pin": "PyTorch v2.8.0 native CUDACachingAllocator (independent of runtime torch)",
+          "rules": {
+            "request_rounding_bytes": 512,
+            "small_request_max_bytes": 1048576,
+            "small_segment_bytes": 2097152,
+            "medium_request_below_bytes": 10485760,
+            "medium_segment_bytes": 20971520,
+            "large_segment_rounding_bytes": 2097152,
+            "expandable_small_chunk_bytes": 2097152,
+            "expandable_large_chunk_bytes": 20971520
+          },
+          "assumptions": [
+            "Best fit within explicit device, pool, stream and rounded small/large class.",
+            "All reusable gaps split at rounded request boundaries; adjacent gaps coalesce.",
+            "One expandable virtual range per device/pool/stream/size class; no live relocation.",
+            "Expandable mapping first reuses mapped gaps, then holes, then grows the free tail.",
+            "Completion tokens are explicit caller inputs; empty_cache does not synchronize them.",
+            "Zero-size ids have no backing; segment_count counts physically backed segments."
+          ],
+          "excluded": [
+            "Exact native splitting thresholds and nondefault allocator configuration knobs.",
+            "cudaMallocAsync, CUDA graph lifetime rules, IPC and peer mappings.",
+            "CUDA stream/event inference, scheduling, automatic synchronization and GC.",
+            "Device capacity, virtual-address limits, allocation failure/retry and OOM prediction.",
+            "CUDA context, NCCL and other library allocations; provide them in external ledgers.",
+            "Hardware measurements or byte-exact parity with any installed PyTorch build."
+          ]
+        },
+        "current": {
+          "cpu": {
+            "requested_bytes": 0,
+            "allocated_bytes": 0,
+            "pending_free_bytes": 0,
+            "reserved_bytes": 0,
+            "cached_bytes": 0,
+            "segment_count": 0,
+            "pools": {
+              "default": {
+                "requested_bytes": 0,
+                "allocated_bytes": 0,
+                "pending_free_bytes": 0,
+                "reserved_bytes": 0,
+                "cached_bytes": 0,
+                "segment_count": 0
+              }
+            },
+            "segments": [
+              {
+                "segment_id": 1,
+                "pool": "default",
+                "stream": "default",
+                "size_class": "large",
+                "virtual_extent_bytes": 41943040,
+                "reserved_bytes": 0,
+                "chunk_size_bytes": 20971520,
+                "mapped_ranges": [],
+                "cached_ranges": [],
+                "blocks": []
+              },
+              {
+                "segment_id": 2,
+                "pool": "default",
+                "stream": "default",
+                "size_class": "small",
+                "virtual_extent_bytes": 2097152,
+                "reserved_bytes": 0,
+                "chunk_size_bytes": 2097152,
+                "mapped_ranges": [],
+                "cached_ranges": [],
+                "blocks": []
+              }
+            ]
+          }
+        }
+      },
+      "resident": {
+        "accounting": "modeled allocator reserved backing plus modeled external allocations; not a measurement",
+        "current": {
+          "cpu": {
+            "reserved_bytes": 0,
+            "external_bytes": 0,
+            "external_by_category": {},
+            "combined_bytes": 0
+          }
+        },
+        "peak": {
+          "cpu": {
+            "reserved_bytes": 41943040,
+            "external_bytes": 7340032,
+            "external_by_category": {
+              "CUDA context": 4194304,
+              "External library workspace": 3145728
+            },
+            "combined_bytes": 49283072,
+            "sequence": 3,
+            "event": "external_alloc"
+          }
+        },
+        "assumptions": [
+          "CPU FakeTensor device labels represent hypothetical CUDA allocations.",
+          "Storage resize modeled as allocate-before-free; streams/pools/completion must be supplied.",
+          "External entries must be disjoint from modeled allocator backing."
+        ]
+      },
+      "schema_version": 1,
+      "torch_version": "2.14.1",
+      "accounting": "live tensor storage plus modeled external allocations; not reserved GPU memory",
+      "current": {},
+      "peak": {
+        "cpu": {
+          "tensor_bytes": 26214400,
+          "external_bytes": 7340032,
+          "external_by_category": {
+            "CUDA context": 4194304,
+            "External library workspace": 3145728
+          },
+          "combined_bytes": 33554432,
+          "sequence": 3,
+          "event": "external_alloc"
+        }
+      },
+      "tensor_peak_bytes": {
+        "cpu": 26214400
+      },
+      "external_peak_bytes": {
+        "cpu": 16777216
+      },
+      "live_external_allocations": {},
+      "events": [
+        {
+          "sequence": 1,
+          "event": "external_alloc",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 0,
+              "external_bytes": 4194304,
+              "external_by_category": {
+                "CUDA context": 4194304
+              },
+              "combined_bytes": 4194304
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 0,
+              "external_bytes": 4194304,
+              "external_by_category": {
+                "CUDA context": 4194304
+              },
+              "combined_bytes": 4194304
+            }
+          }
+        },
+        {
+          "sequence": 2,
+          "event": "tensor_update",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 26214400,
+              "external_bytes": 4194304,
+              "external_by_category": {
+                "CUDA context": 4194304
+              },
+              "combined_bytes": 30408704
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 41943040,
+              "external_bytes": 4194304,
+              "external_by_category": {
+                "CUDA context": 4194304
+              },
+              "combined_bytes": 46137344
+            }
+          }
+        },
+        {
+          "sequence": 3,
+          "event": "external_alloc",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 26214400,
+              "external_bytes": 7340032,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "External library workspace": 3145728
+              },
+              "combined_bytes": 33554432
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 41943040,
+              "external_bytes": 7340032,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "External library workspace": 3145728
+              },
+              "combined_bytes": 49283072
+            }
+          }
+        },
+        {
+          "sequence": 4,
+          "event": "external_free",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 26214400,
+              "external_bytes": 4194304,
+              "external_by_category": {
+                "CUDA context": 4194304
+              },
+              "combined_bytes": 30408704
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 41943040,
+              "external_bytes": 4194304,
+              "external_by_category": {
+                "CUDA context": 4194304
+              },
+              "combined_bytes": 46137344
+            }
+          }
+        },
+        {
+          "sequence": 5,
+          "event": "tensor_update",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 0,
+              "external_bytes": 4194304,
+              "external_by_category": {
+                "CUDA context": 4194304
+              },
+              "combined_bytes": 4194304
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 41943040,
+              "external_bytes": 4194304,
+              "external_by_category": {
+                "CUDA context": 4194304
+              },
+              "combined_bytes": 46137344
+            }
+          }
+        },
+        {
+          "sequence": 6,
+          "event": "allocator_empty_cache",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 0,
+              "external_bytes": 4194304,
+              "external_by_category": {
+                "CUDA context": 4194304
+              },
+              "combined_bytes": 4194304
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 0,
+              "external_bytes": 4194304,
+              "external_by_category": {
+                "CUDA context": 4194304
+              },
+              "combined_bytes": 4194304
+            }
+          }
+        },
+        {
+          "sequence": 7,
+          "event": "tensor_update",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 1048576,
+              "external_bytes": 4194304,
+              "external_by_category": {
+                "CUDA context": 4194304
+              },
+              "combined_bytes": 5242880
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 4194304,
+              "external_by_category": {
+                "CUDA context": 4194304
+              },
+              "combined_bytes": 6291456
+            }
+          }
+        },
+        {
+          "sequence": 8,
+          "event": "external_alloc",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 1048576,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 13631488
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 14680064
+            }
+          }
+        },
+        {
+          "sequence": 9,
+          "event": "external_alloc",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 1048576,
+              "external_bytes": 14680064,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 10485760
+              },
+              "combined_bytes": 15728640
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 14680064,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 10485760
+              },
+              "combined_bytes": 16777216
+            }
+          }
+        },
+        {
+          "sequence": 10,
+          "event": "external_alloc",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 1048576,
+              "external_bytes": 16777216,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 12582912
+              },
+              "combined_bytes": 17825792
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 16777216,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 12582912
+              },
+              "combined_bytes": 18874368
+            }
+          }
+        },
+        {
+          "sequence": 11,
+          "event": "allocator_record_stream",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 1048576,
+              "external_bytes": 16777216,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 12582912
+              },
+              "combined_bytes": 17825792
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 16777216,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 12582912
+              },
+              "combined_bytes": 18874368
+            }
+          }
+        },
+        {
+          "sequence": 12,
+          "event": "tensor_update",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 0,
+              "external_bytes": 16777216,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 12582912
+              },
+              "combined_bytes": 16777216
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 16777216,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 12582912
+              },
+              "combined_bytes": 18874368
+            }
+          }
+        },
+        {
+          "sequence": 13,
+          "event": "external_free",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 0,
+              "external_bytes": 14680064,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 10485760
+              },
+              "combined_bytes": 14680064
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 14680064,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 10485760
+              },
+              "combined_bytes": 16777216
+            }
+          }
+        },
+        {
+          "sequence": 14,
+          "event": "external_free",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 0,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 12582912
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 14680064
+            }
+          }
+        },
+        {
+          "sequence": 15,
+          "event": "allocator_complete_stream",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 0,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 12582912
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 12582912,
+              "external_by_category": {
+                "CUDA context": 4194304,
+                "NCCL": 8388608
+              },
+              "combined_bytes": 14680064
+            }
+          }
+        },
+        {
+          "sequence": 16,
+          "event": "external_free",
+          "devices": {
+            "cpu": {
+              "tensor_bytes": 0,
+              "external_bytes": 4194304,
+              "external_by_category": {
+                "CUDA context": 4194304
+              },
+              "combined_bytes": 4194304
+            }
+          },
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 4194304,
+              "external_by_category": {
+                "CUDA context": 4194304
+              },
+              "combined_bytes": 6291456
+            }
+          }
+        },
+        {
+          "sequence": 17,
+          "event": "external_free",
+          "devices": {},
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 2097152,
+              "external_bytes": 0,
+              "external_by_category": {},
+              "combined_bytes": 2097152
+            }
+          }
+        },
+        {
+          "sequence": 18,
+          "event": "allocator_empty_cache",
+          "devices": {},
+          "resident": {
+            "cpu": {
+              "reserved_bytes": 0,
+              "external_bytes": 0,
+              "external_by_category": {},
+              "combined_bytes": 0
+            }
+          }
+        }
+      ],
+      "inputs": {
+        "expandable_segments": true,
+        "late_nccl": true,
+        "nccl": {
+          "name": "explicit-allowance",
+          "buffers": [
+            {
+              "name": "persistent-allowance",
+              "size_bytes": 8388608,
+              "provenance": "Synthetic 8 MiB allowance; not measured NCCL"
+            }
+          ],
+          "assumptions": [
+            "Caller provides locally owned persistent bytes, excluding existing tensor storage.",
+            "A zero allowance omits NCCL overhead; it is not evidence of zero usage."
+          ],
+          "excluded": [
+            "Anything absent from the supplied measurement/assumption; no automatic topology extrapolation."
+          ],
+          "confidence": "user-supplied; accuracy depends on provenance",
+          "persistent_bytes": 8388608
+        },
+        "other": {
+          "components": {
+            "context": {
+              "name": "context",
+              "size_bytes": 4194304,
+              "category": "CUDA context",
+              "evidence": "assumed",
+              "provenance": "Synthetic scenario"
+            },
+            "workspace": {
+              "name": "workspace",
+              "size_bytes": 3145728,
+              "category": "External library workspace",
+              "evidence": "assumed",
+              "provenance": "Synthetic externally owned workspace"
+            }
+          },
+          "active": [],
+          "assumptions": [
+            "All components are disjoint from tensors, allocator backing, and NCCL profiles.",
+            "Unspecified components are omitted, not predicted zero."
+          ]
+        }
+      }
+    }
+  }
+}

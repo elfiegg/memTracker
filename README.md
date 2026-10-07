@@ -1,8 +1,9 @@
-# memTracker: CPU-only tensor + NCCL memory estimation
+# memTracker: tensor, allocator and NCCL memory estimation
 
-A proof of concept for adding **modeled NCCL allocation/free events** to PyTorch
-`FakeTensorMode` + `MemTracker`. It runs without CUDA or NCCL. It does **not** run
-NCCL's allocator or guarantee that a configuration fits on a GPU.
+A proof of concept combining PyTorch `FakeTensorMode` + `MemTracker` with
+**modeled caching-allocator backing, NCCL allocations, and other external memory**.
+The simulator runs without CUDA or NCCL. A separate optional GPU runner calibrates
+selected checkpoints. It does not emulate NCCL or guarantee GPU memory fit.
 
 The core is useful now; accurate NCCL prediction still requires a transport
 configuration or calibration data. Unsupported overhead is reported explicitly.
@@ -44,6 +45,11 @@ Machine-readable output: [experiments/collectives.json](experiments/collectives.
 - `ExtendedMemTracker`: an explicit `external_alloc` / `external_free` ledger.
   Samples combined tensor + external memory after **every tensor storage event**
   and external event. It does not add independently observed peaks.
+- Optional `AllocatorConfig`: rounded requests, caching, fixed/expandable segments,
+  separate pools/streams, and explicit deferred frees. `report()['resident']`
+  samples **reserved backing + external memory**, without adding tensors again.
+- `OtherMemoryModel`: explicit externally owned components, provenance and lifetimes.
+  Context/library bytes have no built-in universal constant.
 - `NcclMemoryModel`: communicator-scoped persistent buffers, lazy initialization,
   pool reuse, concurrent temporary allocations, and explicit completion/destruction.
 - `FakeCollectiveRunner`: actual PyTorch fake `all_gather`, `reduce_scatter`, and
@@ -92,6 +98,32 @@ module snapshots remain **tensor-only**. The custom report retains a lifetime
 peak across tracker contexts; `reset_mod_stats()` clears only module attribution.
 Create a new tracker for a separate scenario. Tensor events are sampled always;
 pass `record_tensor_events=True` to retain every event in the JSON timeline.
+
+## Allocator and overhead experiments
+
+```bash
+python -m memtracker_nccl.allocator_experiment --output experiments/allocator_overhead.json
+python -m memtracker_nccl.k3_experiment --allocator-mode expandable --other-memory-mib 512 \
+  --output experiments/k3_512rank_expandable_backing.json
+```
+
+Enable backing modeling with
+`ExtendedMemTracker(allocator_config=AllocatorConfig(expandable_segments=True))`.
+Existing `report()['peak']` remains tensor-plus-external accounting;
+`report()['resident']['peak']` is the simultaneous backing-plus-external estimate.
+The real CUDA flag is `expandable_segments`, not `enable_segment`. Pool and stream
+labels are explicit model inputs; they do not create real CUDA pools or infer
+asynchronous completion.
+
+A **two-rank GB200 calibration** matched the fragmentation trace at every sampled
+allocator checkpoint: **68 MiB fixed vs 60 MiB expandable** reserved backing.
+Other schedules can reserve more with expandable segments. Measured NCCL-associated
+residuals changed at setup and first use, then stayed constant across repeated
+collectives; they are not attributed exclusively to NCCL or generalized to K3.
+
+See [experiment results, usage and calibration limits](docs/allocator-experiments.md),
+[allocator rules](docs/allocator-model.md), and
+[GPU measurements](experiments/gb200_calibration.json).
 
 ## Kimi K3 experiment
 
@@ -143,15 +175,18 @@ NCCL algorithm selection, channels, CUDA stream completion, or pool sharing
 between communicators. Temporary bytes default to zero unless explicitly modeled.
 
 A source-derived buffer profile covers only its named transport allocations.
-It omits CUDA context/library allocations, allocator fragmentation, unmodeled
-NCCL resources, and other transports such as NVLS. Tensor estimates also inherit
+The transport profile itself omits CUDA context/library allocations, allocator
+fragmentation, unmodeled NCCL resources, and other transports such as NVLS.
+Optional allocator/other-memory models cover only explicitly supplied assumptions. Tensor estimates also inherit
 FakeTensor limitations: GPU-specific fused kernels, compiler memory planning,
 data-dependent execution, and unsupported custom ops can change real usage.
 
 Tests validate bookkeeping, actual fake collective shapes and tensor lifetimes,
 training/backward/optimizer integration, alias handling, overlapping collectives,
-and persistent pool reuse. They do **not** validate GPU prediction accuracy.
+persistent pool reuse, allocator backing, and external lifetimes. The small GPU
+calibration validates selected allocator checkpoints; it does **not** establish
+accuracy for arbitrary workloads or external-memory prediction.
 Transport formulas and coverage: [NCCL model notes](docs/nccl-model.md).
 
-A useful next step is comparing the event model against allocation traces on one
-fixed NCCL version and topology.
+Further calibration needs allocation ownership traces and held-out workloads
+on fixed NCCL versions/topologies; see the experiment report above.
