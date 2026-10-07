@@ -8,6 +8,13 @@ import torch
 from torch.distributed._tools.mem_tracker import MemTracker
 
 
+def _device_key(device: str | torch.device) -> str:
+    parsed = torch.device(device)
+    # CPU indices do not identify separate physical memory pools. FakeTensor
+    # can preserve these indices, although eager CPU tensors canonicalize them.
+    return "cpu" if parsed.type == "cpu" else str(parsed)
+
+
 class ExtendedMemTracker(MemTracker):
     """MemTracker with an external allocation ledger and simultaneous peaks.
 
@@ -43,7 +50,7 @@ class ExtendedMemTracker(MemTracker):
             raise ValueError(f"Allocation id must be nonempty and unique: {allocation_id!r}")
         if isinstance(size_bytes, bool) or not isinstance(size_bytes, int) or size_bytes < 0:
             raise ValueError("size_bytes must be a nonnegative integer")
-        dev = str(torch.device(device))
+        dev = _device_key(device)
         self._external[allocation_id] = {
             "size_bytes": size_bytes, "device": dev, "category": category,
             "metadata": deepcopy(metadata or {}),
@@ -60,10 +67,11 @@ class ExtendedMemTracker(MemTracker):
     def _snapshot(self) -> dict[str, dict[str, Any]]:
         devices: dict[str, dict[str, Any]] = {}
         for device, stats in self._curr_mem_snap.items():
-            devices[str(device)] = {
-                "tensor_bytes": int(stats["Total"]), "external_bytes": 0,
+            device_stats = devices.setdefault(_device_key(device), {
+                "tensor_bytes": 0, "external_bytes": 0,
                 "external_by_category": {},
-            }
+            })
+            device_stats["tensor_bytes"] += int(stats["Total"])
         for allocation in self._external.values():
             stats = devices.setdefault(allocation["device"], {
                 "tensor_bytes": 0, "external_bytes": 0, "external_by_category": {},

@@ -39,6 +39,29 @@ class TrackerTests(unittest.TestCase):
                 self.assertEqual(tracker.report()["current"]["cpu"]["tensor_bytes"], 0)
             tracker.external_free("nccl")
 
+    def test_cpu_device_aliases_share_tensor_accounting(self):
+        for device in ("cpu:0", "cpu:7", torch.device("cpu:0")):
+            with self.subTest(device=device), FakeTensorMode(allow_fallback_kernels=False):
+                tracker = ExtendedMemTracker()
+                with tracker:
+                    x = torch.empty(100, dtype=torch.uint8)
+                    aliased = torch.empty(25, dtype=torch.uint8, device=device)
+                    tracker.external_alloc("nccl", 50, device=device)
+                    report = tracker.report()
+                    self.assertEqual(set(report["current"]), {"cpu"})
+                    self.assertEqual(report["current"]["cpu"]["combined_bytes"], 175)
+                    self.assertEqual(report["peak"]["cpu"]["combined_bytes"], 175)
+                    self.assertEqual(report["live_external_allocations"]["nccl"]["device"], "cpu")
+                    self.assertEqual(report["events"][-1]["allocation"]["device"], "cpu")
+                    tracker.external_free("nccl")
+                    report = tracker.report()
+                    self.assertEqual(report["current"]["cpu"]["combined_bytes"], 125)
+                    self.assertEqual(report["events"][-1]["allocation"]["device"], "cpu")
+                    del x, aliased
+                    gc.collect()
+                    self.assertEqual(tracker.report()["current"], {})
+                    self.assertEqual(tracker.report()["peak"]["cpu"]["combined_bytes"], 175)
+
     def test_external_validation_and_device_separation(self):
         tracker = ExtendedMemTracker()
         tracker.external_alloc("a", 10, device="cpu")
