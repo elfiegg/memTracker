@@ -90,6 +90,12 @@ patterns; it is not a universal memory reduction. Lazy initialization changes
 which overhead overlaps the peak. Results and full event timelines are in
 [allocator_overhead.json](../experiments/allocator_overhead.json).
 
+Use `nccl.initialize_communicator(name)` before model allocation for an eager
+communication scenario. It creates persistent modeled backing without a
+collective or payload and is idempotent. Leaving it out preserves first-use
+initialization. This policy is independent of pipeline receive-buffer allocation;
+see the [K3 eager-communication capacity comparison](k3-256-fit.md).
+
 ## GPU calibration
 
 A short run on **2026-10-07**, one exclusively allocated Polyphe node, used two

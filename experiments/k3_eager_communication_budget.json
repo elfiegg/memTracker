@@ -1,0 +1,1067 @@
+{
+  "schema_version": 1,
+  "kind": "CPU lower-bound sensitivity; not full training simulation",
+  "communication_initialization": "eager",
+  "assumptions": [
+    "All declared communication backing is resident before model allocation and persists through every optimizer step.",
+    "Total locally owned communication backing is counted once per GPU; no world-size, expert-count, or microbatch-count multiplier.",
+    "Pipeline receive policy is independent of communication initialization policy.",
+    "Zero communication bytes is the algebraic baseline, not a real zero-overhead prediction.",
+    "Remaining budget must cover every omitted component, not just activations.",
+    "No discount is taken for lazy communicator initialization."
+  ],
+  "excluded": [
+    "Complete activation/recomputation lifetimes",
+    "Additional dense gathers and dense optimizer state",
+    "Optimizer and kernel scratch",
+    "CUDA context/library overhead",
+    "Allocator rounding, cached/pending backing and fragmentation",
+    "Communication temporaries beyond declared persistent backing"
+  ],
+  "scenarios": [
+    {
+      "receive_policy": "lazy",
+      "communication_initialization": "eager",
+      "persistent_communication_bytes_per_gpu": 0,
+      "communication_provenance": "Synthetic sensitivity input for total NCCL+HybridEP external backing; not a measured footprint",
+      "additional_peak_allowance_bytes": 0,
+      "verdict": "not_ruled_out_by_partial_budget",
+      "full_model_fit_verified": false,
+      "capacity_bytes": 197940150272,
+      "limiting_stage_for_this_bound": 1,
+      "remaining_budget_for_omitted_memory_bytes": 80839941890,
+      "remaining_after_additional_allowance_bytes": 80839941890,
+      "stages": [
+        {
+          "stage": 0,
+          "state_and_receive_lower_bound_bytes": 102768087230,
+          "state_receive_and_communication_bytes": 102768087230,
+          "subtotal_with_additional_allowance_bytes": 102768087230,
+          "remaining_budget_for_omitted_memory_bytes": 95172063042,
+          "remaining_after_additional_allowance_bytes": 95172063042,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 1,
+          "state_and_receive_lower_bound_bytes": 117100208382,
+          "state_receive_and_communication_bytes": 117100208382,
+          "subtotal_with_additional_allowance_bytes": 117100208382,
+          "remaining_budget_for_omitted_memory_bytes": 80839941890,
+          "remaining_after_additional_allowance_bytes": 80839941890,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 2,
+          "state_and_receive_lower_bound_bytes": 117100208382,
+          "state_receive_and_communication_bytes": 117100208382,
+          "subtotal_with_additional_allowance_bytes": 117100208382,
+          "remaining_budget_for_omitted_memory_bytes": 80839941890,
+          "remaining_after_additional_allowance_bytes": 80839941890,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 3,
+          "state_and_receive_lower_bound_bytes": 117100208382,
+          "state_receive_and_communication_bytes": 117100208382,
+          "subtotal_with_additional_allowance_bytes": 117100208382,
+          "remaining_budget_for_omitted_memory_bytes": 80839941890,
+          "remaining_after_additional_allowance_bytes": 80839941890,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 4,
+          "state_and_receive_lower_bound_bytes": 117100208382,
+          "state_receive_and_communication_bytes": 117100208382,
+          "subtotal_with_additional_allowance_bytes": 117100208382,
+          "remaining_budget_for_omitted_memory_bytes": 80839941890,
+          "remaining_after_additional_allowance_bytes": 80839941890,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 5,
+          "state_and_receive_lower_bound_bytes": 117100208382,
+          "state_receive_and_communication_bytes": 117100208382,
+          "subtotal_with_additional_allowance_bytes": 117100208382,
+          "remaining_budget_for_omitted_memory_bytes": 80839941890,
+          "remaining_after_additional_allowance_bytes": 80839941890,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 6,
+          "state_and_receive_lower_bound_bytes": 117100208382,
+          "state_receive_and_communication_bytes": 117100208382,
+          "subtotal_with_additional_allowance_bytes": 117100208382,
+          "remaining_budget_for_omitted_memory_bytes": 80839941890,
+          "remaining_after_additional_allowance_bytes": 80839941890,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 7,
+          "state_and_receive_lower_bound_bytes": 96294408980,
+          "state_receive_and_communication_bytes": 96294408980,
+          "subtotal_with_additional_allowance_bytes": 96294408980,
+          "remaining_budget_for_omitted_memory_bytes": 101645741292,
+          "remaining_after_additional_allowance_bytes": 101645741292,
+          "exceeds_capacity": false
+        }
+      ]
+    },
+    {
+      "receive_policy": "lazy",
+      "communication_initialization": "eager",
+      "persistent_communication_bytes_per_gpu": 8589934592,
+      "communication_provenance": "Synthetic sensitivity input for total NCCL+HybridEP external backing; not a measured footprint",
+      "additional_peak_allowance_bytes": 0,
+      "verdict": "not_ruled_out_by_partial_budget",
+      "full_model_fit_verified": false,
+      "capacity_bytes": 197940150272,
+      "limiting_stage_for_this_bound": 1,
+      "remaining_budget_for_omitted_memory_bytes": 72250007298,
+      "remaining_after_additional_allowance_bytes": 72250007298,
+      "stages": [
+        {
+          "stage": 0,
+          "state_and_receive_lower_bound_bytes": 102768087230,
+          "state_receive_and_communication_bytes": 111358021822,
+          "subtotal_with_additional_allowance_bytes": 111358021822,
+          "remaining_budget_for_omitted_memory_bytes": 86582128450,
+          "remaining_after_additional_allowance_bytes": 86582128450,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 1,
+          "state_and_receive_lower_bound_bytes": 117100208382,
+          "state_receive_and_communication_bytes": 125690142974,
+          "subtotal_with_additional_allowance_bytes": 125690142974,
+          "remaining_budget_for_omitted_memory_bytes": 72250007298,
+          "remaining_after_additional_allowance_bytes": 72250007298,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 2,
+          "state_and_receive_lower_bound_bytes": 117100208382,
+          "state_receive_and_communication_bytes": 125690142974,
+          "subtotal_with_additional_allowance_bytes": 125690142974,
+          "remaining_budget_for_omitted_memory_bytes": 72250007298,
+          "remaining_after_additional_allowance_bytes": 72250007298,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 3,
+          "state_and_receive_lower_bound_bytes": 117100208382,
+          "state_receive_and_communication_bytes": 125690142974,
+          "subtotal_with_additional_allowance_bytes": 125690142974,
+          "remaining_budget_for_omitted_memory_bytes": 72250007298,
+          "remaining_after_additional_allowance_bytes": 72250007298,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 4,
+          "state_and_receive_lower_bound_bytes": 117100208382,
+          "state_receive_and_communication_bytes": 125690142974,
+          "subtotal_with_additional_allowance_bytes": 125690142974,
+          "remaining_budget_for_omitted_memory_bytes": 72250007298,
+          "remaining_after_additional_allowance_bytes": 72250007298,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 5,
+          "state_and_receive_lower_bound_bytes": 117100208382,
+          "state_receive_and_communication_bytes": 125690142974,
+          "subtotal_with_additional_allowance_bytes": 125690142974,
+          "remaining_budget_for_omitted_memory_bytes": 72250007298,
+          "remaining_after_additional_allowance_bytes": 72250007298,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 6,
+          "state_and_receive_lower_bound_bytes": 117100208382,
+          "state_receive_and_communication_bytes": 125690142974,
+          "subtotal_with_additional_allowance_bytes": 125690142974,
+          "remaining_budget_for_omitted_memory_bytes": 72250007298,
+          "remaining_after_additional_allowance_bytes": 72250007298,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 7,
+          "state_and_receive_lower_bound_bytes": 96294408980,
+          "state_receive_and_communication_bytes": 104884343572,
+          "subtotal_with_additional_allowance_bytes": 104884343572,
+          "remaining_budget_for_omitted_memory_bytes": 93055806700,
+          "remaining_after_additional_allowance_bytes": 93055806700,
+          "exceeds_capacity": false
+        }
+      ]
+    },
+    {
+      "receive_policy": "lazy",
+      "communication_initialization": "eager",
+      "persistent_communication_bytes_per_gpu": 17179869184,
+      "communication_provenance": "Synthetic sensitivity input for total NCCL+HybridEP external backing; not a measured footprint",
+      "additional_peak_allowance_bytes": 0,
+      "verdict": "not_ruled_out_by_partial_budget",
+      "full_model_fit_verified": false,
+      "capacity_bytes": 197940150272,
+      "limiting_stage_for_this_bound": 1,
+      "remaining_budget_for_omitted_memory_bytes": 63660072706,
+      "remaining_after_additional_allowance_bytes": 63660072706,
+      "stages": [
+        {
+          "stage": 0,
+          "state_and_receive_lower_bound_bytes": 102768087230,
+          "state_receive_and_communication_bytes": 119947956414,
+          "subtotal_with_additional_allowance_bytes": 119947956414,
+          "remaining_budget_for_omitted_memory_bytes": 77992193858,
+          "remaining_after_additional_allowance_bytes": 77992193858,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 1,
+          "state_and_receive_lower_bound_bytes": 117100208382,
+          "state_receive_and_communication_bytes": 134280077566,
+          "subtotal_with_additional_allowance_bytes": 134280077566,
+          "remaining_budget_for_omitted_memory_bytes": 63660072706,
+          "remaining_after_additional_allowance_bytes": 63660072706,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 2,
+          "state_and_receive_lower_bound_bytes": 117100208382,
+          "state_receive_and_communication_bytes": 134280077566,
+          "subtotal_with_additional_allowance_bytes": 134280077566,
+          "remaining_budget_for_omitted_memory_bytes": 63660072706,
+          "remaining_after_additional_allowance_bytes": 63660072706,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 3,
+          "state_and_receive_lower_bound_bytes": 117100208382,
+          "state_receive_and_communication_bytes": 134280077566,
+          "subtotal_with_additional_allowance_bytes": 134280077566,
+          "remaining_budget_for_omitted_memory_bytes": 63660072706,
+          "remaining_after_additional_allowance_bytes": 63660072706,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 4,
+          "state_and_receive_lower_bound_bytes": 117100208382,
+          "state_receive_and_communication_bytes": 134280077566,
+          "subtotal_with_additional_allowance_bytes": 134280077566,
+          "remaining_budget_for_omitted_memory_bytes": 63660072706,
+          "remaining_after_additional_allowance_bytes": 63660072706,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 5,
+          "state_and_receive_lower_bound_bytes": 117100208382,
+          "state_receive_and_communication_bytes": 134280077566,
+          "subtotal_with_additional_allowance_bytes": 134280077566,
+          "remaining_budget_for_omitted_memory_bytes": 63660072706,
+          "remaining_after_additional_allowance_bytes": 63660072706,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 6,
+          "state_and_receive_lower_bound_bytes": 117100208382,
+          "state_receive_and_communication_bytes": 134280077566,
+          "subtotal_with_additional_allowance_bytes": 134280077566,
+          "remaining_budget_for_omitted_memory_bytes": 63660072706,
+          "remaining_after_additional_allowance_bytes": 63660072706,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 7,
+          "state_and_receive_lower_bound_bytes": 96294408980,
+          "state_receive_and_communication_bytes": 113474278164,
+          "subtotal_with_additional_allowance_bytes": 113474278164,
+          "remaining_budget_for_omitted_memory_bytes": 84465872108,
+          "remaining_after_additional_allowance_bytes": 84465872108,
+          "exceeds_capacity": false
+        }
+      ]
+    },
+    {
+      "receive_policy": "lazy",
+      "communication_initialization": "eager",
+      "persistent_communication_bytes_per_gpu": 34359738368,
+      "communication_provenance": "Synthetic sensitivity input for total NCCL+HybridEP external backing; not a measured footprint",
+      "additional_peak_allowance_bytes": 0,
+      "verdict": "not_ruled_out_by_partial_budget",
+      "full_model_fit_verified": false,
+      "capacity_bytes": 197940150272,
+      "limiting_stage_for_this_bound": 1,
+      "remaining_budget_for_omitted_memory_bytes": 46480203522,
+      "remaining_after_additional_allowance_bytes": 46480203522,
+      "stages": [
+        {
+          "stage": 0,
+          "state_and_receive_lower_bound_bytes": 102768087230,
+          "state_receive_and_communication_bytes": 137127825598,
+          "subtotal_with_additional_allowance_bytes": 137127825598,
+          "remaining_budget_for_omitted_memory_bytes": 60812324674,
+          "remaining_after_additional_allowance_bytes": 60812324674,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 1,
+          "state_and_receive_lower_bound_bytes": 117100208382,
+          "state_receive_and_communication_bytes": 151459946750,
+          "subtotal_with_additional_allowance_bytes": 151459946750,
+          "remaining_budget_for_omitted_memory_bytes": 46480203522,
+          "remaining_after_additional_allowance_bytes": 46480203522,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 2,
+          "state_and_receive_lower_bound_bytes": 117100208382,
+          "state_receive_and_communication_bytes": 151459946750,
+          "subtotal_with_additional_allowance_bytes": 151459946750,
+          "remaining_budget_for_omitted_memory_bytes": 46480203522,
+          "remaining_after_additional_allowance_bytes": 46480203522,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 3,
+          "state_and_receive_lower_bound_bytes": 117100208382,
+          "state_receive_and_communication_bytes": 151459946750,
+          "subtotal_with_additional_allowance_bytes": 151459946750,
+          "remaining_budget_for_omitted_memory_bytes": 46480203522,
+          "remaining_after_additional_allowance_bytes": 46480203522,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 4,
+          "state_and_receive_lower_bound_bytes": 117100208382,
+          "state_receive_and_communication_bytes": 151459946750,
+          "subtotal_with_additional_allowance_bytes": 151459946750,
+          "remaining_budget_for_omitted_memory_bytes": 46480203522,
+          "remaining_after_additional_allowance_bytes": 46480203522,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 5,
+          "state_and_receive_lower_bound_bytes": 117100208382,
+          "state_receive_and_communication_bytes": 151459946750,
+          "subtotal_with_additional_allowance_bytes": 151459946750,
+          "remaining_budget_for_omitted_memory_bytes": 46480203522,
+          "remaining_after_additional_allowance_bytes": 46480203522,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 6,
+          "state_and_receive_lower_bound_bytes": 117100208382,
+          "state_receive_and_communication_bytes": 151459946750,
+          "subtotal_with_additional_allowance_bytes": 151459946750,
+          "remaining_budget_for_omitted_memory_bytes": 46480203522,
+          "remaining_after_additional_allowance_bytes": 46480203522,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 7,
+          "state_and_receive_lower_bound_bytes": 96294408980,
+          "state_receive_and_communication_bytes": 130654147348,
+          "subtotal_with_additional_allowance_bytes": 130654147348,
+          "remaining_budget_for_omitted_memory_bytes": 67286002924,
+          "remaining_after_additional_allowance_bytes": 67286002924,
+          "exceeds_capacity": false
+        }
+      ]
+    },
+    {
+      "receive_policy": "lazy",
+      "communication_initialization": "eager",
+      "persistent_communication_bytes_per_gpu": 68719476736,
+      "communication_provenance": "Synthetic sensitivity input for total NCCL+HybridEP external backing; not a measured footprint",
+      "additional_peak_allowance_bytes": 0,
+      "verdict": "not_ruled_out_by_partial_budget",
+      "full_model_fit_verified": false,
+      "capacity_bytes": 197940150272,
+      "limiting_stage_for_this_bound": 1,
+      "remaining_budget_for_omitted_memory_bytes": 12120465154,
+      "remaining_after_additional_allowance_bytes": 12120465154,
+      "stages": [
+        {
+          "stage": 0,
+          "state_and_receive_lower_bound_bytes": 102768087230,
+          "state_receive_and_communication_bytes": 171487563966,
+          "subtotal_with_additional_allowance_bytes": 171487563966,
+          "remaining_budget_for_omitted_memory_bytes": 26452586306,
+          "remaining_after_additional_allowance_bytes": 26452586306,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 1,
+          "state_and_receive_lower_bound_bytes": 117100208382,
+          "state_receive_and_communication_bytes": 185819685118,
+          "subtotal_with_additional_allowance_bytes": 185819685118,
+          "remaining_budget_for_omitted_memory_bytes": 12120465154,
+          "remaining_after_additional_allowance_bytes": 12120465154,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 2,
+          "state_and_receive_lower_bound_bytes": 117100208382,
+          "state_receive_and_communication_bytes": 185819685118,
+          "subtotal_with_additional_allowance_bytes": 185819685118,
+          "remaining_budget_for_omitted_memory_bytes": 12120465154,
+          "remaining_after_additional_allowance_bytes": 12120465154,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 3,
+          "state_and_receive_lower_bound_bytes": 117100208382,
+          "state_receive_and_communication_bytes": 185819685118,
+          "subtotal_with_additional_allowance_bytes": 185819685118,
+          "remaining_budget_for_omitted_memory_bytes": 12120465154,
+          "remaining_after_additional_allowance_bytes": 12120465154,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 4,
+          "state_and_receive_lower_bound_bytes": 117100208382,
+          "state_receive_and_communication_bytes": 185819685118,
+          "subtotal_with_additional_allowance_bytes": 185819685118,
+          "remaining_budget_for_omitted_memory_bytes": 12120465154,
+          "remaining_after_additional_allowance_bytes": 12120465154,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 5,
+          "state_and_receive_lower_bound_bytes": 117100208382,
+          "state_receive_and_communication_bytes": 185819685118,
+          "subtotal_with_additional_allowance_bytes": 185819685118,
+          "remaining_budget_for_omitted_memory_bytes": 12120465154,
+          "remaining_after_additional_allowance_bytes": 12120465154,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 6,
+          "state_and_receive_lower_bound_bytes": 117100208382,
+          "state_receive_and_communication_bytes": 185819685118,
+          "subtotal_with_additional_allowance_bytes": 185819685118,
+          "remaining_budget_for_omitted_memory_bytes": 12120465154,
+          "remaining_after_additional_allowance_bytes": 12120465154,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 7,
+          "state_and_receive_lower_bound_bytes": 96294408980,
+          "state_receive_and_communication_bytes": 165013885716,
+          "subtotal_with_additional_allowance_bytes": 165013885716,
+          "remaining_budget_for_omitted_memory_bytes": 32926264556,
+          "remaining_after_additional_allowance_bytes": 32926264556,
+          "exceeds_capacity": false
+        }
+      ]
+    },
+    {
+      "receive_policy": "lazy",
+      "communication_initialization": "eager",
+      "persistent_communication_bytes_per_gpu": 85899345920,
+      "communication_provenance": "Synthetic sensitivity input for total NCCL+HybridEP external backing; not a measured footprint",
+      "additional_peak_allowance_bytes": 0,
+      "verdict": "exceeds_capacity_under_assumptions",
+      "full_model_fit_verified": false,
+      "capacity_bytes": 197940150272,
+      "limiting_stage_for_this_bound": 1,
+      "remaining_budget_for_omitted_memory_bytes": -5059404030,
+      "remaining_after_additional_allowance_bytes": -5059404030,
+      "stages": [
+        {
+          "stage": 0,
+          "state_and_receive_lower_bound_bytes": 102768087230,
+          "state_receive_and_communication_bytes": 188667433150,
+          "subtotal_with_additional_allowance_bytes": 188667433150,
+          "remaining_budget_for_omitted_memory_bytes": 9272717122,
+          "remaining_after_additional_allowance_bytes": 9272717122,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 1,
+          "state_and_receive_lower_bound_bytes": 117100208382,
+          "state_receive_and_communication_bytes": 202999554302,
+          "subtotal_with_additional_allowance_bytes": 202999554302,
+          "remaining_budget_for_omitted_memory_bytes": -5059404030,
+          "remaining_after_additional_allowance_bytes": -5059404030,
+          "exceeds_capacity": true
+        },
+        {
+          "stage": 2,
+          "state_and_receive_lower_bound_bytes": 117100208382,
+          "state_receive_and_communication_bytes": 202999554302,
+          "subtotal_with_additional_allowance_bytes": 202999554302,
+          "remaining_budget_for_omitted_memory_bytes": -5059404030,
+          "remaining_after_additional_allowance_bytes": -5059404030,
+          "exceeds_capacity": true
+        },
+        {
+          "stage": 3,
+          "state_and_receive_lower_bound_bytes": 117100208382,
+          "state_receive_and_communication_bytes": 202999554302,
+          "subtotal_with_additional_allowance_bytes": 202999554302,
+          "remaining_budget_for_omitted_memory_bytes": -5059404030,
+          "remaining_after_additional_allowance_bytes": -5059404030,
+          "exceeds_capacity": true
+        },
+        {
+          "stage": 4,
+          "state_and_receive_lower_bound_bytes": 117100208382,
+          "state_receive_and_communication_bytes": 202999554302,
+          "subtotal_with_additional_allowance_bytes": 202999554302,
+          "remaining_budget_for_omitted_memory_bytes": -5059404030,
+          "remaining_after_additional_allowance_bytes": -5059404030,
+          "exceeds_capacity": true
+        },
+        {
+          "stage": 5,
+          "state_and_receive_lower_bound_bytes": 117100208382,
+          "state_receive_and_communication_bytes": 202999554302,
+          "subtotal_with_additional_allowance_bytes": 202999554302,
+          "remaining_budget_for_omitted_memory_bytes": -5059404030,
+          "remaining_after_additional_allowance_bytes": -5059404030,
+          "exceeds_capacity": true
+        },
+        {
+          "stage": 6,
+          "state_and_receive_lower_bound_bytes": 117100208382,
+          "state_receive_and_communication_bytes": 202999554302,
+          "subtotal_with_additional_allowance_bytes": 202999554302,
+          "remaining_budget_for_omitted_memory_bytes": -5059404030,
+          "remaining_after_additional_allowance_bytes": -5059404030,
+          "exceeds_capacity": true
+        },
+        {
+          "stage": 7,
+          "state_and_receive_lower_bound_bytes": 96294408980,
+          "state_receive_and_communication_bytes": 182193754900,
+          "subtotal_with_additional_allowance_bytes": 182193754900,
+          "remaining_budget_for_omitted_memory_bytes": 15746395372,
+          "remaining_after_additional_allowance_bytes": 15746395372,
+          "exceeds_capacity": false
+        }
+      ]
+    },
+    {
+      "receive_policy": "eager",
+      "communication_initialization": "eager",
+      "persistent_communication_bytes_per_gpu": 0,
+      "communication_provenance": "Synthetic sensitivity input for total NCCL+HybridEP external backing; not a measured footprint",
+      "additional_peak_allowance_bytes": 0,
+      "verdict": "exceeds_capacity_under_assumptions",
+      "full_model_fit_verified": false,
+      "capacity_bytes": 197940150272,
+      "limiting_stage_for_this_bound": 6,
+      "remaining_budget_for_omitted_memory_bytes": -31132246270,
+      "remaining_after_additional_allowance_bytes": -31132246270,
+      "stages": [
+        {
+          "stage": 0,
+          "state_and_receive_lower_bound_bytes": 117697712318,
+          "state_receive_and_communication_bytes": 117697712318,
+          "subtotal_with_additional_allowance_bytes": 117697712318,
+          "remaining_budget_for_omitted_memory_bytes": 80242437954,
+          "remaining_after_additional_allowance_bytes": 80242437954,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 1,
+          "state_and_receive_lower_bound_bytes": 154424271102,
+          "state_receive_and_communication_bytes": 154424271102,
+          "subtotal_with_additional_allowance_bytes": 154424271102,
+          "remaining_budget_for_omitted_memory_bytes": 43515879170,
+          "remaining_after_additional_allowance_bytes": 43515879170,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 2,
+          "state_and_receive_lower_bound_bytes": 169353896190,
+          "state_receive_and_communication_bytes": 169353896190,
+          "subtotal_with_additional_allowance_bytes": 169353896190,
+          "remaining_budget_for_omitted_memory_bytes": 28586254082,
+          "remaining_after_additional_allowance_bytes": 28586254082,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 3,
+          "state_and_receive_lower_bound_bytes": 184283521278,
+          "state_receive_and_communication_bytes": 184283521278,
+          "subtotal_with_additional_allowance_bytes": 184283521278,
+          "remaining_budget_for_omitted_memory_bytes": 13656628994,
+          "remaining_after_additional_allowance_bytes": 13656628994,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 4,
+          "state_and_receive_lower_bound_bytes": 199213146366,
+          "state_receive_and_communication_bytes": 199213146366,
+          "subtotal_with_additional_allowance_bytes": 199213146366,
+          "remaining_budget_for_omitted_memory_bytes": -1272996094,
+          "remaining_after_additional_allowance_bytes": -1272996094,
+          "exceeds_capacity": true
+        },
+        {
+          "stage": 5,
+          "state_and_receive_lower_bound_bytes": 214142771454,
+          "state_receive_and_communication_bytes": 214142771454,
+          "subtotal_with_additional_allowance_bytes": 214142771454,
+          "remaining_budget_for_omitted_memory_bytes": -16202621182,
+          "remaining_after_additional_allowance_bytes": -16202621182,
+          "exceeds_capacity": true
+        },
+        {
+          "stage": 6,
+          "state_and_receive_lower_bound_bytes": 229072396542,
+          "state_receive_and_communication_bytes": 229072396542,
+          "subtotal_with_additional_allowance_bytes": 229072396542,
+          "remaining_budget_for_omitted_memory_bytes": -31132246270,
+          "remaining_after_additional_allowance_bytes": -31132246270,
+          "exceeds_capacity": true
+        },
+        {
+          "stage": 7,
+          "state_and_receive_lower_bound_bytes": 156012909332,
+          "state_receive_and_communication_bytes": 156012909332,
+          "subtotal_with_additional_allowance_bytes": 156012909332,
+          "remaining_budget_for_omitted_memory_bytes": 41927240940,
+          "remaining_after_additional_allowance_bytes": 41927240940,
+          "exceeds_capacity": false
+        }
+      ]
+    },
+    {
+      "receive_policy": "eager",
+      "communication_initialization": "eager",
+      "persistent_communication_bytes_per_gpu": 8589934592,
+      "communication_provenance": "Synthetic sensitivity input for total NCCL+HybridEP external backing; not a measured footprint",
+      "additional_peak_allowance_bytes": 0,
+      "verdict": "exceeds_capacity_under_assumptions",
+      "full_model_fit_verified": false,
+      "capacity_bytes": 197940150272,
+      "limiting_stage_for_this_bound": 6,
+      "remaining_budget_for_omitted_memory_bytes": -39722180862,
+      "remaining_after_additional_allowance_bytes": -39722180862,
+      "stages": [
+        {
+          "stage": 0,
+          "state_and_receive_lower_bound_bytes": 117697712318,
+          "state_receive_and_communication_bytes": 126287646910,
+          "subtotal_with_additional_allowance_bytes": 126287646910,
+          "remaining_budget_for_omitted_memory_bytes": 71652503362,
+          "remaining_after_additional_allowance_bytes": 71652503362,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 1,
+          "state_and_receive_lower_bound_bytes": 154424271102,
+          "state_receive_and_communication_bytes": 163014205694,
+          "subtotal_with_additional_allowance_bytes": 163014205694,
+          "remaining_budget_for_omitted_memory_bytes": 34925944578,
+          "remaining_after_additional_allowance_bytes": 34925944578,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 2,
+          "state_and_receive_lower_bound_bytes": 169353896190,
+          "state_receive_and_communication_bytes": 177943830782,
+          "subtotal_with_additional_allowance_bytes": 177943830782,
+          "remaining_budget_for_omitted_memory_bytes": 19996319490,
+          "remaining_after_additional_allowance_bytes": 19996319490,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 3,
+          "state_and_receive_lower_bound_bytes": 184283521278,
+          "state_receive_and_communication_bytes": 192873455870,
+          "subtotal_with_additional_allowance_bytes": 192873455870,
+          "remaining_budget_for_omitted_memory_bytes": 5066694402,
+          "remaining_after_additional_allowance_bytes": 5066694402,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 4,
+          "state_and_receive_lower_bound_bytes": 199213146366,
+          "state_receive_and_communication_bytes": 207803080958,
+          "subtotal_with_additional_allowance_bytes": 207803080958,
+          "remaining_budget_for_omitted_memory_bytes": -9862930686,
+          "remaining_after_additional_allowance_bytes": -9862930686,
+          "exceeds_capacity": true
+        },
+        {
+          "stage": 5,
+          "state_and_receive_lower_bound_bytes": 214142771454,
+          "state_receive_and_communication_bytes": 222732706046,
+          "subtotal_with_additional_allowance_bytes": 222732706046,
+          "remaining_budget_for_omitted_memory_bytes": -24792555774,
+          "remaining_after_additional_allowance_bytes": -24792555774,
+          "exceeds_capacity": true
+        },
+        {
+          "stage": 6,
+          "state_and_receive_lower_bound_bytes": 229072396542,
+          "state_receive_and_communication_bytes": 237662331134,
+          "subtotal_with_additional_allowance_bytes": 237662331134,
+          "remaining_budget_for_omitted_memory_bytes": -39722180862,
+          "remaining_after_additional_allowance_bytes": -39722180862,
+          "exceeds_capacity": true
+        },
+        {
+          "stage": 7,
+          "state_and_receive_lower_bound_bytes": 156012909332,
+          "state_receive_and_communication_bytes": 164602843924,
+          "subtotal_with_additional_allowance_bytes": 164602843924,
+          "remaining_budget_for_omitted_memory_bytes": 33337306348,
+          "remaining_after_additional_allowance_bytes": 33337306348,
+          "exceeds_capacity": false
+        }
+      ]
+    },
+    {
+      "receive_policy": "eager",
+      "communication_initialization": "eager",
+      "persistent_communication_bytes_per_gpu": 17179869184,
+      "communication_provenance": "Synthetic sensitivity input for total NCCL+HybridEP external backing; not a measured footprint",
+      "additional_peak_allowance_bytes": 0,
+      "verdict": "exceeds_capacity_under_assumptions",
+      "full_model_fit_verified": false,
+      "capacity_bytes": 197940150272,
+      "limiting_stage_for_this_bound": 6,
+      "remaining_budget_for_omitted_memory_bytes": -48312115454,
+      "remaining_after_additional_allowance_bytes": -48312115454,
+      "stages": [
+        {
+          "stage": 0,
+          "state_and_receive_lower_bound_bytes": 117697712318,
+          "state_receive_and_communication_bytes": 134877581502,
+          "subtotal_with_additional_allowance_bytes": 134877581502,
+          "remaining_budget_for_omitted_memory_bytes": 63062568770,
+          "remaining_after_additional_allowance_bytes": 63062568770,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 1,
+          "state_and_receive_lower_bound_bytes": 154424271102,
+          "state_receive_and_communication_bytes": 171604140286,
+          "subtotal_with_additional_allowance_bytes": 171604140286,
+          "remaining_budget_for_omitted_memory_bytes": 26336009986,
+          "remaining_after_additional_allowance_bytes": 26336009986,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 2,
+          "state_and_receive_lower_bound_bytes": 169353896190,
+          "state_receive_and_communication_bytes": 186533765374,
+          "subtotal_with_additional_allowance_bytes": 186533765374,
+          "remaining_budget_for_omitted_memory_bytes": 11406384898,
+          "remaining_after_additional_allowance_bytes": 11406384898,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 3,
+          "state_and_receive_lower_bound_bytes": 184283521278,
+          "state_receive_and_communication_bytes": 201463390462,
+          "subtotal_with_additional_allowance_bytes": 201463390462,
+          "remaining_budget_for_omitted_memory_bytes": -3523240190,
+          "remaining_after_additional_allowance_bytes": -3523240190,
+          "exceeds_capacity": true
+        },
+        {
+          "stage": 4,
+          "state_and_receive_lower_bound_bytes": 199213146366,
+          "state_receive_and_communication_bytes": 216393015550,
+          "subtotal_with_additional_allowance_bytes": 216393015550,
+          "remaining_budget_for_omitted_memory_bytes": -18452865278,
+          "remaining_after_additional_allowance_bytes": -18452865278,
+          "exceeds_capacity": true
+        },
+        {
+          "stage": 5,
+          "state_and_receive_lower_bound_bytes": 214142771454,
+          "state_receive_and_communication_bytes": 231322640638,
+          "subtotal_with_additional_allowance_bytes": 231322640638,
+          "remaining_budget_for_omitted_memory_bytes": -33382490366,
+          "remaining_after_additional_allowance_bytes": -33382490366,
+          "exceeds_capacity": true
+        },
+        {
+          "stage": 6,
+          "state_and_receive_lower_bound_bytes": 229072396542,
+          "state_receive_and_communication_bytes": 246252265726,
+          "subtotal_with_additional_allowance_bytes": 246252265726,
+          "remaining_budget_for_omitted_memory_bytes": -48312115454,
+          "remaining_after_additional_allowance_bytes": -48312115454,
+          "exceeds_capacity": true
+        },
+        {
+          "stage": 7,
+          "state_and_receive_lower_bound_bytes": 156012909332,
+          "state_receive_and_communication_bytes": 173192778516,
+          "subtotal_with_additional_allowance_bytes": 173192778516,
+          "remaining_budget_for_omitted_memory_bytes": 24747371756,
+          "remaining_after_additional_allowance_bytes": 24747371756,
+          "exceeds_capacity": false
+        }
+      ]
+    },
+    {
+      "receive_policy": "eager",
+      "communication_initialization": "eager",
+      "persistent_communication_bytes_per_gpu": 34359738368,
+      "communication_provenance": "Synthetic sensitivity input for total NCCL+HybridEP external backing; not a measured footprint",
+      "additional_peak_allowance_bytes": 0,
+      "verdict": "exceeds_capacity_under_assumptions",
+      "full_model_fit_verified": false,
+      "capacity_bytes": 197940150272,
+      "limiting_stage_for_this_bound": 6,
+      "remaining_budget_for_omitted_memory_bytes": -65491984638,
+      "remaining_after_additional_allowance_bytes": -65491984638,
+      "stages": [
+        {
+          "stage": 0,
+          "state_and_receive_lower_bound_bytes": 117697712318,
+          "state_receive_and_communication_bytes": 152057450686,
+          "subtotal_with_additional_allowance_bytes": 152057450686,
+          "remaining_budget_for_omitted_memory_bytes": 45882699586,
+          "remaining_after_additional_allowance_bytes": 45882699586,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 1,
+          "state_and_receive_lower_bound_bytes": 154424271102,
+          "state_receive_and_communication_bytes": 188784009470,
+          "subtotal_with_additional_allowance_bytes": 188784009470,
+          "remaining_budget_for_omitted_memory_bytes": 9156140802,
+          "remaining_after_additional_allowance_bytes": 9156140802,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 2,
+          "state_and_receive_lower_bound_bytes": 169353896190,
+          "state_receive_and_communication_bytes": 203713634558,
+          "subtotal_with_additional_allowance_bytes": 203713634558,
+          "remaining_budget_for_omitted_memory_bytes": -5773484286,
+          "remaining_after_additional_allowance_bytes": -5773484286,
+          "exceeds_capacity": true
+        },
+        {
+          "stage": 3,
+          "state_and_receive_lower_bound_bytes": 184283521278,
+          "state_receive_and_communication_bytes": 218643259646,
+          "subtotal_with_additional_allowance_bytes": 218643259646,
+          "remaining_budget_for_omitted_memory_bytes": -20703109374,
+          "remaining_after_additional_allowance_bytes": -20703109374,
+          "exceeds_capacity": true
+        },
+        {
+          "stage": 4,
+          "state_and_receive_lower_bound_bytes": 199213146366,
+          "state_receive_and_communication_bytes": 233572884734,
+          "subtotal_with_additional_allowance_bytes": 233572884734,
+          "remaining_budget_for_omitted_memory_bytes": -35632734462,
+          "remaining_after_additional_allowance_bytes": -35632734462,
+          "exceeds_capacity": true
+        },
+        {
+          "stage": 5,
+          "state_and_receive_lower_bound_bytes": 214142771454,
+          "state_receive_and_communication_bytes": 248502509822,
+          "subtotal_with_additional_allowance_bytes": 248502509822,
+          "remaining_budget_for_omitted_memory_bytes": -50562359550,
+          "remaining_after_additional_allowance_bytes": -50562359550,
+          "exceeds_capacity": true
+        },
+        {
+          "stage": 6,
+          "state_and_receive_lower_bound_bytes": 229072396542,
+          "state_receive_and_communication_bytes": 263432134910,
+          "subtotal_with_additional_allowance_bytes": 263432134910,
+          "remaining_budget_for_omitted_memory_bytes": -65491984638,
+          "remaining_after_additional_allowance_bytes": -65491984638,
+          "exceeds_capacity": true
+        },
+        {
+          "stage": 7,
+          "state_and_receive_lower_bound_bytes": 156012909332,
+          "state_receive_and_communication_bytes": 190372647700,
+          "subtotal_with_additional_allowance_bytes": 190372647700,
+          "remaining_budget_for_omitted_memory_bytes": 7567502572,
+          "remaining_after_additional_allowance_bytes": 7567502572,
+          "exceeds_capacity": false
+        }
+      ]
+    },
+    {
+      "receive_policy": "eager",
+      "communication_initialization": "eager",
+      "persistent_communication_bytes_per_gpu": 68719476736,
+      "communication_provenance": "Synthetic sensitivity input for total NCCL+HybridEP external backing; not a measured footprint",
+      "additional_peak_allowance_bytes": 0,
+      "verdict": "exceeds_capacity_under_assumptions",
+      "full_model_fit_verified": false,
+      "capacity_bytes": 197940150272,
+      "limiting_stage_for_this_bound": 6,
+      "remaining_budget_for_omitted_memory_bytes": -99851723006,
+      "remaining_after_additional_allowance_bytes": -99851723006,
+      "stages": [
+        {
+          "stage": 0,
+          "state_and_receive_lower_bound_bytes": 117697712318,
+          "state_receive_and_communication_bytes": 186417189054,
+          "subtotal_with_additional_allowance_bytes": 186417189054,
+          "remaining_budget_for_omitted_memory_bytes": 11522961218,
+          "remaining_after_additional_allowance_bytes": 11522961218,
+          "exceeds_capacity": false
+        },
+        {
+          "stage": 1,
+          "state_and_receive_lower_bound_bytes": 154424271102,
+          "state_receive_and_communication_bytes": 223143747838,
+          "subtotal_with_additional_allowance_bytes": 223143747838,
+          "remaining_budget_for_omitted_memory_bytes": -25203597566,
+          "remaining_after_additional_allowance_bytes": -25203597566,
+          "exceeds_capacity": true
+        },
+        {
+          "stage": 2,
+          "state_and_receive_lower_bound_bytes": 169353896190,
+          "state_receive_and_communication_bytes": 238073372926,
+          "subtotal_with_additional_allowance_bytes": 238073372926,
+          "remaining_budget_for_omitted_memory_bytes": -40133222654,
+          "remaining_after_additional_allowance_bytes": -40133222654,
+          "exceeds_capacity": true
+        },
+        {
+          "stage": 3,
+          "state_and_receive_lower_bound_bytes": 184283521278,
+          "state_receive_and_communication_bytes": 253002998014,
+          "subtotal_with_additional_allowance_bytes": 253002998014,
+          "remaining_budget_for_omitted_memory_bytes": -55062847742,
+          "remaining_after_additional_allowance_bytes": -55062847742,
+          "exceeds_capacity": true
+        },
+        {
+          "stage": 4,
+          "state_and_receive_lower_bound_bytes": 199213146366,
+          "state_receive_and_communication_bytes": 267932623102,
+          "subtotal_with_additional_allowance_bytes": 267932623102,
+          "remaining_budget_for_omitted_memory_bytes": -69992472830,
+          "remaining_after_additional_allowance_bytes": -69992472830,
+          "exceeds_capacity": true
+        },
+        {
+          "stage": 5,
+          "state_and_receive_lower_bound_bytes": 214142771454,
+          "state_receive_and_communication_bytes": 282862248190,
+          "subtotal_with_additional_allowance_bytes": 282862248190,
+          "remaining_budget_for_omitted_memory_bytes": -84922097918,
+          "remaining_after_additional_allowance_bytes": -84922097918,
+          "exceeds_capacity": true
+        },
+        {
+          "stage": 6,
+          "state_and_receive_lower_bound_bytes": 229072396542,
+          "state_receive_and_communication_bytes": 297791873278,
+          "subtotal_with_additional_allowance_bytes": 297791873278,
+          "remaining_budget_for_omitted_memory_bytes": -99851723006,
+          "remaining_after_additional_allowance_bytes": -99851723006,
+          "exceeds_capacity": true
+        },
+        {
+          "stage": 7,
+          "state_and_receive_lower_bound_bytes": 156012909332,
+          "state_receive_and_communication_bytes": 224732386068,
+          "subtotal_with_additional_allowance_bytes": 224732386068,
+          "remaining_budget_for_omitted_memory_bytes": -26792235796,
+          "remaining_after_additional_allowance_bytes": -26792235796,
+          "exceeds_capacity": true
+        }
+      ]
+    },
+    {
+      "receive_policy": "eager",
+      "communication_initialization": "eager",
+      "persistent_communication_bytes_per_gpu": 85899345920,
+      "communication_provenance": "Synthetic sensitivity input for total NCCL+HybridEP external backing; not a measured footprint",
+      "additional_peak_allowance_bytes": 0,
+      "verdict": "exceeds_capacity_under_assumptions",
+      "full_model_fit_verified": false,
+      "capacity_bytes": 197940150272,
+      "limiting_stage_for_this_bound": 6,
+      "remaining_budget_for_omitted_memory_bytes": -117031592190,
+      "remaining_after_additional_allowance_bytes": -117031592190,
+      "stages": [
+        {
+          "stage": 0,
+          "state_and_receive_lower_bound_bytes": 117697712318,
+          "state_receive_and_communication_bytes": 203597058238,
+          "subtotal_with_additional_allowance_bytes": 203597058238,
+          "remaining_budget_for_omitted_memory_bytes": -5656907966,
+          "remaining_after_additional_allowance_bytes": -5656907966,
+          "exceeds_capacity": true
+        },
+        {
+          "stage": 1,
+          "state_and_receive_lower_bound_bytes": 154424271102,
+          "state_receive_and_communication_bytes": 240323617022,
+          "subtotal_with_additional_allowance_bytes": 240323617022,
+          "remaining_budget_for_omitted_memory_bytes": -42383466750,
+          "remaining_after_additional_allowance_bytes": -42383466750,
+          "exceeds_capacity": true
+        },
+        {
+          "stage": 2,
+          "state_and_receive_lower_bound_bytes": 169353896190,
+          "state_receive_and_communication_bytes": 255253242110,
+          "subtotal_with_additional_allowance_bytes": 255253242110,
+          "remaining_budget_for_omitted_memory_bytes": -57313091838,
+          "remaining_after_additional_allowance_bytes": -57313091838,
+          "exceeds_capacity": true
+        },
+        {
+          "stage": 3,
+          "state_and_receive_lower_bound_bytes": 184283521278,
+          "state_receive_and_communication_bytes": 270182867198,
+          "subtotal_with_additional_allowance_bytes": 270182867198,
+          "remaining_budget_for_omitted_memory_bytes": -72242716926,
+          "remaining_after_additional_allowance_bytes": -72242716926,
+          "exceeds_capacity": true
+        },
+        {
+          "stage": 4,
+          "state_and_receive_lower_bound_bytes": 199213146366,
+          "state_receive_and_communication_bytes": 285112492286,
+          "subtotal_with_additional_allowance_bytes": 285112492286,
+          "remaining_budget_for_omitted_memory_bytes": -87172342014,
+          "remaining_after_additional_allowance_bytes": -87172342014,
+          "exceeds_capacity": true
+        },
+        {
+          "stage": 5,
+          "state_and_receive_lower_bound_bytes": 214142771454,
+          "state_receive_and_communication_bytes": 300042117374,
+          "subtotal_with_additional_allowance_bytes": 300042117374,
+          "remaining_budget_for_omitted_memory_bytes": -102101967102,
+          "remaining_after_additional_allowance_bytes": -102101967102,
+          "exceeds_capacity": true
+        },
+        {
+          "stage": 6,
+          "state_and_receive_lower_bound_bytes": 229072396542,
+          "state_receive_and_communication_bytes": 314971742462,
+          "subtotal_with_additional_allowance_bytes": 314971742462,
+          "remaining_budget_for_omitted_memory_bytes": -117031592190,
+          "remaining_after_additional_allowance_bytes": -117031592190,
+          "exceeds_capacity": true
+        },
+        {
+          "stage": 7,
+          "state_and_receive_lower_bound_bytes": 156012909332,
+          "state_receive_and_communication_bytes": 241912255252,
+          "subtotal_with_additional_allowance_bytes": 241912255252,
+          "remaining_budget_for_omitted_memory_bytes": -43972104980,
+          "remaining_after_additional_allowance_bytes": -43972104980,
+          "exceeds_capacity": true
+        }
+      ]
+    }
+  ]
+}

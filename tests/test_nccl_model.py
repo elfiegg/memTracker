@@ -42,6 +42,37 @@ class NcclModelTests(unittest.TestCase):
         self.model.destroy_communicator("dp")
         self.assertEqual(self.ledger.allocations, {})
 
+    def test_explicit_initialization_is_idempotent_and_needs_no_collective(self):
+        self.model.initialize_communicator("dp")
+        self.model.initialize_communicator("dp")
+        self.assertTrue(self.model.describe()["dp"]["initialized"])
+        self.assertEqual(sum(self.ledger.allocations.values()), 1024)
+        self.assertEqual(len(self.ledger.events), 1)
+        token = self.model.begin_collective("dp", temporary_bytes=300)
+        self.assertEqual(sum(self.ledger.allocations.values()), 1324)
+        self.model.complete_collective(token)
+        self.model.destroy_communicator("dp")
+        self.assertEqual(self.ledger.allocations, {})
+
+    def test_eager_initialization_rolls_back_on_partial_failure(self):
+        from memtracker_nccl.nccl_model import BufferAllocation, CommunicatorProfile
+        original = self.ledger.external_alloc
+        def fail_second(allocation_id, size_bytes, **kwargs):
+            if self.ledger.allocations:
+                raise RuntimeError("injected failure")
+            original(allocation_id, size_bytes, **kwargs)
+        self.ledger.external_alloc = fail_second
+        self.model.register_communicator("two", CommunicatorProfile(
+            "two", (BufferAllocation("a", 10, "test"), BufferAllocation("b", 20, "test")), ()))
+        with self.assertRaisesRegex(RuntimeError, "injected"):
+            self.model.initialize_communicator("two")
+        self.assertFalse(self.model.describe()["two"]["initialized"])
+        self.assertEqual(self.ledger.allocations, {})
+        self.ledger.external_alloc = original
+        self.model.initialize_communicator("two")
+        self.assertEqual(sum(self.ledger.allocations.values()), 30)
+        self.model.destroy_communicator("two")
+
     def test_overlapping_temporaries_live_until_completion(self):
         first = self.model.begin_collective("dp", temporary_bytes=300)
         second = self.model.begin_collective("dp", temporary_bytes=700)

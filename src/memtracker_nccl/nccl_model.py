@@ -211,10 +211,13 @@ class NcclMemoryModel:
         self._next_id += 1
         return f"{self._prefix}/{self._next_id}"
 
-    def begin_collective(self, name: str, *, operation: str = "all_reduce",
-                         payload_bytes: int = 0, temporary_bytes: int = 0) -> str:
-        _integer("payload_bytes", payload_bytes)
-        _integer("temporary_bytes", temporary_bytes)
+    def initialize_communicator(self, name: str) -> None:
+        """Materialize declared persistent backing without starting a collective.
+
+        Idempotent; use before model allocation to model eager communication
+        initialization. This does not allocate collective payloads/temporaries.
+        It is a simulation event, not a call to real NCCL initialization.
+        """
         comm = self._communicators[name]
         if not comm.initialized:
             allocated = []
@@ -237,6 +240,13 @@ class NcclMemoryModel:
                 raise
             comm.allocation_ids = allocated
             comm.initialized = True
+
+    def begin_collective(self, name: str, *, operation: str = "all_reduce",
+                         payload_bytes: int = 0, temporary_bytes: int = 0) -> str:
+        _integer("payload_bytes", payload_bytes)
+        _integer("temporary_bytes", temporary_bytes)
+        self.initialize_communicator(name)
+        comm = self._communicators[name]
         token = self._id()
         temporary_id = None
         if temporary_bytes:

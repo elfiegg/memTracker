@@ -173,8 +173,11 @@ The PP8/FSDP32/EP32 BF16 DistMuon+AdamW, FullAC, HybridEP, sequence4068,
 **Full-model fit remains unproven.** The combined decoder state lower bound is
 109.06 GiB/GPU, excluding activations, communication, gathered weights and scratch.
 A GB200 probe verified lazy receive allocation in the target runtime; the local
-CPU runtime's eager-buffer OOM prediction does not apply there. The exact
-256-GPU short training test is queued, with no training outcome included yet.
+CPU runtime's eager-buffer OOM prediction does not apply there. The 256-GPU
+job was canceled before running. A CPU-only comparison now treats communication
+backing as fully resident from the start, independently of pipeline receive
+policy. Eager receives exceed capacity already; lazy receives leave 75.29 GiB
+minus the supplied communication footprint for all omitted memory.
 
 ## Interpretation and limits
 

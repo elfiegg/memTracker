@@ -50,7 +50,7 @@ def combined_timeline(*, expandable: bool, late_nccl: bool) -> dict:
         with tracker:
             other.start(MemoryComponent('context', 4*MiB, 'CUDA context', 'assumed', 'Synthetic scenario'))
             if not late_nccl:
-                nccl.complete_collective(nccl.begin_collective('dp'))
+                nccl.initialize_communicator('dp')
             large = torch.empty(25*MiB, dtype=torch.uint8)
             with other.scope(MemoryComponent('workspace', 3*MiB, 'External library workspace',
                                             'assumed', 'Synthetic externally owned workspace')):
