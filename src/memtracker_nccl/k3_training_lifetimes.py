@@ -78,10 +78,9 @@ class Ledger:
 def run(schedule, muon, residual, adam, *, expandable=True, communication_gib=16,
         sequence=4068, microbatch_size=2, capacity_bytes=197940150272, run_metadata=None):
     identity = resolve_metadata(profile=K3_MODEL_PROFILE) if run_metadata is None else validate_resolved(run_metadata)
-    model_identity = modeled_metadata({"source_commit": muon["source_commit"]})
     # The schedule artifact is authoritative about its extracted PyTorch source.
-    model_identity = resolve_metadata(layers=[("model_source_profile", model_identity["values"]),
-        ("schedule:torch_runtime", {"pytorch_version": schedule.get("torch_runtime")})])
+    model_identity = modeled_metadata({"source_commit": muon["source_commit"]},
+                                      pytorch=schedule.get("torch_runtime"))
     compatibility = compare_metadata(identity, model_identity)
     if sequence * microbatch_size != residual["tokens"] or residual["dim"] != 7168:
         raise ValueError("Residual probe shape does not match training tokens/dim")

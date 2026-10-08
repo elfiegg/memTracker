@@ -23,9 +23,9 @@ prediction's configuration; accuracy is **not validated**. OOM snapshots remain
 censored observations, and outside-allocator memory is kept separate from tensor
 and reserved-memory metrics. The audit does not tune the model to observed peaks.
 
-[Per-run source/runtime metadata](docs/run-metadata.md) now records training and
-TorchAO commits, PyTorch/CUDA/NCCL versions, the NCCL build string, and container
-identity. Explicit run values override named defaults; fallback values are marked
+[Per-run source/runtime metadata](docs/run-metadata.md) takes one input per
+component: `training_code`, `torchao`, `pytorch`, `cuda`, `nccl`, and `container`.
+NCCL accepts its full build string in one value. Explicit run values override named defaults; fallback values are marked
 assumed. Target identity remains separate from the local simulator and the
 implementation actually modeled. The supplied versions are attached to all nine
 historical runs; the training base commit is not treated as an exact source pin.

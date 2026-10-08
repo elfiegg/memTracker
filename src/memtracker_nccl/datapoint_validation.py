@@ -261,12 +261,12 @@ def markdown(report):
     lines += ["", "## Run identity", "",
         "Versions are recorded per run with their origin and any fallback assumptions. "
         "The model's implementation identity is kept separate from the requested run.", "",
-        "| Job | Training base / exact commit | PyTorch / CUDA / NCCL | Compatibility |",
+        "| Job | Training code | PyTorch / CUDA / NCCL | Compatibility |",
         "|---|---|---|---|"]
     for e in report['experiments']:
         v=e['run_metadata']['values']
-        lines.append(f"| {e['job']} | {v['training_code_base_commit'] or 'unknown'} / {v['training_code_commit'] or 'unknown'} | "
-                     f"{v['pytorch_version'] or 'unknown'} / {v['cuda_version'] or 'unknown'} / {v['nccl_version'] or 'unknown'} | "
+        lines.append(f"| {e['job']} | {v['training_code_base_commit'] or v['training_code_commit'] or 'unknown'} | "
+                     f"{v['pytorch_version'] or 'unknown'} / {v['cuda_version'] or 'unknown'} / {v['nccl_build'] or v['nccl_version'] or 'unknown'} | "
                      f"{e['runtime_compatibility']['status']} |")
     lines += ["", "A base commit is not an exact source revision. Container paths are recorded but do not "
         "identify immutable contents or supply missing versions. NCCL runtime build strings and TorchAO "

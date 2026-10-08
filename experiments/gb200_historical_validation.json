@@ -54,12 +54,12 @@
     "origins": {
       "training_code_commit": "model_source_profile",
       "training_code_base_commit": null,
-      "training_code_patch_sha256": null,
+      "training_code_patch_sha256": "model_source_profile",
       "torchao_commit": "model_source_profile",
       "pytorch_version": "model_source_profile",
       "cuda_version": "model_source_profile",
       "nccl_version": "model_source_profile",
-      "nccl_build": null,
+      "nccl_build": "model_source_profile",
       "container_identifier": null,
       "container_digest": null
     },
@@ -167,14 +167,14 @@
         "origins": {
           "training_code_commit": "manifest:shared",
           "training_code_base_commit": "manifest:shared",
-          "training_code_patch_sha256": null,
+          "training_code_patch_sha256": "manifest:shared",
           "torchao_commit": "manifest:shared",
           "pytorch_version": "manifest:shared",
           "cuda_version": "manifest:shared",
           "nccl_version": "manifest:shared",
           "nccl_build": "manifest:shared",
           "container_identifier": "manifest:shared",
-          "container_digest": null
+          "container_digest": "manifest:shared"
         },
         "assumed_fields": [],
         "overrides": []
@@ -290,14 +290,14 @@
         "origins": {
           "training_code_commit": "manifest:shared",
           "training_code_base_commit": "manifest:shared",
-          "training_code_patch_sha256": null,
+          "training_code_patch_sha256": "manifest:shared",
           "torchao_commit": "manifest:shared",
           "pytorch_version": "manifest:shared",
           "cuda_version": "manifest:shared",
           "nccl_version": "manifest:shared",
           "nccl_build": "manifest:shared",
           "container_identifier": "manifest:shared",
-          "container_digest": null
+          "container_digest": "manifest:shared"
         },
         "assumed_fields": [],
         "overrides": []
@@ -418,14 +418,14 @@
         "origins": {
           "training_code_commit": "manifest:shared",
           "training_code_base_commit": "manifest:shared",
-          "training_code_patch_sha256": null,
+          "training_code_patch_sha256": "manifest:shared",
           "torchao_commit": "manifest:shared",
           "pytorch_version": "manifest:shared",
           "cuda_version": "manifest:shared",
           "nccl_version": "manifest:shared",
           "nccl_build": "manifest:shared",
           "container_identifier": "manifest:shared",
-          "container_digest": null
+          "container_digest": "manifest:shared"
         },
         "assumed_fields": [],
         "overrides": []
@@ -546,14 +546,14 @@
         "origins": {
           "training_code_commit": "manifest:shared",
           "training_code_base_commit": "manifest:shared",
-          "training_code_patch_sha256": null,
+          "training_code_patch_sha256": "manifest:shared",
           "torchao_commit": "manifest:shared",
           "pytorch_version": "manifest:shared",
           "cuda_version": "manifest:shared",
           "nccl_version": "manifest:shared",
           "nccl_build": "manifest:shared",
           "container_identifier": "manifest:shared",
-          "container_digest": null
+          "container_digest": "manifest:shared"
         },
         "assumed_fields": [],
         "overrides": []
@@ -684,14 +684,14 @@
         "origins": {
           "training_code_commit": "manifest:shared",
           "training_code_base_commit": "manifest:shared",
-          "training_code_patch_sha256": null,
+          "training_code_patch_sha256": "manifest:shared",
           "torchao_commit": "manifest:shared",
           "pytorch_version": "manifest:shared",
           "cuda_version": "manifest:shared",
           "nccl_version": "manifest:shared",
           "nccl_build": "manifest:shared",
           "container_identifier": "manifest:shared",
-          "container_digest": null
+          "container_digest": "manifest:shared"
         },
         "assumed_fields": [],
         "overrides": []
@@ -828,14 +828,14 @@
         "origins": {
           "training_code_commit": "manifest:shared",
           "training_code_base_commit": "manifest:shared",
-          "training_code_patch_sha256": null,
+          "training_code_patch_sha256": "manifest:shared",
           "torchao_commit": "manifest:shared",
           "pytorch_version": "manifest:shared",
           "cuda_version": "manifest:shared",
           "nccl_version": "manifest:shared",
           "nccl_build": "manifest:shared",
           "container_identifier": "manifest:shared",
-          "container_digest": null
+          "container_digest": "manifest:shared"
         },
         "assumed_fields": [],
         "overrides": []
@@ -977,14 +977,14 @@
         "origins": {
           "training_code_commit": "manifest:shared",
           "training_code_base_commit": "manifest:shared",
-          "training_code_patch_sha256": null,
+          "training_code_patch_sha256": "manifest:shared",
           "torchao_commit": "manifest:shared",
           "pytorch_version": "manifest:shared",
           "cuda_version": "manifest:shared",
           "nccl_version": "manifest:shared",
           "nccl_build": "manifest:shared",
           "container_identifier": "manifest:shared",
-          "container_digest": null
+          "container_digest": "manifest:shared"
         },
         "assumed_fields": [],
         "overrides": []
@@ -1186,14 +1186,14 @@
         "origins": {
           "training_code_commit": "manifest:shared",
           "training_code_base_commit": "manifest:shared",
-          "training_code_patch_sha256": null,
+          "training_code_patch_sha256": "manifest:shared",
           "torchao_commit": "manifest:shared",
           "pytorch_version": "manifest:shared",
           "cuda_version": "manifest:shared",
           "nccl_version": "manifest:shared",
           "nccl_build": "manifest:shared",
           "container_identifier": "manifest:shared",
-          "container_digest": null
+          "container_digest": "manifest:shared"
         },
         "assumed_fields": [],
         "overrides": []
@@ -1400,14 +1400,14 @@
         "origins": {
           "training_code_commit": "manifest:shared",
           "training_code_base_commit": "manifest:shared",
-          "training_code_patch_sha256": null,
+          "training_code_patch_sha256": "manifest:shared",
           "torchao_commit": "manifest:shared",
           "pytorch_version": "manifest:shared",
           "cuda_version": "manifest:shared",
           "nccl_version": "manifest:shared",
           "nccl_build": "manifest:shared",
           "container_identifier": "manifest:shared",
-          "container_digest": null
+          "container_digest": "manifest:shared"
         },
         "assumed_fields": [],
         "overrides": []

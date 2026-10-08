@@ -20,17 +20,17 @@ Examined 9 runs: 6 OOM and 3 PASS. 0 match the frozen prediction's known configu
 
 Versions are recorded per run with their origin and any fallback assumptions. The model's implementation identity is kept separate from the requested run.
 
-| Job | Training base / exact commit | PyTorch / CUDA / NCCL | Compatibility |
+| Job | Training code | PyTorch / CUDA / NCCL | Compatibility |
 |---|---|---|---|
-| 3227951 | 53a45ee31d260bcaacaa319dae29080c68675a49 / unknown | 2.15.0.dev20260928+cu130 / 13.0 / 2.30.7 | incomplete |
-| 3233459 | 53a45ee31d260bcaacaa319dae29080c68675a49 / unknown | 2.15.0.dev20260928+cu130 / 13.0 / 2.30.7 | incomplete |
-| 3238922 | 53a45ee31d260bcaacaa319dae29080c68675a49 / unknown | 2.15.0.dev20260928+cu130 / 13.0 / 2.30.7 | incomplete |
-| 3240283 | 53a45ee31d260bcaacaa319dae29080c68675a49 / unknown | 2.15.0.dev20260928+cu130 / 13.0 / 2.30.7 | incomplete |
-| 3244815 | 53a45ee31d260bcaacaa319dae29080c68675a49 / unknown | 2.15.0.dev20260928+cu130 / 13.0 / 2.30.7 | incomplete |
-| 3250222 | 53a45ee31d260bcaacaa319dae29080c68675a49 / unknown | 2.15.0.dev20260928+cu130 / 13.0 / 2.30.7 | incomplete |
-| 3244745 | 53a45ee31d260bcaacaa319dae29080c68675a49 / unknown | 2.15.0.dev20260928+cu130 / 13.0 / 2.30.7 | incomplete |
-| 3250214 | 53a45ee31d260bcaacaa319dae29080c68675a49 / unknown | 2.15.0.dev20260928+cu130 / 13.0 / 2.30.7 | incomplete |
-| 3256150 | 53a45ee31d260bcaacaa319dae29080c68675a49 / unknown | 2.15.0.dev20260928+cu130 / 13.0 / 2.30.7 | incomplete |
+| 3227951 | 53a45ee31d260bcaacaa319dae29080c68675a49 | 2.15.0.dev20260928+cu130 / 13.0 / 2.30.7+cuda13.3 | incomplete |
+| 3233459 | 53a45ee31d260bcaacaa319dae29080c68675a49 | 2.15.0.dev20260928+cu130 / 13.0 / 2.30.7+cuda13.3 | incomplete |
+| 3238922 | 53a45ee31d260bcaacaa319dae29080c68675a49 | 2.15.0.dev20260928+cu130 / 13.0 / 2.30.7+cuda13.3 | incomplete |
+| 3240283 | 53a45ee31d260bcaacaa319dae29080c68675a49 | 2.15.0.dev20260928+cu130 / 13.0 / 2.30.7+cuda13.3 | incomplete |
+| 3244815 | 53a45ee31d260bcaacaa319dae29080c68675a49 | 2.15.0.dev20260928+cu130 / 13.0 / 2.30.7+cuda13.3 | incomplete |
+| 3250222 | 53a45ee31d260bcaacaa319dae29080c68675a49 | 2.15.0.dev20260928+cu130 / 13.0 / 2.30.7+cuda13.3 | incomplete |
+| 3244745 | 53a45ee31d260bcaacaa319dae29080c68675a49 | 2.15.0.dev20260928+cu130 / 13.0 / 2.30.7+cuda13.3 | incomplete |
+| 3250214 | 53a45ee31d260bcaacaa319dae29080c68675a49 | 2.15.0.dev20260928+cu130 / 13.0 / 2.30.7+cuda13.3 | incomplete |
+| 3256150 | 53a45ee31d260bcaacaa319dae29080c68675a49 | 2.15.0.dev20260928+cu130 / 13.0 / 2.30.7+cuda13.3 | incomplete |
 
 A base commit is not an exact source revision. Container paths are recorded but do not identify immutable contents or supply missing versions. NCCL runtime build strings and TorchAO commits are preserved in the JSON report. Metadata does not select new model behavior.
 
