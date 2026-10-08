@@ -179,6 +179,12 @@ backing as fully resident from the start, independently of pipeline receive
 policy. Eager receives exceed capacity already; lazy receives leave 75.29 GiB
 minus the supplied communication footprint for all omitted memory.
 
+The [Interleaved1F1B estimate](docs/k3-interleaved-fit.md) uses two virtual stages
+per PP rank and replays actual schedule ordering. Peak live stage/microbatch
+pairs are 23/21/19/17/15/13/11/9. Counted state, FullAC boundary storage and
+pending receives reach a partial 142.48 GiB/GPU; an assumed 16 GiB of eager
+communication backing brings this to 158.48 GiB. Full-model fit remains unproven.
+
 ## Interpretation and limits
 
 This is an **opt-in model and schedule**, not automatic interception of arbitrary
