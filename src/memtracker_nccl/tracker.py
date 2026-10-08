@@ -44,8 +44,36 @@ class ExtendedMemTracker(MemTracker):
         self._external_peaks: dict[str, int] = {}
         self._events: list[dict[str, Any]] = []
         self._sequence = 0
+        self._phases = []
+        self._active_phases = []
+        self.metadata = {}
         self.record_tensor_events = record_tensor_events
         super().__init__()
+
+    @contextmanager
+    def phase(self, name: str, **metadata):
+        """Measure this modeled phase without resetting session or allocator state.
+
+        Names should match real framework capture boundaries. Nested phases are
+        inclusive. Tensor, active, reserved and external maxima are independent;
+        only resident_peak_bytes combines simultaneous reserved/external bytes.
+        """
+        if not isinstance(name, str) or not name:
+            raise ValueError('Phase name must be a nonempty string')
+        row = dict(id=len(self._phases), name=name, metadata=deepcopy(metadata),
+            parent=self._active_phases[-1]['id'] if self._active_phases else None,
+            devices={}, status='ok')
+        self._phases.append(row)
+        self._active_phases.append(row)
+        self._sample('phase_begin', phase_id=row['id'])
+        try:
+            yield
+        except BaseException:
+            row['status'] = 'error'
+            raise
+        finally:
+            self._sample('phase_end', phase_id=row['id'])
+            self._active_phases.pop()
 
     def _update_snap(self, u_type: Any, winfo: Any, *args: Any, **kwargs: Any) -> None:
         if self._allocator is not None:
@@ -178,6 +206,24 @@ class ExtendedMemTracker(MemTracker):
             for device, stats in resident.items():
                 if device not in self._resident_peaks or stats["combined_bytes"] > self._resident_peaks[device]["combined_bytes"]:
                     self._resident_peaks[device] = {**deepcopy(stats), "sequence": self._sequence, "event": kind}
+        if self._active_phases:
+            backing = self._allocator.snapshot() if self._allocator is not None else {}
+            for device in set(snapshot) | set(backing):
+                tensor = snapshot.get(device, {})
+                alloc = backing.get(device, {})
+                values = dict(tensor_peak_bytes=tensor.get('tensor_bytes', 0),
+                    external_peak_bytes=tensor.get('external_bytes', 0))
+                if self._allocator is not None:
+                    values.update(allocated_peak_bytes=alloc.get('allocated_bytes', 0),
+                        requested_allocated_peak_bytes=alloc.get('requested_bytes', 0),
+                        active_peak_bytes=alloc.get('allocated_bytes', 0)+alloc.get('pending_free_bytes', 0),
+                        pending_free_peak_bytes=alloc.get('pending_free_bytes', 0),
+                        reserved_peak_bytes=alloc.get('reserved_bytes', 0),
+                        resident_peak_bytes=alloc.get('reserved_bytes', 0)+tensor.get('external_bytes', 0))
+                for phase in self._active_phases:
+                    peaks = phase['devices'].setdefault(device, {})
+                    for key, value in values.items():
+                        peaks[key] = max(peaks.get(key, 0), value)
         if record:
             self._events.append({"sequence": self._sequence, "event": kind,
                                  **details, "devices": deepcopy(snapshot),
@@ -200,6 +246,8 @@ class ExtendedMemTracker(MemTracker):
         return deepcopy({
             **optional,
             "schema_version": 1,
+            "phases": self._phases,
+            "metadata": self.metadata,
             "torch_version": str(torch.__version__),
             "simulator_environment": {"pytorch_version": str(torch.__version__), "cuda_version": torch.version.cuda},
             "run_metadata": self._run_metadata,

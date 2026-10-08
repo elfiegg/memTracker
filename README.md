@@ -10,6 +10,13 @@ configuration or calibration data. Unsupported overhead is reported explicitly.
 The included Kimi K3 experiment is a **partial parameter/state/communication
 estimate**, not a full forward/backward or OOM prediction.
 
+The new [framework capture and attribution layer](docs/framework-memory-capture.md)
+uses model-independent allocator events, stack traces, storage ownership and
+phase labels. A thin TorchTitan adapter records initialization, forward/backward
+and optimizer execution from the actual checkout/config. FakeTensor estimates
+use matching phase labels. This replaces ad hoc workload offsets with measurable
+gaps; it does not yet make the historical K3 estimator a complete generic simulator.
+
 The latest [K3 training-lifetime analysis](docs/k3-training-lifetimes.md) adds
 source-executed Muon/AdamW, FSDP unsharded expert copies, FullAC/attention-residual
 lifetimes and fixed/expandable allocator replay. The modeled worst-rank live

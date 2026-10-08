@@ -1,0 +1,682 @@
+{
+  "schema_version": 1,
+  "kind": "real_snapshot_accounting_validation",
+  "snapshots": 56,
+  "all_counters_reconciled": true,
+  "maximum_absolute_difference_bytes": 0,
+  "rows": [
+    {
+      "allocator_mode": "fixed",
+      "rank": 0,
+      "phase": "context",
+      "snapshot_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "fixed",
+      "rank": 0,
+      "phase": "allocator_3x16",
+      "snapshot_sha256": "5ba2d92ba7f372626e95507a5806dc15d913040bf6581962c647ae5675f84efc",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "fixed",
+      "rank": 0,
+      "phase": "allocator_3x14",
+      "snapshot_sha256": "2c5a0399b29ec7a487484542a078334469630e97a165f3bbe462d78b5b2856aa",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "fixed",
+      "rank": 0,
+      "phase": "allocator_fragmentation",
+      "snapshot_sha256": "6ef993819126c77aa5945584bfc9b4ff4786446ba509d6fb505fb71199e27a8e",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "fixed",
+      "rank": 0,
+      "phase": "allocator_released",
+      "snapshot_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "fixed",
+      "rank": 0,
+      "phase": "payload_before_nccl",
+      "snapshot_sha256": "bb968fc97aecd480a9ebdcd8ad77ee5109821e69af637944ace6b16522bcee4d",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "fixed",
+      "rank": 0,
+      "phase": "communicator_created",
+      "snapshot_sha256": "bb968fc97aecd480a9ebdcd8ad77ee5109821e69af637944ace6b16522bcee4d",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "fixed",
+      "rank": 0,
+      "phase": "first_small_collective",
+      "snapshot_sha256": "bb968fc97aecd480a9ebdcd8ad77ee5109821e69af637944ace6b16522bcee4d",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "fixed",
+      "rank": 0,
+      "phase": "repeat_small_collective",
+      "snapshot_sha256": "bb968fc97aecd480a9ebdcd8ad77ee5109821e69af637944ace6b16522bcee4d",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "fixed",
+      "rank": 0,
+      "phase": "first_large_collective",
+      "snapshot_sha256": "bb968fc97aecd480a9ebdcd8ad77ee5109821e69af637944ace6b16522bcee4d",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "fixed",
+      "rank": 0,
+      "phase": "repeat_large_collective",
+      "snapshot_sha256": "bb968fc97aecd480a9ebdcd8ad77ee5109821e69af637944ace6b16522bcee4d",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "fixed",
+      "rank": 0,
+      "phase": "second_communicator",
+      "snapshot_sha256": "bb968fc97aecd480a9ebdcd8ad77ee5109821e69af637944ace6b16522bcee4d",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "fixed",
+      "rank": 0,
+      "phase": "communicators_destroyed",
+      "snapshot_sha256": "bb968fc97aecd480a9ebdcd8ad77ee5109821e69af637944ace6b16522bcee4d",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "fixed",
+      "rank": 0,
+      "phase": "all_released",
+      "snapshot_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "fixed",
+      "rank": 1,
+      "phase": "context",
+      "snapshot_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "fixed",
+      "rank": 1,
+      "phase": "allocator_3x16",
+      "snapshot_sha256": "b464073d84e76ba1a5455ef6de82841a15588f472ba764826ce9227f8e81bde8",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "fixed",
+      "rank": 1,
+      "phase": "allocator_3x14",
+      "snapshot_sha256": "a74a2d2b7973bf8d7cf27497911bf21fe009123195144ff8d2cf6c8c89df8906",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "fixed",
+      "rank": 1,
+      "phase": "allocator_fragmentation",
+      "snapshot_sha256": "a8858e5b31883f584dd8de8f64059597fddc3a7b2d5ae7d8662ef0588ad5bd4b",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "fixed",
+      "rank": 1,
+      "phase": "allocator_released",
+      "snapshot_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "fixed",
+      "rank": 1,
+      "phase": "payload_before_nccl",
+      "snapshot_sha256": "57a776851f8ffcf21baffcf6d2997173e216fd09fcb00a1fafc378ba7ec1efb7",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "fixed",
+      "rank": 1,
+      "phase": "communicator_created",
+      "snapshot_sha256": "57a776851f8ffcf21baffcf6d2997173e216fd09fcb00a1fafc378ba7ec1efb7",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "fixed",
+      "rank": 1,
+      "phase": "first_small_collective",
+      "snapshot_sha256": "57a776851f8ffcf21baffcf6d2997173e216fd09fcb00a1fafc378ba7ec1efb7",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "fixed",
+      "rank": 1,
+      "phase": "repeat_small_collective",
+      "snapshot_sha256": "57a776851f8ffcf21baffcf6d2997173e216fd09fcb00a1fafc378ba7ec1efb7",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "fixed",
+      "rank": 1,
+      "phase": "first_large_collective",
+      "snapshot_sha256": "57a776851f8ffcf21baffcf6d2997173e216fd09fcb00a1fafc378ba7ec1efb7",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "fixed",
+      "rank": 1,
+      "phase": "repeat_large_collective",
+      "snapshot_sha256": "57a776851f8ffcf21baffcf6d2997173e216fd09fcb00a1fafc378ba7ec1efb7",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "fixed",
+      "rank": 1,
+      "phase": "second_communicator",
+      "snapshot_sha256": "57a776851f8ffcf21baffcf6d2997173e216fd09fcb00a1fafc378ba7ec1efb7",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "fixed",
+      "rank": 1,
+      "phase": "communicators_destroyed",
+      "snapshot_sha256": "57a776851f8ffcf21baffcf6d2997173e216fd09fcb00a1fafc378ba7ec1efb7",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "fixed",
+      "rank": 1,
+      "phase": "all_released",
+      "snapshot_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "expandable",
+      "rank": 0,
+      "phase": "context",
+      "snapshot_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "expandable",
+      "rank": 0,
+      "phase": "allocator_3x16",
+      "snapshot_sha256": "f50baba0cb450c53810d2d96061365fc7b3af0e17618ab9dc1eec8d7da4b9dab",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "expandable",
+      "rank": 0,
+      "phase": "allocator_3x14",
+      "snapshot_sha256": "20faf43b60920d54957b402a237078e73a32186aa115c4adfec9d9b57014ba10",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "expandable",
+      "rank": 0,
+      "phase": "allocator_fragmentation",
+      "snapshot_sha256": "d6a100c258bb9dd52b0a671a87176593d3638f49b7c2cdacd8ad349dbd7b917b",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "expandable",
+      "rank": 0,
+      "phase": "allocator_released",
+      "snapshot_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "expandable",
+      "rank": 0,
+      "phase": "payload_before_nccl",
+      "snapshot_sha256": "937aa4ae04fbd736cf92ff18b1f41a6c8c82b13db360f9fe39c860b196022868",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "expandable",
+      "rank": 0,
+      "phase": "communicator_created",
+      "snapshot_sha256": "937aa4ae04fbd736cf92ff18b1f41a6c8c82b13db360f9fe39c860b196022868",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "expandable",
+      "rank": 0,
+      "phase": "first_small_collective",
+      "snapshot_sha256": "937aa4ae04fbd736cf92ff18b1f41a6c8c82b13db360f9fe39c860b196022868",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "expandable",
+      "rank": 0,
+      "phase": "repeat_small_collective",
+      "snapshot_sha256": "937aa4ae04fbd736cf92ff18b1f41a6c8c82b13db360f9fe39c860b196022868",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "expandable",
+      "rank": 0,
+      "phase": "first_large_collective",
+      "snapshot_sha256": "937aa4ae04fbd736cf92ff18b1f41a6c8c82b13db360f9fe39c860b196022868",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "expandable",
+      "rank": 0,
+      "phase": "repeat_large_collective",
+      "snapshot_sha256": "937aa4ae04fbd736cf92ff18b1f41a6c8c82b13db360f9fe39c860b196022868",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "expandable",
+      "rank": 0,
+      "phase": "second_communicator",
+      "snapshot_sha256": "937aa4ae04fbd736cf92ff18b1f41a6c8c82b13db360f9fe39c860b196022868",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "expandable",
+      "rank": 0,
+      "phase": "communicators_destroyed",
+      "snapshot_sha256": "937aa4ae04fbd736cf92ff18b1f41a6c8c82b13db360f9fe39c860b196022868",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "expandable",
+      "rank": 0,
+      "phase": "all_released",
+      "snapshot_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "expandable",
+      "rank": 1,
+      "phase": "context",
+      "snapshot_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "expandable",
+      "rank": 1,
+      "phase": "allocator_3x16",
+      "snapshot_sha256": "7910d915f8c8e54b2f23868957b3a236864c12e0d832365101d2812dc14313eb",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "expandable",
+      "rank": 1,
+      "phase": "allocator_3x14",
+      "snapshot_sha256": "01305db25af9e9fc3448ee8f48ca41ad9bf64df416717d16fe1dcdb27046d450",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "expandable",
+      "rank": 1,
+      "phase": "allocator_fragmentation",
+      "snapshot_sha256": "dfcd334ed71b9b154d2b4e4361e5cec7083740b471c3b86c22b866cfddc0044e",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "expandable",
+      "rank": 1,
+      "phase": "allocator_released",
+      "snapshot_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "expandable",
+      "rank": 1,
+      "phase": "payload_before_nccl",
+      "snapshot_sha256": "ee1ad998bbc94aa5a87eedafd3881d85f56f71d6cc8143c83dfc3c6cb67774d4",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "expandable",
+      "rank": 1,
+      "phase": "communicator_created",
+      "snapshot_sha256": "ee1ad998bbc94aa5a87eedafd3881d85f56f71d6cc8143c83dfc3c6cb67774d4",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "expandable",
+      "rank": 1,
+      "phase": "first_small_collective",
+      "snapshot_sha256": "ee1ad998bbc94aa5a87eedafd3881d85f56f71d6cc8143c83dfc3c6cb67774d4",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "expandable",
+      "rank": 1,
+      "phase": "repeat_small_collective",
+      "snapshot_sha256": "ee1ad998bbc94aa5a87eedafd3881d85f56f71d6cc8143c83dfc3c6cb67774d4",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "expandable",
+      "rank": 1,
+      "phase": "first_large_collective",
+      "snapshot_sha256": "ee1ad998bbc94aa5a87eedafd3881d85f56f71d6cc8143c83dfc3c6cb67774d4",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "expandable",
+      "rank": 1,
+      "phase": "repeat_large_collective",
+      "snapshot_sha256": "ee1ad998bbc94aa5a87eedafd3881d85f56f71d6cc8143c83dfc3c6cb67774d4",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "expandable",
+      "rank": 1,
+      "phase": "second_communicator",
+      "snapshot_sha256": "ee1ad998bbc94aa5a87eedafd3881d85f56f71d6cc8143c83dfc3c6cb67774d4",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "expandable",
+      "rank": 1,
+      "phase": "communicators_destroyed",
+      "snapshot_sha256": "ee1ad998bbc94aa5a87eedafd3881d85f56f71d6cc8143c83dfc3c6cb67774d4",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    },
+    {
+      "allocator_mode": "expandable",
+      "rank": 1,
+      "phase": "all_released",
+      "snapshot_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "counter_differences": {
+        "allocated_bytes": 0,
+        "active_bytes": 0,
+        "reserved_bytes": 0
+      },
+      "reconciled": true
+    }
+  ],
+  "limits": "Validates boundary snapshot accounting only, not transient capture or model prediction accuracy."
+}
