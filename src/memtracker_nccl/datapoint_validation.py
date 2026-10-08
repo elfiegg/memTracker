@@ -16,6 +16,7 @@ from pathlib import Path
 import re
 
 from .report_io import read_report, write_report
+from .run_metadata import apply_dataset_metadata, compare_metadata, modeled_metadata, resolve_metadata
 
 GiB = 2**30
 ACTIVE = "memory/max_active(GiB)"
@@ -105,6 +106,7 @@ def normalize_dataset(dataset, *, source_sha256=None):
         rows.append(dict(job=e["job"], outcome=e["outcome"], scope=e["scope"], phase=e["phase"],
                          world_size=e["world_size"], representative_rank=e["representative_rank"],
                          configuration=_configuration(e), effective_config_sha256=_hash(e["effective_config"]),
+                         run_metadata=resolve_metadata(layers=[("dataset:run", e.get("run_metadata", {}))]),
                          failure_point_memory_gib=failure, per_rank_step_memory_metrics=metrics,
                          runtime_environment_evidence=e["runtime_environment_evidence"],
                          warmup_observations=_warmup(e),
@@ -169,6 +171,7 @@ def step_windows(metrics):
 def audit(normalized, prediction, *, replayed_prediction=None):
     expected = estimator_configuration(prediction)
     allowance = prediction["communication_gib"]
+    model_identity = modeled_metadata(prediction)
     comparisons = []; residuals = []
     for e in normalized["experiments"]:
         mismatches = [dict(field=key, measured=value, estimator=expected[key])
@@ -189,10 +192,13 @@ def audit(normalized, prediction, *, replayed_prediction=None):
             blockers.append("graph_warmup_capture_replay_windows_not_modeled")
         if not prediction.get("full_model_fit_verified", False):
             blockers.append("estimator_missing_full_training_components")
-        # Dataset does not provide an exact runtime/source pin, matched metric
-        # scope, or aligned operation/step window for our frozen prediction.
-        blockers.extend(["source_runtime_identity_unverified", "metric_and_window_alignment_unverified"])
+        identity = e.get("run_metadata", resolve_metadata())
+        compatibility = compare_metadata(identity, model_identity)
+        if compatibility["status"] != "declared_match":
+            blockers.append("source_runtime_identity_" + compatibility["status"])
+        blockers.extend(["source_content_equivalence_unverified", "metric_and_window_alignment_unverified"])
         comparisons.append(dict(job=e["job"], outcome=e["outcome"], scope=e["scope"], phase=e["phase"],
+                                run_metadata=identity, runtime_compatibility=compatibility,
                                 configuration=e["configuration"], mismatches=mismatches, blockers=blockers,
                                 comparison_status="not_scored", peak_error_percent=None,
                                 fit_classification_correct=None, observed_failure=failure,
@@ -209,6 +215,7 @@ def audit(normalized, prediction, *, replayed_prediction=None):
                 frozen_prediction_reproduced=None if replayed_prediction is None else True,
                 source_dataset_sha256=normalized["source_sha256"], estimator_report_sha256=_hash(prediction),
                 estimator_configuration=expected,
+                modeled_metadata=model_identity,
                 frozen_estimator=dict(source_commit=prediction["source_commit"],
                     worst_live_peak_gib=max_rank["modeled_live_peak"]["bytes"]/GiB,
                     resident_communication_allowance_gib=allowance, pp_rank=max_rank["pp_rank"]),
@@ -233,7 +240,7 @@ def audit(normalized, prediction, *, replayed_prediction=None):
                     "Represent first-step initialization, accumulation rounds and CUDA graph warmup/capture/replay separately.",
                     "Model active allocator bytes including pending frees and mirror logger peak resets.",
                     "Reconstruct eager communication and optimizer initialization from the recorded runtime; replace universal allowances with scoped calibration.",
-                    "Pin runtime/source and score held-out configuration groups after these adapters; repeated recipes must not straddle calibration and validation splits."],
+                    "Verify the exact training source (base commit alone does not identify local changes) and score held-out configuration groups after these adapters; repeated recipes must not straddle calibration and validation splits."],
                 experiments=comparisons)
 
 
@@ -251,7 +258,20 @@ def markdown(report):
         s=e['configuration']; diff={m['field'] for m in e['mismatches']}
         names=', '.join(k for k in priority if k in diff)
         lines.append(f"| {e['job']} | {e['outcome']} ({e['scope']}) | {s['schedule']} / {s['sequence']} / {s['microbatch_size']} × {s['microbatches']} | {names or 'No known-field differences; runtime/coverage still unverified'} |")
-    lines += ["", "The existing estimator was rerun without changing its inputs; "
+    lines += ["", "## Run identity", "",
+        "Versions are recorded per run with their origin and any fallback assumptions. "
+        "The model's implementation identity is kept separate from the requested run.", "",
+        "| Job | Training base / exact commit | PyTorch / CUDA / NCCL | Compatibility |",
+        "|---|---|---|---|"]
+    for e in report['experiments']:
+        v=e['run_metadata']['values']
+        lines.append(f"| {e['job']} | {v['training_code_base_commit'] or 'unknown'} / {v['training_code_commit'] or 'unknown'} | "
+                     f"{v['pytorch_version'] or 'unknown'} / {v['cuda_version'] or 'unknown'} / {v['nccl_version'] or 'unknown'} | "
+                     f"{e['runtime_compatibility']['status']} |")
+    lines += ["", "A base commit is not an exact source revision. Container paths are recorded but do not "
+        "identify immutable contents or supply missing versions. NCCL runtime build strings and TorchAO "
+        "commits are preserved in the JSON report. Metadata does not select new model behavior.", "",
+        "The existing estimator was rerun without changing its inputs; "
         + ("the complete report reproduced exactly." if report['frozen_prediction_reproduced'] else "a fresh replay was not supplied for comparison."),
         "Reproducibility establishes consistent execution, not predictive accuracy.",
         f"Jobs sharing the same known configuration: {report['jobs_sharing_known_configuration']}. "
@@ -291,6 +311,8 @@ def markdown(report):
         "  --output experiments/gb200_historical_validation.json \\",
         "  --markdown docs/gb200-historical-validation.md", "```", "",
         "Add `--replayed-prediction /path/to/fresh-replay.json` to verify exact reproduction. "
+        "For the supplied historical runs, add `--run-metadata-manifest experiments/gb200_run_metadata.json` "
+        "when reading the original raw dataset. `--runtime-profile profile.json` supplies explicitly assumed defaults. "
         "The committed `experiments/gb200_historical_observations.json` is a compact normalized input "
         "with original file hash, complete-config fingerprints, per-rank metrics and extracted warmup snapshots; "
         "it can replace the raw input for the audit. The original large configurations remain in the supplied file. "
@@ -306,10 +328,15 @@ def main():
     p.add_argument('--markdown',type=Path)
     p.add_argument('--normalized-output',type=Path)
     p.add_argument('--replayed-prediction',type=Path,help='Optional fresh replay; reject if it differs from frozen report')
+    p.add_argument('--run-metadata-manifest',type=Path,help='Shared and per-job identity fields for these observations')
+    p.add_argument('--runtime-profile',type=Path,help='Optional named fallback profile; values are marked assumed')
     args=p.parse_args()
     raw=read_report(args.datapoints)
     normalized=(raw if raw.get('kind')=='normalized_gb200_validation_observations' else
                 normalize_dataset(raw,source_sha256=hashlib.sha256(args.datapoints.read_bytes()).hexdigest()))
+    normalized=apply_dataset_metadata(normalized,
+        profile=read_report(args.runtime_profile) if args.runtime_profile else None,
+        manifest=read_report(args.run_metadata_manifest) if args.run_metadata_manifest else None)
     result=audit(normalized,read_report(args.prediction),
                  replayed_prediction=read_report(args.replayed_prediction) if args.replayed_prediction else None)
     write_report(args.output,result)

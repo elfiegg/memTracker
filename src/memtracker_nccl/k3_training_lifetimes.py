@@ -15,6 +15,8 @@ from .allocator_model import AllocatorConfig, CachingAllocatorModel
 from .k3_experiment import inventory
 from .k3_interleaved import parse_action, run as boundary_report
 from .report_io import read_report, write_report
+from .run_metadata import (K3_MODEL_PROFILE, add_metadata_arguments, compare_metadata,
+                           metadata_from_args, modeled_metadata, resolve_metadata, validate_resolved)
 
 GiB = 2**30
 
@@ -74,7 +76,13 @@ class Ledger:
 
 
 def run(schedule, muon, residual, adam, *, expandable=True, communication_gib=16,
-        sequence=4068, microbatch_size=2, capacity_bytes=197940150272):
+        sequence=4068, microbatch_size=2, capacity_bytes=197940150272, run_metadata=None):
+    identity = resolve_metadata(profile=K3_MODEL_PROFILE) if run_metadata is None else validate_resolved(run_metadata)
+    model_identity = modeled_metadata({"source_commit": muon["source_commit"]})
+    # The schedule artifact is authoritative about its extracted PyTorch source.
+    model_identity = resolve_metadata(layers=[("model_source_profile", model_identity["values"]),
+        ("schedule:torch_runtime", {"pytorch_version": schedule.get("torch_runtime")})])
+    compatibility = compare_metadata(identity, model_identity)
     if sequence * microbatch_size != residual["tokens"] or residual["dim"] != 7168:
         raise ValueError("Residual probe shape does not match training tokens/dim")
     if isinstance(communication_gib, bool) or not math.isfinite(communication_gib) or communication_gib < 0:
@@ -279,6 +287,7 @@ def run(schedule, muon, residual, adam, *, expandable=True, communication_gib=16
                               live_plus_communication_bytes=ledger.peak["bytes"]+c*GiB,
                               remaining_bytes=capacity_bytes-ledger.peak["bytes"]-c*GiB) for c in (0,8,16,32)]))
     return dict(schema_version=1, scenario=baseline["scenario"], allocator_mode="expandable" if expandable else "fixed",
+                run_metadata=identity, modeled_metadata=model_identity, runtime_compatibility=compatibility,
                 communication_gib=communication_gib, ranks=ranks, full_model_fit_verified=False,
                 coverage=dict(muon_momentum=True, muon_persistent_redistribution_buffers=True,
                               muon_newton_schulz_and_update=True, adamw_bf16_moments=True,
@@ -315,11 +324,15 @@ def main():
     parser.add_argument("--output",type=Path,required=True)
     parser.add_argument("--allocator",choices=("fixed","expandable"),default="expandable")
     parser.add_argument("--communication-gib",type=float,default=16)
+    add_metadata_arguments(parser)
     args=parser.parse_args()
     result=run(read_report(args.schedule),read_report(args.muon),
                read_report(args.residual),read_report(args.adam),expandable=args.allocator=="expandable",
-               communication_gib=args.communication_gib)
+               communication_gib=args.communication_gib,
+               run_metadata=metadata_from_args(args, default_profile=K3_MODEL_PROFILE))
     write_report(args.output,result)
+    print("Target/model identity:", result["runtime_compatibility"]["status"],
+          "(metadata does not change the modeled implementation)")
     for row in result["ranks"]:
         print(row["pp_rank"], row["dp_owner"], row["live_plus_communication_bytes"]/GiB,
               row["reserved_plus_communication_bytes"]/GiB, row["modeled_live_peak"]["event"])

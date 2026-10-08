@@ -16,6 +16,24 @@ Examined 9 runs: 6 OOM and 3 PASS. 0 match the frozen prediction's known configu
 | 3250214 | PASS (reduced_debug_model) | Interleaved1F1B / 128 / 1 × 16 | sequence, microbatch_size, microbatches, layers, hidden_dim, pp, fsdp, ep, vision_encoder, cuda_graphs, accumulation_rounds |
 | 3256150 | PASS (reduced_debug_model) | Interleaved1F1B / 128 / 1 × 16 | sequence, microbatch_size, microbatches, layers, hidden_dim, pp, fsdp, ep, vision_encoder, cuda_graphs, accumulation_rounds |
 
+## Run identity
+
+Versions are recorded per run with their origin and any fallback assumptions. The model's implementation identity is kept separate from the requested run.
+
+| Job | Training base / exact commit | PyTorch / CUDA / NCCL | Compatibility |
+|---|---|---|---|
+| 3227951 | 53a45ee31d260bcaacaa319dae29080c68675a49 / unknown | 2.15.0.dev20260928+cu130 / 13.0 / 2.30.7 | incomplete |
+| 3233459 | 53a45ee31d260bcaacaa319dae29080c68675a49 / unknown | 2.15.0.dev20260928+cu130 / 13.0 / 2.30.7 | incomplete |
+| 3238922 | 53a45ee31d260bcaacaa319dae29080c68675a49 / unknown | 2.15.0.dev20260928+cu130 / 13.0 / 2.30.7 | incomplete |
+| 3240283 | 53a45ee31d260bcaacaa319dae29080c68675a49 / unknown | 2.15.0.dev20260928+cu130 / 13.0 / 2.30.7 | incomplete |
+| 3244815 | 53a45ee31d260bcaacaa319dae29080c68675a49 / unknown | 2.15.0.dev20260928+cu130 / 13.0 / 2.30.7 | incomplete |
+| 3250222 | 53a45ee31d260bcaacaa319dae29080c68675a49 / unknown | 2.15.0.dev20260928+cu130 / 13.0 / 2.30.7 | incomplete |
+| 3244745 | 53a45ee31d260bcaacaa319dae29080c68675a49 / unknown | 2.15.0.dev20260928+cu130 / 13.0 / 2.30.7 | incomplete |
+| 3250214 | 53a45ee31d260bcaacaa319dae29080c68675a49 / unknown | 2.15.0.dev20260928+cu130 / 13.0 / 2.30.7 | incomplete |
+| 3256150 | 53a45ee31d260bcaacaa319dae29080c68675a49 / unknown | 2.15.0.dev20260928+cu130 / 13.0 / 2.30.7 | incomplete |
+
+A base commit is not an exact source revision. Container paths are recorded but do not identify immutable contents or supply missing versions. NCCL runtime build strings and TorchAO commits are preserved in the JSON report. Metadata does not select new model behavior.
+
 The existing estimator was rerun without changing its inputs; the complete report reproduced exactly.
 Reproducibility establishes consistent execution, not predictive accuracy.
 Jobs sharing the same known configuration: [[3233459, 3238922], [3250214, 3256150]]. Runtime warmup may still differ; repeated recipes must not be treated as independent held-out cases.
@@ -49,7 +67,7 @@ Recorded optimizer communication warmup: 16 snapshots; distinct outside-allocato
 - Represent first-step initialization, accumulation rounds and CUDA graph warmup/capture/replay separately.
 - Model active allocator bytes including pending frees and mirror logger peak resets.
 - Reconstruct eager communication and optimizer initialization from the recorded runtime; replace universal allowances with scoped calibration.
-- Pin runtime/source and score held-out configuration groups after these adapters; repeated recipes must not straddle calibration and validation splits.
+- Verify the exact training source (base commit alone does not identify local changes) and score held-out configuration groups after these adapters; repeated recipes must not straddle calibration and validation splits.
 
 The proposed 5% allocated / 10% reserved targets remain untested. Missing comparisons are null, not zero error or correct fit predictions. The old 186.084 GiB result is for a different scenario and cannot be validated by numerical comparison to these OOM snapshots.
 
@@ -64,4 +82,4 @@ PYTHONPATH=src python -m memtracker_nccl.datapoint_validation /path/to/datapoint
   --markdown docs/gb200-historical-validation.md
 ```
 
-Add `--replayed-prediction /path/to/fresh-replay.json` to verify exact reproduction. The committed `experiments/gb200_historical_observations.json` is a compact normalized input with original file hash, complete-config fingerprints, per-rank metrics and extracted warmup snapshots; it can replace the raw input for the audit. The original large configurations remain in the supplied file. No GPU jobs or remote transfers are needed.
+Add `--replayed-prediction /path/to/fresh-replay.json` to verify exact reproduction. For the supplied historical runs, add `--run-metadata-manifest experiments/gb200_run_metadata.json` when reading the original raw dataset. `--runtime-profile profile.json` supplies explicitly assumed defaults. The committed `experiments/gb200_historical_observations.json` is a compact normalized input with original file hash, complete-config fingerprints, per-rank metrics and extracted warmup snapshots; it can replace the raw input for the audit. The original large configurations remain in the supplied file. No GPU jobs or remote transfers are needed.

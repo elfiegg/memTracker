@@ -98,6 +98,17 @@ class HistoricalValidationTests(unittest.TestCase):
         audit(self.data,self.prediction)
         self.assertEqual((self.data,self.prediction),before)
 
+    def test_supplied_runtime_identity_does_not_imply_memory_accuracy(self):
+        result = audit(self.data, self.prediction)
+        for row in result['experiments']:
+            metadata = row['run_metadata']['values']
+            self.assertEqual(metadata['nccl_build'], '2.30.7+cuda13.3')
+            self.assertIsNone(metadata['training_code_commit'])
+            self.assertEqual(row['runtime_compatibility']['status'], 'incomplete')
+            self.assertIn('pytorch_version', row['runtime_compatibility']['matching_fields'])
+            self.assertIn('source_runtime_identity_incomplete', row['blockers'])
+            self.assertIsNone(row['peak_error_percent'])
+
     def test_raw_summary_inconsistency_rejected(self):
         e=copy.deepcopy(self.data['experiments'][0])
         e['configuration']={'parallelism':{'a':1},'training':{}}

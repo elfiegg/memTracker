@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "description": "User-supplied identity for all nine GB200 runs in kimi-k3-memory-datapoints-20261008/datapoints.json, supplied 2026-10-08. Base commit does not identify per-run local modifications. Container content digest and exact training commits were not supplied.",
+  "shared": {
+    "training_code_base_commit": "53a45ee31d260bcaacaa319dae29080c68675a49",
+    "training_code_commit": null,
+    "torchao_commit": "6352062064145e9ca0d37b05a677c420ba5a7bb6",
+    "pytorch_version": "2.15.0.dev20260928+cu130",
+    "cuda_version": "13.0",
+    "nccl_version": "2.30.7",
+    "nccl_build": "2.30.7+cuda13.3",
+    "container_identifier": "/lustre/fsw/coreai_dlfw_dev/elfieg/kimi-k3-distmuon-20260928/containers/kimi-distmuon-hybridep.sqsh"
+  },
+  "runs": {}
+}

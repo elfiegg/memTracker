@@ -54,6 +54,35 @@
         "forced_load_balance": true
       },
       "effective_config_sha256": "a0bc5b2ff88355692bd86cc430b66a4600da0749cc0adadca0b875ebfb1f3160",
+      "run_metadata": {
+        "schema_version": 1,
+        "values": {
+          "training_code_commit": null,
+          "training_code_base_commit": "53a45ee31d260bcaacaa319dae29080c68675a49",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "6352062064145e9ca0d37b05a677c420ba5a7bb6",
+          "pytorch_version": "2.15.0.dev20260928+cu130",
+          "cuda_version": "13.0",
+          "nccl_version": "2.30.7",
+          "nccl_build": "2.30.7+cuda13.3",
+          "container_identifier": "/lustre/fsw/coreai_dlfw_dev/elfieg/kimi-k3-distmuon-20260928/containers/kimi-distmuon-hybridep.sqsh",
+          "container_digest": null
+        },
+        "origins": {
+          "training_code_commit": "manifest:shared",
+          "training_code_base_commit": "manifest:shared",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "manifest:shared",
+          "pytorch_version": "manifest:shared",
+          "cuda_version": "manifest:shared",
+          "nccl_version": "manifest:shared",
+          "nccl_build": "manifest:shared",
+          "container_identifier": "manifest:shared",
+          "container_digest": null
+        },
+        "assumed_fields": [],
+        "overrides": []
+      },
       "failure_point_memory_gib": {
         "requested_gib": 1.96,
         "device_capacity_gib": 184.31,
@@ -128,6 +157,35 @@
         "forced_load_balance": true
       },
       "effective_config_sha256": "7c783b3d053464e151a07cb48040016634af7773aa2e8c138770149c0a29dcb4",
+      "run_metadata": {
+        "schema_version": 1,
+        "values": {
+          "training_code_commit": null,
+          "training_code_base_commit": "53a45ee31d260bcaacaa319dae29080c68675a49",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "6352062064145e9ca0d37b05a677c420ba5a7bb6",
+          "pytorch_version": "2.15.0.dev20260928+cu130",
+          "cuda_version": "13.0",
+          "nccl_version": "2.30.7",
+          "nccl_build": "2.30.7+cuda13.3",
+          "container_identifier": "/lustre/fsw/coreai_dlfw_dev/elfieg/kimi-k3-distmuon-20260928/containers/kimi-distmuon-hybridep.sqsh",
+          "container_digest": null
+        },
+        "origins": {
+          "training_code_commit": "manifest:shared",
+          "training_code_base_commit": "manifest:shared",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "manifest:shared",
+          "pytorch_version": "manifest:shared",
+          "cuda_version": "manifest:shared",
+          "nccl_version": "manifest:shared",
+          "nccl_build": "manifest:shared",
+          "container_identifier": "manifest:shared",
+          "container_digest": null
+        },
+        "assumed_fields": [],
+        "overrides": []
+      },
       "failure_point_memory_gib": {
         "requested_gib": 0.984375,
         "device_capacity_gib": 184.31,
@@ -202,6 +260,35 @@
         "forced_load_balance": true
       },
       "effective_config_sha256": "f1735c8c9db8443dc55b7a8c79341d8e9e541a8a4634fe62a0c12ac3b79d997e",
+      "run_metadata": {
+        "schema_version": 1,
+        "values": {
+          "training_code_commit": null,
+          "training_code_base_commit": "53a45ee31d260bcaacaa319dae29080c68675a49",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "6352062064145e9ca0d37b05a677c420ba5a7bb6",
+          "pytorch_version": "2.15.0.dev20260928+cu130",
+          "cuda_version": "13.0",
+          "nccl_version": "2.30.7",
+          "nccl_build": "2.30.7+cuda13.3",
+          "container_identifier": "/lustre/fsw/coreai_dlfw_dev/elfieg/kimi-k3-distmuon-20260928/containers/kimi-distmuon-hybridep.sqsh",
+          "container_digest": null
+        },
+        "origins": {
+          "training_code_commit": "manifest:shared",
+          "training_code_base_commit": "manifest:shared",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "manifest:shared",
+          "pytorch_version": "manifest:shared",
+          "cuda_version": "manifest:shared",
+          "nccl_version": "manifest:shared",
+          "nccl_build": "manifest:shared",
+          "container_identifier": "manifest:shared",
+          "container_digest": null
+        },
+        "assumed_fields": [],
+        "overrides": []
+      },
       "failure_point_memory_gib": {
         "requested_gib": 0.984375,
         "device_capacity_gib": 184.31,
@@ -276,6 +363,35 @@
         "forced_load_balance": true
       },
       "effective_config_sha256": "a01e97442a38016b3c8795ae192911cee51178b52b776550231a41b387af80f8",
+      "run_metadata": {
+        "schema_version": 1,
+        "values": {
+          "training_code_commit": null,
+          "training_code_base_commit": "53a45ee31d260bcaacaa319dae29080c68675a49",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "6352062064145e9ca0d37b05a677c420ba5a7bb6",
+          "pytorch_version": "2.15.0.dev20260928+cu130",
+          "cuda_version": "13.0",
+          "nccl_version": "2.30.7",
+          "nccl_build": "2.30.7+cuda13.3",
+          "container_identifier": "/lustre/fsw/coreai_dlfw_dev/elfieg/kimi-k3-distmuon-20260928/containers/kimi-distmuon-hybridep.sqsh",
+          "container_digest": null
+        },
+        "origins": {
+          "training_code_commit": "manifest:shared",
+          "training_code_base_commit": "manifest:shared",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "manifest:shared",
+          "pytorch_version": "manifest:shared",
+          "cuda_version": "manifest:shared",
+          "nccl_version": "manifest:shared",
+          "nccl_build": "manifest:shared",
+          "container_identifier": "manifest:shared",
+          "container_digest": null
+        },
+        "assumed_fields": [],
+        "overrides": []
+      },
       "failure_point_memory_gib": {
         "requested_gib": null,
         "device_capacity_gib": null,
@@ -362,6 +478,35 @@
         "forced_load_balance": true
       },
       "effective_config_sha256": "56fe5699237d60639f9dd3ae825ee9b95f93d3e7a1d10e753a82d8952719fcd1",
+      "run_metadata": {
+        "schema_version": 1,
+        "values": {
+          "training_code_commit": null,
+          "training_code_base_commit": "53a45ee31d260bcaacaa319dae29080c68675a49",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "6352062064145e9ca0d37b05a677c420ba5a7bb6",
+          "pytorch_version": "2.15.0.dev20260928+cu130",
+          "cuda_version": "13.0",
+          "nccl_version": "2.30.7",
+          "nccl_build": "2.30.7+cuda13.3",
+          "container_identifier": "/lustre/fsw/coreai_dlfw_dev/elfieg/kimi-k3-distmuon-20260928/containers/kimi-distmuon-hybridep.sqsh",
+          "container_digest": null
+        },
+        "origins": {
+          "training_code_commit": "manifest:shared",
+          "training_code_base_commit": "manifest:shared",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "manifest:shared",
+          "pytorch_version": "manifest:shared",
+          "cuda_version": "manifest:shared",
+          "nccl_version": "manifest:shared",
+          "nccl_build": "manifest:shared",
+          "container_identifier": "manifest:shared",
+          "container_digest": null
+        },
+        "assumed_fields": [],
+        "overrides": []
+      },
       "failure_point_memory_gib": {
         "requested_gib": 0.2734375,
         "device_capacity_gib": 184.31,
@@ -436,6 +581,35 @@
         "forced_load_balance": true
       },
       "effective_config_sha256": "0afe0308579eb5885c9e08d3dd2efcd2c5c81ec93402a229a1e69f1407395b37",
+      "run_metadata": {
+        "schema_version": 1,
+        "values": {
+          "training_code_commit": null,
+          "training_code_base_commit": "53a45ee31d260bcaacaa319dae29080c68675a49",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "6352062064145e9ca0d37b05a677c420ba5a7bb6",
+          "pytorch_version": "2.15.0.dev20260928+cu130",
+          "cuda_version": "13.0",
+          "nccl_version": "2.30.7",
+          "nccl_build": "2.30.7+cuda13.3",
+          "container_identifier": "/lustre/fsw/coreai_dlfw_dev/elfieg/kimi-k3-distmuon-20260928/containers/kimi-distmuon-hybridep.sqsh",
+          "container_digest": null
+        },
+        "origins": {
+          "training_code_commit": "manifest:shared",
+          "training_code_base_commit": "manifest:shared",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "manifest:shared",
+          "pytorch_version": "manifest:shared",
+          "cuda_version": "manifest:shared",
+          "nccl_version": "manifest:shared",
+          "nccl_build": "manifest:shared",
+          "container_identifier": "manifest:shared",
+          "container_digest": null
+        },
+        "assumed_fields": [],
+        "overrides": []
+      },
       "failure_point_memory_gib": {
         "requested_gib": null,
         "device_capacity_gib": null,
@@ -514,6 +688,35 @@
         "forced_load_balance": true
       },
       "effective_config_sha256": "fb28798c3aa1b49db8fe3ed361e39d5970310d99ecee8f60858fc611a15cf3a3",
+      "run_metadata": {
+        "schema_version": 1,
+        "values": {
+          "training_code_commit": null,
+          "training_code_base_commit": "53a45ee31d260bcaacaa319dae29080c68675a49",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "6352062064145e9ca0d37b05a677c420ba5a7bb6",
+          "pytorch_version": "2.15.0.dev20260928+cu130",
+          "cuda_version": "13.0",
+          "nccl_version": "2.30.7",
+          "nccl_build": "2.30.7+cuda13.3",
+          "container_identifier": "/lustre/fsw/coreai_dlfw_dev/elfieg/kimi-k3-distmuon-20260928/containers/kimi-distmuon-hybridep.sqsh",
+          "container_digest": null
+        },
+        "origins": {
+          "training_code_commit": "manifest:shared",
+          "training_code_base_commit": "manifest:shared",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "manifest:shared",
+          "pytorch_version": "manifest:shared",
+          "cuda_version": "manifest:shared",
+          "nccl_version": "manifest:shared",
+          "nccl_build": "manifest:shared",
+          "container_identifier": "manifest:shared",
+          "container_digest": null
+        },
+        "assumed_fields": [],
+        "overrides": []
+      },
       "failure_point_memory_gib": {
         "requested_gib": null,
         "device_capacity_gib": null,
@@ -857,6 +1060,35 @@
         "forced_load_balance": true
       },
       "effective_config_sha256": "f2769f262d8e99931402028920cb10c23c908eeee1b3d2f19de2cbcb3584d673",
+      "run_metadata": {
+        "schema_version": 1,
+        "values": {
+          "training_code_commit": null,
+          "training_code_base_commit": "53a45ee31d260bcaacaa319dae29080c68675a49",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "6352062064145e9ca0d37b05a677c420ba5a7bb6",
+          "pytorch_version": "2.15.0.dev20260928+cu130",
+          "cuda_version": "13.0",
+          "nccl_version": "2.30.7",
+          "nccl_build": "2.30.7+cuda13.3",
+          "container_identifier": "/lustre/fsw/coreai_dlfw_dev/elfieg/kimi-k3-distmuon-20260928/containers/kimi-distmuon-hybridep.sqsh",
+          "container_digest": null
+        },
+        "origins": {
+          "training_code_commit": "manifest:shared",
+          "training_code_base_commit": "manifest:shared",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "manifest:shared",
+          "pytorch_version": "manifest:shared",
+          "cuda_version": "manifest:shared",
+          "nccl_version": "manifest:shared",
+          "nccl_build": "manifest:shared",
+          "container_identifier": "manifest:shared",
+          "container_digest": null
+        },
+        "assumed_fields": [],
+        "overrides": []
+      },
       "failure_point_memory_gib": {
         "requested_gib": null,
         "device_capacity_gib": null,
@@ -1200,6 +1432,35 @@
         "forced_load_balance": true
       },
       "effective_config_sha256": "f04154466b5132cac4b7c933b730263e37c5c9b65fcb3d294200428c1cb3d9c9",
+      "run_metadata": {
+        "schema_version": 1,
+        "values": {
+          "training_code_commit": null,
+          "training_code_base_commit": "53a45ee31d260bcaacaa319dae29080c68675a49",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "6352062064145e9ca0d37b05a677c420ba5a7bb6",
+          "pytorch_version": "2.15.0.dev20260928+cu130",
+          "cuda_version": "13.0",
+          "nccl_version": "2.30.7",
+          "nccl_build": "2.30.7+cuda13.3",
+          "container_identifier": "/lustre/fsw/coreai_dlfw_dev/elfieg/kimi-k3-distmuon-20260928/containers/kimi-distmuon-hybridep.sqsh",
+          "container_digest": null
+        },
+        "origins": {
+          "training_code_commit": "manifest:shared",
+          "training_code_base_commit": "manifest:shared",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "manifest:shared",
+          "pytorch_version": "manifest:shared",
+          "cuda_version": "manifest:shared",
+          "nccl_version": "manifest:shared",
+          "nccl_build": "manifest:shared",
+          "container_identifier": "manifest:shared",
+          "container_digest": null
+        },
+        "assumed_fields": [],
+        "overrides": []
+      },
       "failure_point_memory_gib": {
         "requested_gib": null,
         "device_capacity_gib": null,

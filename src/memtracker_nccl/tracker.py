@@ -9,6 +9,7 @@ import torch
 from torch.distributed._tools.mem_tracker import MemTracker, _UpdateType
 
 from .allocator_model import AllocatorConfig, CachingAllocatorModel
+from .run_metadata import resolve_metadata
 
 
 def _device_key(device: str | torch.device) -> str:
@@ -28,7 +29,10 @@ class ExtendedMemTracker(MemTracker):
     """
 
     def __init__(self, *, record_tensor_events: bool = False,
-                 allocator_config: AllocatorConfig | None = None) -> None:
+                 allocator_config: AllocatorConfig | None = None,
+                 run_metadata: dict | None = None, runtime_profile: dict | None = None) -> None:
+        self._run_metadata = resolve_metadata(profile=runtime_profile,
+            layers=[("tracker:run", run_metadata if run_metadata is not None else {})])
         self._allocator = CachingAllocatorModel(allocator_config) if allocator_config is not None else None
         self._storage_allocations: dict[Any, tuple[str, str, str, str]] = {}
         self._allocation_counter = 0
@@ -197,6 +201,8 @@ class ExtendedMemTracker(MemTracker):
             **optional,
             "schema_version": 1,
             "torch_version": str(torch.__version__),
+            "simulator_environment": {"pytorch_version": str(torch.__version__), "cuda_version": torch.version.cuda},
+            "run_metadata": self._run_metadata,
             "accounting": "live tensor storage plus modeled external allocations; not reserved GPU memory",
             "current": self._snapshot(),
             "peak": self._combined_peaks,

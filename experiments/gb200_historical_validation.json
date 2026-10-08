@@ -37,6 +37,35 @@
     "reshard_after_forward": "always",
     "forced_load_balance": true
   },
+  "modeled_metadata": {
+    "schema_version": 1,
+    "values": {
+      "training_code_commit": "b4d5b404bd30dec67f86873203fbd4ba5f457531",
+      "training_code_base_commit": null,
+      "training_code_patch_sha256": null,
+      "torchao_commit": "6352062064145e9ca0d37b05a677c420ba5a7bb6",
+      "pytorch_version": "2.15.0.dev20260928+cu130",
+      "cuda_version": "13.0",
+      "nccl_version": "2.30.7",
+      "nccl_build": null,
+      "container_identifier": null,
+      "container_digest": null
+    },
+    "origins": {
+      "training_code_commit": "model_source_profile",
+      "training_code_base_commit": null,
+      "training_code_patch_sha256": null,
+      "torchao_commit": "model_source_profile",
+      "pytorch_version": "model_source_profile",
+      "cuda_version": "model_source_profile",
+      "nccl_version": "model_source_profile",
+      "nccl_build": null,
+      "container_identifier": null,
+      "container_digest": null
+    },
+    "assumed_fields": [],
+    "overrides": []
+  },
   "frozen_estimator": {
     "source_commit": "b4d5b404bd30dec67f86873203fbd4ba5f457531",
     "worst_live_peak_gib": 186.08413811400533,
@@ -113,7 +142,7 @@
     "Represent first-step initialization, accumulation rounds and CUDA graph warmup/capture/replay separately.",
     "Model active allocator bytes including pending frees and mirror logger peak resets.",
     "Reconstruct eager communication and optimizer initialization from the recorded runtime; replace universal allowances with scoped calibration.",
-    "Pin runtime/source and score held-out configuration groups after these adapters; repeated recipes must not straddle calibration and validation splits."
+    "Verify the exact training source (base commit alone does not identify local changes) and score held-out configuration groups after these adapters; repeated recipes must not straddle calibration and validation splits."
   ],
   "experiments": [
     {
@@ -121,6 +150,60 @@
       "outcome": "OOM",
       "scope": "full_model",
       "phase": "pipeline backward",
+      "run_metadata": {
+        "schema_version": 1,
+        "values": {
+          "training_code_commit": null,
+          "training_code_base_commit": "53a45ee31d260bcaacaa319dae29080c68675a49",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "6352062064145e9ca0d37b05a677c420ba5a7bb6",
+          "pytorch_version": "2.15.0.dev20260928+cu130",
+          "cuda_version": "13.0",
+          "nccl_version": "2.30.7",
+          "nccl_build": "2.30.7+cuda13.3",
+          "container_identifier": "/lustre/fsw/coreai_dlfw_dev/elfieg/kimi-k3-distmuon-20260928/containers/kimi-distmuon-hybridep.sqsh",
+          "container_digest": null
+        },
+        "origins": {
+          "training_code_commit": "manifest:shared",
+          "training_code_base_commit": "manifest:shared",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "manifest:shared",
+          "pytorch_version": "manifest:shared",
+          "cuda_version": "manifest:shared",
+          "nccl_version": "manifest:shared",
+          "nccl_build": "manifest:shared",
+          "container_identifier": "manifest:shared",
+          "container_digest": null
+        },
+        "assumed_fields": [],
+        "overrides": []
+      },
+      "runtime_compatibility": {
+        "status": "incomplete",
+        "matching_fields": [
+          "torchao_commit",
+          "pytorch_version",
+          "cuda_version",
+          "nccl_version"
+        ],
+        "differences": [],
+        "unknown_fields": [
+          "training_code_commit",
+          "training_code_base_commit",
+          "training_code_patch_sha256",
+          "nccl_build",
+          "container_identifier",
+          "container_digest"
+        ],
+        "assumed_fields": [],
+        "identity_verified": false,
+        "notes": [
+          "Base commit is not an exact training-code commit; local changes may exist.",
+          "Container paths are mutable identifiers; no versions are inferred from a path.",
+          "Matching declarations do not prove source equivalence or memory-model coverage."
+        ]
+      },
       "configuration": {
         "layers": 93,
         "hidden_dim": 7168,
@@ -164,7 +247,8 @@
         "configuration_mismatch",
         "censored_failure_no_completed_peak",
         "estimator_missing_full_training_components",
-        "source_runtime_identity_unverified",
+        "source_runtime_identity_incomplete",
+        "source_content_equivalence_unverified",
         "metric_and_window_alignment_unverified"
       ],
       "comparison_status": "not_scored",
@@ -189,6 +273,60 @@
       "outcome": "OOM",
       "scope": "full_model",
       "phase": "pipeline backward",
+      "run_metadata": {
+        "schema_version": 1,
+        "values": {
+          "training_code_commit": null,
+          "training_code_base_commit": "53a45ee31d260bcaacaa319dae29080c68675a49",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "6352062064145e9ca0d37b05a677c420ba5a7bb6",
+          "pytorch_version": "2.15.0.dev20260928+cu130",
+          "cuda_version": "13.0",
+          "nccl_version": "2.30.7",
+          "nccl_build": "2.30.7+cuda13.3",
+          "container_identifier": "/lustre/fsw/coreai_dlfw_dev/elfieg/kimi-k3-distmuon-20260928/containers/kimi-distmuon-hybridep.sqsh",
+          "container_digest": null
+        },
+        "origins": {
+          "training_code_commit": "manifest:shared",
+          "training_code_base_commit": "manifest:shared",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "manifest:shared",
+          "pytorch_version": "manifest:shared",
+          "cuda_version": "manifest:shared",
+          "nccl_version": "manifest:shared",
+          "nccl_build": "manifest:shared",
+          "container_identifier": "manifest:shared",
+          "container_digest": null
+        },
+        "assumed_fields": [],
+        "overrides": []
+      },
+      "runtime_compatibility": {
+        "status": "incomplete",
+        "matching_fields": [
+          "torchao_commit",
+          "pytorch_version",
+          "cuda_version",
+          "nccl_version"
+        ],
+        "differences": [],
+        "unknown_fields": [
+          "training_code_commit",
+          "training_code_base_commit",
+          "training_code_patch_sha256",
+          "nccl_build",
+          "container_identifier",
+          "container_digest"
+        ],
+        "assumed_fields": [],
+        "identity_verified": false,
+        "notes": [
+          "Base commit is not an exact training-code commit; local changes may exist.",
+          "Container paths are mutable identifiers; no versions are inferred from a path.",
+          "Matching declarations do not prove source equivalence or memory-model coverage."
+        ]
+      },
       "configuration": {
         "layers": 93,
         "hidden_dim": 7168,
@@ -237,7 +375,8 @@
         "configuration_mismatch",
         "censored_failure_no_completed_peak",
         "estimator_missing_full_training_components",
-        "source_runtime_identity_unverified",
+        "source_runtime_identity_incomplete",
+        "source_content_equivalence_unverified",
         "metric_and_window_alignment_unverified"
       ],
       "comparison_status": "not_scored",
@@ -262,6 +401,60 @@
       "outcome": "OOM",
       "scope": "full_model",
       "phase": "pipeline backward",
+      "run_metadata": {
+        "schema_version": 1,
+        "values": {
+          "training_code_commit": null,
+          "training_code_base_commit": "53a45ee31d260bcaacaa319dae29080c68675a49",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "6352062064145e9ca0d37b05a677c420ba5a7bb6",
+          "pytorch_version": "2.15.0.dev20260928+cu130",
+          "cuda_version": "13.0",
+          "nccl_version": "2.30.7",
+          "nccl_build": "2.30.7+cuda13.3",
+          "container_identifier": "/lustre/fsw/coreai_dlfw_dev/elfieg/kimi-k3-distmuon-20260928/containers/kimi-distmuon-hybridep.sqsh",
+          "container_digest": null
+        },
+        "origins": {
+          "training_code_commit": "manifest:shared",
+          "training_code_base_commit": "manifest:shared",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "manifest:shared",
+          "pytorch_version": "manifest:shared",
+          "cuda_version": "manifest:shared",
+          "nccl_version": "manifest:shared",
+          "nccl_build": "manifest:shared",
+          "container_identifier": "manifest:shared",
+          "container_digest": null
+        },
+        "assumed_fields": [],
+        "overrides": []
+      },
+      "runtime_compatibility": {
+        "status": "incomplete",
+        "matching_fields": [
+          "torchao_commit",
+          "pytorch_version",
+          "cuda_version",
+          "nccl_version"
+        ],
+        "differences": [],
+        "unknown_fields": [
+          "training_code_commit",
+          "training_code_base_commit",
+          "training_code_patch_sha256",
+          "nccl_build",
+          "container_identifier",
+          "container_digest"
+        ],
+        "assumed_fields": [],
+        "identity_verified": false,
+        "notes": [
+          "Base commit is not an exact training-code commit; local changes may exist.",
+          "Container paths are mutable identifiers; no versions are inferred from a path.",
+          "Matching declarations do not prove source equivalence or memory-model coverage."
+        ]
+      },
       "configuration": {
         "layers": 93,
         "hidden_dim": 7168,
@@ -310,7 +503,8 @@
         "configuration_mismatch",
         "censored_failure_no_completed_peak",
         "estimator_missing_full_training_components",
-        "source_runtime_identity_unverified",
+        "source_runtime_identity_incomplete",
+        "source_content_equivalence_unverified",
         "metric_and_window_alignment_unverified"
       ],
       "comparison_status": "not_scored",
@@ -335,6 +529,60 @@
       "outcome": "OOM",
       "scope": "full_model",
       "phase": "DistMuon optimizer NCCL storage-to-compute redistribution",
+      "run_metadata": {
+        "schema_version": 1,
+        "values": {
+          "training_code_commit": null,
+          "training_code_base_commit": "53a45ee31d260bcaacaa319dae29080c68675a49",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "6352062064145e9ca0d37b05a677c420ba5a7bb6",
+          "pytorch_version": "2.15.0.dev20260928+cu130",
+          "cuda_version": "13.0",
+          "nccl_version": "2.30.7",
+          "nccl_build": "2.30.7+cuda13.3",
+          "container_identifier": "/lustre/fsw/coreai_dlfw_dev/elfieg/kimi-k3-distmuon-20260928/containers/kimi-distmuon-hybridep.sqsh",
+          "container_digest": null
+        },
+        "origins": {
+          "training_code_commit": "manifest:shared",
+          "training_code_base_commit": "manifest:shared",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "manifest:shared",
+          "pytorch_version": "manifest:shared",
+          "cuda_version": "manifest:shared",
+          "nccl_version": "manifest:shared",
+          "nccl_build": "manifest:shared",
+          "container_identifier": "manifest:shared",
+          "container_digest": null
+        },
+        "assumed_fields": [],
+        "overrides": []
+      },
+      "runtime_compatibility": {
+        "status": "incomplete",
+        "matching_fields": [
+          "torchao_commit",
+          "pytorch_version",
+          "cuda_version",
+          "nccl_version"
+        ],
+        "differences": [],
+        "unknown_fields": [
+          "training_code_commit",
+          "training_code_base_commit",
+          "training_code_patch_sha256",
+          "nccl_build",
+          "container_identifier",
+          "container_digest"
+        ],
+        "assumed_fields": [],
+        "identity_verified": false,
+        "notes": [
+          "Base commit is not an exact training-code commit; local changes may exist.",
+          "Container paths are mutable identifiers; no versions are inferred from a path.",
+          "Matching declarations do not prove source equivalence or memory-model coverage."
+        ]
+      },
       "configuration": {
         "layers": 93,
         "hidden_dim": 7168,
@@ -393,7 +641,8 @@
         "configuration_mismatch",
         "censored_failure_no_completed_peak",
         "estimator_missing_full_training_components",
-        "source_runtime_identity_unverified",
+        "source_runtime_identity_incomplete",
+        "source_content_equivalence_unverified",
         "metric_and_window_alignment_unverified"
       ],
       "comparison_status": "not_scored",
@@ -418,6 +667,60 @@
       "outcome": "OOM",
       "scope": "full_model",
       "phase": "first-step eager graph warmup; virtual stage13 backward microbatch40",
+      "run_metadata": {
+        "schema_version": 1,
+        "values": {
+          "training_code_commit": null,
+          "training_code_base_commit": "53a45ee31d260bcaacaa319dae29080c68675a49",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "6352062064145e9ca0d37b05a677c420ba5a7bb6",
+          "pytorch_version": "2.15.0.dev20260928+cu130",
+          "cuda_version": "13.0",
+          "nccl_version": "2.30.7",
+          "nccl_build": "2.30.7+cuda13.3",
+          "container_identifier": "/lustre/fsw/coreai_dlfw_dev/elfieg/kimi-k3-distmuon-20260928/containers/kimi-distmuon-hybridep.sqsh",
+          "container_digest": null
+        },
+        "origins": {
+          "training_code_commit": "manifest:shared",
+          "training_code_base_commit": "manifest:shared",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "manifest:shared",
+          "pytorch_version": "manifest:shared",
+          "cuda_version": "manifest:shared",
+          "nccl_version": "manifest:shared",
+          "nccl_build": "manifest:shared",
+          "container_identifier": "manifest:shared",
+          "container_digest": null
+        },
+        "assumed_fields": [],
+        "overrides": []
+      },
+      "runtime_compatibility": {
+        "status": "incomplete",
+        "matching_fields": [
+          "torchao_commit",
+          "pytorch_version",
+          "cuda_version",
+          "nccl_version"
+        ],
+        "differences": [],
+        "unknown_fields": [
+          "training_code_commit",
+          "training_code_base_commit",
+          "training_code_patch_sha256",
+          "nccl_build",
+          "container_identifier",
+          "container_digest"
+        ],
+        "assumed_fields": [],
+        "identity_verified": false,
+        "notes": [
+          "Base commit is not an exact training-code commit; local changes may exist.",
+          "Container paths are mutable identifiers; no versions are inferred from a path.",
+          "Matching declarations do not prove source equivalence or memory-model coverage."
+        ]
+      },
       "configuration": {
         "layers": 93,
         "hidden_dim": 7168,
@@ -482,7 +785,8 @@
         "censored_failure_no_completed_peak",
         "graph_warmup_capture_replay_windows_not_modeled",
         "estimator_missing_full_training_components",
-        "source_runtime_identity_unverified",
+        "source_runtime_identity_incomplete",
+        "source_content_equivalence_unverified",
         "metric_and_window_alignment_unverified"
       ],
       "comparison_status": "not_scored",
@@ -507,6 +811,60 @@
       "outcome": "OOM",
       "scope": "full_model",
       "phase": "first optimizer NCCL storage-to-compute redistribution",
+      "run_metadata": {
+        "schema_version": 1,
+        "values": {
+          "training_code_commit": null,
+          "training_code_base_commit": "53a45ee31d260bcaacaa319dae29080c68675a49",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "6352062064145e9ca0d37b05a677c420ba5a7bb6",
+          "pytorch_version": "2.15.0.dev20260928+cu130",
+          "cuda_version": "13.0",
+          "nccl_version": "2.30.7",
+          "nccl_build": "2.30.7+cuda13.3",
+          "container_identifier": "/lustre/fsw/coreai_dlfw_dev/elfieg/kimi-k3-distmuon-20260928/containers/kimi-distmuon-hybridep.sqsh",
+          "container_digest": null
+        },
+        "origins": {
+          "training_code_commit": "manifest:shared",
+          "training_code_base_commit": "manifest:shared",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "manifest:shared",
+          "pytorch_version": "manifest:shared",
+          "cuda_version": "manifest:shared",
+          "nccl_version": "manifest:shared",
+          "nccl_build": "manifest:shared",
+          "container_identifier": "manifest:shared",
+          "container_digest": null
+        },
+        "assumed_fields": [],
+        "overrides": []
+      },
+      "runtime_compatibility": {
+        "status": "incomplete",
+        "matching_fields": [
+          "torchao_commit",
+          "pytorch_version",
+          "cuda_version",
+          "nccl_version"
+        ],
+        "differences": [],
+        "unknown_fields": [
+          "training_code_commit",
+          "training_code_base_commit",
+          "training_code_patch_sha256",
+          "nccl_build",
+          "container_identifier",
+          "container_digest"
+        ],
+        "assumed_fields": [],
+        "identity_verified": false,
+        "notes": [
+          "Base commit is not an exact training-code commit; local changes may exist.",
+          "Container paths are mutable identifiers; no versions are inferred from a path.",
+          "Matching declarations do not prove source equivalence or memory-model coverage."
+        ]
+      },
       "configuration": {
         "layers": 93,
         "hidden_dim": 7168,
@@ -576,7 +934,8 @@
         "censored_failure_no_completed_peak",
         "graph_warmup_capture_replay_windows_not_modeled",
         "estimator_missing_full_training_components",
-        "source_runtime_identity_unverified",
+        "source_runtime_identity_incomplete",
+        "source_content_equivalence_unverified",
         "metric_and_window_alignment_unverified"
       ],
       "comparison_status": "not_scored",
@@ -601,6 +960,60 @@
       "outcome": "PASS",
       "scope": "reduced_debug_model",
       "phase": "small-model functional gate",
+      "run_metadata": {
+        "schema_version": 1,
+        "values": {
+          "training_code_commit": null,
+          "training_code_base_commit": "53a45ee31d260bcaacaa319dae29080c68675a49",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "6352062064145e9ca0d37b05a677c420ba5a7bb6",
+          "pytorch_version": "2.15.0.dev20260928+cu130",
+          "cuda_version": "13.0",
+          "nccl_version": "2.30.7",
+          "nccl_build": "2.30.7+cuda13.3",
+          "container_identifier": "/lustre/fsw/coreai_dlfw_dev/elfieg/kimi-k3-distmuon-20260928/containers/kimi-distmuon-hybridep.sqsh",
+          "container_digest": null
+        },
+        "origins": {
+          "training_code_commit": "manifest:shared",
+          "training_code_base_commit": "manifest:shared",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "manifest:shared",
+          "pytorch_version": "manifest:shared",
+          "cuda_version": "manifest:shared",
+          "nccl_version": "manifest:shared",
+          "nccl_build": "manifest:shared",
+          "container_identifier": "manifest:shared",
+          "container_digest": null
+        },
+        "assumed_fields": [],
+        "overrides": []
+      },
+      "runtime_compatibility": {
+        "status": "incomplete",
+        "matching_fields": [
+          "torchao_commit",
+          "pytorch_version",
+          "cuda_version",
+          "nccl_version"
+        ],
+        "differences": [],
+        "unknown_fields": [
+          "training_code_commit",
+          "training_code_base_commit",
+          "training_code_patch_sha256",
+          "nccl_build",
+          "container_identifier",
+          "container_digest"
+        ],
+        "assumed_fields": [],
+        "identity_verified": false,
+        "notes": [
+          "Base commit is not an exact training-code commit; local changes may exist.",
+          "Container paths are mutable identifiers; no versions are inferred from a path.",
+          "Matching declarations do not prove source equivalence or memory-model coverage."
+        ]
+      },
       "configuration": {
         "layers": 17,
         "hidden_dim": 256,
@@ -714,7 +1127,8 @@
         "configuration_mismatch",
         "graph_warmup_capture_replay_windows_not_modeled",
         "estimator_missing_full_training_components",
-        "source_runtime_identity_unverified",
+        "source_runtime_identity_incomplete",
+        "source_content_equivalence_unverified",
         "metric_and_window_alignment_unverified"
       ],
       "comparison_status": "not_scored",
@@ -755,6 +1169,60 @@
       "outcome": "PASS",
       "scope": "reduced_debug_model",
       "phase": "small-model functional gate",
+      "run_metadata": {
+        "schema_version": 1,
+        "values": {
+          "training_code_commit": null,
+          "training_code_base_commit": "53a45ee31d260bcaacaa319dae29080c68675a49",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "6352062064145e9ca0d37b05a677c420ba5a7bb6",
+          "pytorch_version": "2.15.0.dev20260928+cu130",
+          "cuda_version": "13.0",
+          "nccl_version": "2.30.7",
+          "nccl_build": "2.30.7+cuda13.3",
+          "container_identifier": "/lustre/fsw/coreai_dlfw_dev/elfieg/kimi-k3-distmuon-20260928/containers/kimi-distmuon-hybridep.sqsh",
+          "container_digest": null
+        },
+        "origins": {
+          "training_code_commit": "manifest:shared",
+          "training_code_base_commit": "manifest:shared",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "manifest:shared",
+          "pytorch_version": "manifest:shared",
+          "cuda_version": "manifest:shared",
+          "nccl_version": "manifest:shared",
+          "nccl_build": "manifest:shared",
+          "container_identifier": "manifest:shared",
+          "container_digest": null
+        },
+        "assumed_fields": [],
+        "overrides": []
+      },
+      "runtime_compatibility": {
+        "status": "incomplete",
+        "matching_fields": [
+          "torchao_commit",
+          "pytorch_version",
+          "cuda_version",
+          "nccl_version"
+        ],
+        "differences": [],
+        "unknown_fields": [
+          "training_code_commit",
+          "training_code_base_commit",
+          "training_code_patch_sha256",
+          "nccl_build",
+          "container_identifier",
+          "container_digest"
+        ],
+        "assumed_fields": [],
+        "identity_verified": false,
+        "notes": [
+          "Base commit is not an exact training-code commit; local changes may exist.",
+          "Container paths are mutable identifiers; no versions are inferred from a path.",
+          "Matching declarations do not prove source equivalence or memory-model coverage."
+        ]
+      },
       "configuration": {
         "layers": 17,
         "hidden_dim": 256,
@@ -873,7 +1341,8 @@
         "configuration_mismatch",
         "graph_warmup_capture_replay_windows_not_modeled",
         "estimator_missing_full_training_components",
-        "source_runtime_identity_unverified",
+        "source_runtime_identity_incomplete",
+        "source_content_equivalence_unverified",
         "metric_and_window_alignment_unverified"
       ],
       "comparison_status": "not_scored",
@@ -914,6 +1383,60 @@
       "outcome": "PASS",
       "scope": "reduced_debug_model",
       "phase": "small-model functional gate with optimizer warmup",
+      "run_metadata": {
+        "schema_version": 1,
+        "values": {
+          "training_code_commit": null,
+          "training_code_base_commit": "53a45ee31d260bcaacaa319dae29080c68675a49",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "6352062064145e9ca0d37b05a677c420ba5a7bb6",
+          "pytorch_version": "2.15.0.dev20260928+cu130",
+          "cuda_version": "13.0",
+          "nccl_version": "2.30.7",
+          "nccl_build": "2.30.7+cuda13.3",
+          "container_identifier": "/lustre/fsw/coreai_dlfw_dev/elfieg/kimi-k3-distmuon-20260928/containers/kimi-distmuon-hybridep.sqsh",
+          "container_digest": null
+        },
+        "origins": {
+          "training_code_commit": "manifest:shared",
+          "training_code_base_commit": "manifest:shared",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "manifest:shared",
+          "pytorch_version": "manifest:shared",
+          "cuda_version": "manifest:shared",
+          "nccl_version": "manifest:shared",
+          "nccl_build": "manifest:shared",
+          "container_identifier": "manifest:shared",
+          "container_digest": null
+        },
+        "assumed_fields": [],
+        "overrides": []
+      },
+      "runtime_compatibility": {
+        "status": "incomplete",
+        "matching_fields": [
+          "torchao_commit",
+          "pytorch_version",
+          "cuda_version",
+          "nccl_version"
+        ],
+        "differences": [],
+        "unknown_fields": [
+          "training_code_commit",
+          "training_code_base_commit",
+          "training_code_patch_sha256",
+          "nccl_build",
+          "container_identifier",
+          "container_digest"
+        ],
+        "assumed_fields": [],
+        "identity_verified": false,
+        "notes": [
+          "Base commit is not an exact training-code commit; local changes may exist.",
+          "Container paths are mutable identifiers; no versions are inferred from a path.",
+          "Matching declarations do not prove source equivalence or memory-model coverage."
+        ]
+      },
       "configuration": {
         "layers": 17,
         "hidden_dim": 256,
@@ -1032,7 +1555,8 @@
         "configuration_mismatch",
         "graph_warmup_capture_replay_windows_not_modeled",
         "estimator_missing_full_training_components",
-        "source_runtime_identity_unverified",
+        "source_runtime_identity_incomplete",
+        "source_content_equivalence_unverified",
         "metric_and_window_alignment_unverified"
       ],
       "comparison_status": "not_scored",
