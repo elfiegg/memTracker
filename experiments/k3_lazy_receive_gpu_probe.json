@@ -1,0 +1,67 @@
+{
+  "kind": "real CUDA receive-helper and synthetic state allocations; not a training run",
+  "torch_version": "2.15.0.dev20260928+cu130",
+  "cuda_version": "13.0",
+  "device_name": "NVIDIA GB200",
+  "stage": 6,
+  "capacity_bytes": 197940150272,
+  "allocator_config": "backend:native,expandable_segments:True",
+  "installed_method_source_sha256": "4841cf69c374735659ad79183a547159a959c85f94f6c54709cafad40c1ec4b5",
+  "scenario_sha256": "416449da447429676ff56712ab32fe00437943fc17417f8e82214ff89e95e3dc",
+  "phases": [
+    {
+      "phase": "baseline",
+      "allocated_bytes": 0,
+      "reserved_bytes": 0,
+      "free_bytes": 197212110848,
+      "total_bytes": 197940150272
+    },
+    {
+      "phase": "pipeline_receive_buffers",
+      "allocated_bytes": 0,
+      "reserved_bytes": 0,
+      "free_bytes": 197212110848,
+      "total_bytes": 197940150272
+    },
+    {
+      "phase": "lazy_warmup_inputs_and_one_backward_receive",
+      "allocated_bytes": 2566029312,
+      "reserved_bytes": 2579496960,
+      "free_bytes": 194632613888,
+      "total_bytes": 197940150272
+    },
+    {
+      "phase": "expert_bf16_parameters",
+      "allocated_bytes": 24762286080,
+      "reserved_bytes": 24767365120,
+      "free_bytes": 172444745728,
+      "total_bytes": 197940150272
+    },
+    {
+      "phase": "expert_bf16_momentum",
+      "allocated_bytes": 46958542848,
+      "reserved_bytes": 46976204800,
+      "free_bytes": 150235906048,
+      "total_bytes": 197940150272
+    },
+    {
+      "phase": "expert_fp32_accumulated_gradients",
+      "allocated_bytes": 91351056384,
+      "reserved_bytes": 91351941120,
+      "free_bytes": 105860169728,
+      "total_bytes": 197940150272
+    }
+  ],
+  "status": "synthetic_subtotal_allocations_succeeded",
+  "actual_pipeline_receive_bytes": {
+    "forward_bytes": 0,
+    "backward_bytes": 0,
+    "total_bytes": 0
+  },
+  "observed_receive_policy": "lazy",
+  "replayed_live_input_bytes": 2566029312,
+  "full_model_fit_verified": false,
+  "job_id": "463439",
+  "site": "Polyphe",
+  "measurement_scope": "One GPU, stage 6 receive helpers plus synthetic expert-state allocations. No K3 forward/backward, optimizer compute, NCCL, or HybridEP."
+}

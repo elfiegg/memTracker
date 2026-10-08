@@ -166,6 +166,16 @@ TorchTitan's Triton dependency. This result therefore does not imply successful
 full K3 FakeTensor execution. See [the K3 report](docs/k3-experiment.md) and
 [machine-readable results](experiments/k3_512rank_partial.json).
 
+## Requested 256-GPU fit check
+
+The PP8/FSDP32/EP32 BF16 DistMuon+AdamW, FullAC, HybridEP, sequence4068,
+2×64-microbatch scenario is now a separate [fit screen](docs/k3-256-fit.md).
+**Full-model fit remains unproven.** The combined decoder state lower bound is
+109.06 GiB/GPU, excluding activations, communication, gathered weights and scratch.
+A GB200 probe verified lazy receive allocation in the target runtime; the local
+CPU runtime's eager-buffer OOM prediction does not apply there. The exact
+256-GPU short training test is queued, with no training outcome included yet.
+
 ## Interpretation and limits
 
 This is an **opt-in model and schedule**, not automatic interception of arbitrary
