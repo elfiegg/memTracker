@@ -60,6 +60,7 @@ class _Segment:
     chunk_size: int  # Zero denotes a fixed segment.
     mapped_chunks: set[int] = field(default_factory=set)
     blocks: list[_Allocation] = field(default_factory=list)
+    _mapped_ranges_cache: list[tuple[int, int]] | None = field(default=None, repr=False)
 
     @property
     def reserved(self) -> int:
@@ -80,6 +81,8 @@ class _Segment:
     def mapped_ranges(self) -> list[tuple[int, int]]:
         if not self.chunk_size:
             return [(0, self.extent)]
+        if self._mapped_ranges_cache is not None:
+            return self._mapped_ranges_cache
         ranges: list[tuple[int, int]] = []
         for chunk in sorted(self.mapped_chunks):
             start, end = chunk * self.chunk_size, (chunk + 1) * self.chunk_size
@@ -87,12 +90,14 @@ class _Segment:
                 ranges[-1] = (ranges[-1][0], end)
             else:
                 ranges.append((start, end))
+        self._mapped_ranges_cache = ranges
         return ranges
 
     def cached_ranges(self) -> list[tuple[int, int]]:
+        mapped = self.mapped_ranges()
         return [(max(start, mapped_start), min(end, mapped_end))
                 for start, end in self.free_ranges()
-                for mapped_start, mapped_end in self.mapped_ranges()
+                for mapped_start, mapped_end in mapped
                 if max(start, mapped_start) < min(end, mapped_end)]
 
 
@@ -156,6 +161,7 @@ class CachingAllocatorModel:
                 first = offset // segment.chunk_size
                 last = (offset+size-1) // segment.chunk_size
                 segment.mapped_chunks.update(range(first, last+1))
+                segment._mapped_ranges_cache = None
             else:
                 backing = (2*MiB if size <= MiB else
                            20*MiB if size < 10*MiB else _round_up(size, 2*MiB))
@@ -221,6 +227,7 @@ class CachingAllocatorModel:
                     last = (block.offset+block.size-1) // segment.chunk_size
                     occupied_chunks.update(range(first, last+1))
                 segment.mapped_chunks.intersection_update(occupied_chunks)
+                segment._mapped_ranges_cache = None
                 retained.append(segment)
             elif segment.blocks:
                 retained.append(segment)
@@ -230,6 +237,10 @@ class CachingAllocatorModel:
     def _totals() -> dict[str, int]:
         return dict(requested_bytes=0, allocated_bytes=0, pending_free_bytes=0,
                     reserved_bytes=0, cached_bytes=0, segment_count=0)
+
+    def reserved_bytes(self) -> int:
+        """Total mapped backing without constructing per-block address metadata."""
+        return sum(segment.reserved for segment in self._segments)
 
     def snapshot(self) -> dict[str, dict[str, Any]]:
         """Detached counters by device, pools, and synthetic address metadata.

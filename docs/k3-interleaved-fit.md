@@ -1,5 +1,9 @@
 # K3 Interleaved1F1B: CPU estimate
 
+**Superseded for fit assessment:** the [expanded lifetime analysis](k3-training-lifetimes.md)
+adds optimizer runtime buffers, FSDP copies and attention-residual recomputation.
+The figures below remain the earlier partial boundary subtotal.
+
 For the requested PP8/FSDP32/EP32, S4068, microbatch 2 × 64, BF16, FP32 reduction,
 FullAC, DistMuon+AdamW, HybridEP, CUDA-graph-off configuration, the largest
 **modeled partial peak is 142.48 GiB/GPU**, on PP rank 2. Communication is assumed

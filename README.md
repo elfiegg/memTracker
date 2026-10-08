@@ -10,6 +10,13 @@ configuration or calibration data. Unsupported overhead is reported explicitly.
 The included Kimi K3 experiment is a **partial parameter/state/communication
 estimate**, not a full forward/backward or OOM prediction.
 
+The latest [K3 training-lifetime analysis](docs/k3-training-lifetimes.md) adds
+source-executed Muon/AdamW, FSDP unsharded expert copies, FullAC/attention-residual
+lifetimes and fixed/expandable allocator replay. The modeled worst-rank live
+subtotal is **186.084 GiB before external communication**, versus **184.346 GiB**
+capacity. This is a modeled no-fit with explicit remaining kernel/communication
+coverage gaps, not a measured full-training CUDA OOM.
+
 ## Install and test
 
 Python 3.11+; tested with Python 3.12 and **PyTorch 2.14.1 CPU**. PyTorch private

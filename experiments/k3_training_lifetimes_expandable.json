@@ -1,0 +1,1285 @@
+{
+  "schema_version": 1,
+  "scenario": {
+    "sequence": 4068,
+    "microbatch_size": 2,
+    "microbatches": 64,
+    "pp": 8,
+    "fsdp": 32,
+    "ep": 32,
+    "tp": 1,
+    "cp": 1,
+    "virtual_stages": 16,
+    "schedule": "Interleaved1F1B",
+    "checkpointing": "FullAC",
+    "parameter_dtype": "BF16",
+    "reduction_dtype": "FP32",
+    "optimizer": "DistMuon + AdamW",
+    "cuda_graphs": false,
+    "communication_initialization": "eager",
+    "receive_policy": "on demand at scheduled RECV",
+    "defer_pp_recv": false
+  },
+  "allocator_mode": "expandable",
+  "communication_gib": 16,
+  "ranks": [
+    {
+      "pp_rank": 0,
+      "dp_owner": 0,
+      "training_live_peak": {
+        "bytes": 182731834196,
+        "event": "8B57/layer52/recompute_backward",
+        "categories": {
+          "sharded_parameters": 19028088944,
+          "muon_momentum": 18925981696,
+          "muon_reserved_buffers": 5187137536,
+          "router_buffers": 35911680,
+          "adamw_moments": 204214496,
+          "fsdp_gather_staging": 0,
+          "fsdp_unsharded_weights": 35486213632,
+          "checkpoint_inputs": 17845567488,
+          "attention_residual": 8514580484,
+          "pipeline_output": 5948522496,
+          "pipeline_receive": 583188480,
+          "fp32_accumulated_gradients": 70972427264
+        }
+      },
+      "phase_peaks": {
+        "initialization": {
+          "bytes": 43381334352,
+          "event": "initialize",
+          "categories": {
+            "sharded_parameters": 19028088944,
+            "muon_momentum": 18925981696,
+            "muon_reserved_buffers": 5187137536,
+            "router_buffers": 35911680,
+            "adamw_moments": 204214496
+          }
+        },
+        "training": {
+          "bytes": 182731834196,
+          "event": "8B57/layer52/recompute_backward",
+          "categories": {
+            "sharded_parameters": 19028088944,
+            "muon_momentum": 18925981696,
+            "muon_reserved_buffers": 5187137536,
+            "router_buffers": 35911680,
+            "adamw_moments": 204214496,
+            "fsdp_gather_staging": 0,
+            "fsdp_unsharded_weights": 35486213632,
+            "checkpoint_inputs": 17845567488,
+            "attention_residual": 8514580484,
+            "pipeline_output": 5948522496,
+            "pipeline_receive": 583188480,
+            "fp32_accumulated_gradients": 70972427264
+          }
+        },
+        "optimizer": {
+          "bytes": 68222728640,
+          "event": "optimizer/stage0/layers.1.moe.routed_experts.w13.weight",
+          "categories": {
+            "sharded_parameters": 19028088944,
+            "muon_momentum": 18925981696,
+            "muon_reserved_buffers": 5187137536,
+            "router_buffers": 35911680,
+            "adamw_moments": 204214496,
+            "fsdp_gather_staging": 0,
+            "fsdp_unsharded_weights": 0,
+            "checkpoint_inputs": 0,
+            "attention_residual": 0,
+            "pipeline_output": 0,
+            "pipeline_receive": 0,
+            "fp32_accumulated_gradients": 0,
+            "bf16_optimizer_gradients": 19028088944,
+            "muon_kernel_temporary": 5813305344
+          }
+        }
+      },
+      "after_schedule_live_by_category": {
+        "sharded_parameters": 19028088944,
+        "muon_momentum": 18925981696,
+        "muon_reserved_buffers": 5187137536,
+        "router_buffers": 35911680,
+        "adamw_moments": 204214496,
+        "fsdp_gather_staging": 0,
+        "fsdp_unsharded_weights": 0,
+        "checkpoint_inputs": 0,
+        "attention_residual": 0,
+        "pipeline_output": 0,
+        "pipeline_receive": 0,
+        "fp32_accumulated_gradients": 0,
+        "bf16_optimizer_gradients": 19028088944
+      },
+      "modeled_live_peak": {
+        "bytes": 182731834196,
+        "event": "8B57/layer52/recompute_backward",
+        "categories": {
+          "sharded_parameters": 19028088944,
+          "muon_momentum": 18925981696,
+          "muon_reserved_buffers": 5187137536,
+          "router_buffers": 35911680,
+          "adamw_moments": 204214496,
+          "fsdp_gather_staging": 0,
+          "fsdp_unsharded_weights": 35486213632,
+          "checkpoint_inputs": 17845567488,
+          "attention_residual": 8514580484,
+          "pipeline_output": 5948522496,
+          "pipeline_receive": 583188480,
+          "fp32_accumulated_gradients": 70972427264
+        }
+      },
+      "modeled_reserved_peak": {
+        "bytes": 211774603264,
+        "event": "optimizer/stage0/adamw_foreach",
+        "live_bytes": 62509298680,
+        "categories": {
+          "sharded_parameters": 19028088944,
+          "muon_momentum": 18925981696,
+          "muon_reserved_buffers": 5187137536,
+          "router_buffers": 35911680,
+          "adamw_moments": 204214496,
+          "fsdp_gather_staging": 0,
+          "fsdp_unsharded_weights": 0,
+          "checkpoint_inputs": 0,
+          "attention_residual": 0,
+          "pipeline_output": 0,
+          "pipeline_receive": 0,
+          "fp32_accumulated_gradients": 0,
+          "bf16_optimizer_gradients": 19028088944,
+          "muon_kernel_temporary": 0,
+          "adamw_kernel_temporary": 99875384
+        }
+      },
+      "live_plus_communication_bytes": 199911703380,
+      "reserved_plus_communication_bytes": 228954472448,
+      "capacity_bytes": 197940150272,
+      "remaining_live_bytes": -1971553108,
+      "verdict": "modeled_live_exceeds_capacity",
+      "communication_sensitivity": [
+        {
+          "communication_gib": 0,
+          "live_plus_communication_bytes": 182731834196,
+          "remaining_bytes": 15208316076
+        },
+        {
+          "communication_gib": 8,
+          "live_plus_communication_bytes": 191321768788,
+          "remaining_bytes": 6618381484
+        },
+        {
+          "communication_gib": 16,
+          "live_plus_communication_bytes": 199911703380,
+          "remaining_bytes": -1971553108
+        },
+        {
+          "communication_gib": 32,
+          "live_plus_communication_bytes": 217091572564,
+          "remaining_bytes": -19151422292
+        }
+      ]
+    },
+    {
+      "pp_rank": 1,
+      "dp_owner": 0,
+      "training_live_peak": {
+        "bytes": 190034249384,
+        "event": "9B56/layer53/recompute_backward",
+        "categories": {
+          "sharded_parameters": 22645429772,
+          "muon_momentum": 22644531200,
+          "muon_reserved_buffers": 4229636096,
+          "router_buffers": 43094016,
+          "adamw_moments": 1797144,
+          "fsdp_gather_staging": 0,
+          "pipeline_receive": 466550784,
+          "fsdp_unsharded_weights": 36559126912,
+          "checkpoint_inputs": 16212639744,
+          "attention_residual": 8514580484,
+          "pipeline_output": 5598609408,
+          "fp32_accumulated_gradients": 73118253824
+        }
+      },
+      "phase_peaks": {
+        "initialization": {
+          "bytes": 49564488228,
+          "event": "initialize",
+          "categories": {
+            "sharded_parameters": 22645429772,
+            "muon_momentum": 22644531200,
+            "muon_reserved_buffers": 4229636096,
+            "router_buffers": 43094016,
+            "adamw_moments": 1797144
+          }
+        },
+        "training": {
+          "bytes": 190034249384,
+          "event": "9B56/layer53/recompute_backward",
+          "categories": {
+            "sharded_parameters": 22645429772,
+            "muon_momentum": 22644531200,
+            "muon_reserved_buffers": 4229636096,
+            "router_buffers": 43094016,
+            "adamw_moments": 1797144,
+            "fsdp_gather_staging": 0,
+            "pipeline_receive": 466550784,
+            "fsdp_unsharded_weights": 36559126912,
+            "checkpoint_inputs": 16212639744,
+            "attention_residual": 8514580484,
+            "pipeline_output": 5598609408,
+            "fp32_accumulated_gradients": 73118253824
+          }
+        },
+        "optimizer": {
+          "bytes": 78023223344,
+          "event": "optimizer/stage1/layers.5.moe.routed_experts.w13.weight",
+          "categories": {
+            "sharded_parameters": 22645429772,
+            "muon_momentum": 22644531200,
+            "muon_reserved_buffers": 4229636096,
+            "router_buffers": 43094016,
+            "adamw_moments": 1797144,
+            "fsdp_gather_staging": 0,
+            "pipeline_receive": 0,
+            "fsdp_unsharded_weights": 0,
+            "checkpoint_inputs": 0,
+            "attention_residual": 0,
+            "pipeline_output": 0,
+            "fp32_accumulated_gradients": 0,
+            "bf16_optimizer_gradients": 22645429772,
+            "muon_kernel_temporary": 5813305344
+          }
+        }
+      },
+      "after_schedule_live_by_category": {
+        "sharded_parameters": 22645429772,
+        "muon_momentum": 22644531200,
+        "muon_reserved_buffers": 4229636096,
+        "router_buffers": 43094016,
+        "adamw_moments": 1797144,
+        "fsdp_gather_staging": 0,
+        "pipeline_receive": 0,
+        "fsdp_unsharded_weights": 0,
+        "checkpoint_inputs": 0,
+        "attention_residual": 0,
+        "pipeline_output": 0,
+        "fp32_accumulated_gradients": 0,
+        "bf16_optimizer_gradients": 22645429772
+      },
+      "modeled_live_peak": {
+        "bytes": 190034249384,
+        "event": "9B56/layer53/recompute_backward",
+        "categories": {
+          "sharded_parameters": 22645429772,
+          "muon_momentum": 22644531200,
+          "muon_reserved_buffers": 4229636096,
+          "router_buffers": 43094016,
+          "adamw_moments": 1797144,
+          "fsdp_gather_staging": 0,
+          "pipeline_receive": 466550784,
+          "fsdp_unsharded_weights": 36559126912,
+          "checkpoint_inputs": 16212639744,
+          "attention_residual": 8514580484,
+          "pipeline_output": 5598609408,
+          "fp32_accumulated_gradients": 73118253824
+        }
+      },
+      "modeled_reserved_peak": {
+        "bytes": 210935742464,
+        "event": "9B56/layer53/recompute_backward",
+        "live_bytes": 190034249384,
+        "categories": {
+          "sharded_parameters": 22645429772,
+          "muon_momentum": 22644531200,
+          "muon_reserved_buffers": 4229636096,
+          "router_buffers": 43094016,
+          "adamw_moments": 1797144,
+          "fsdp_gather_staging": 0,
+          "pipeline_receive": 466550784,
+          "fsdp_unsharded_weights": 36559126912,
+          "checkpoint_inputs": 16212639744,
+          "attention_residual": 8514580484,
+          "pipeline_output": 5598609408,
+          "fp32_accumulated_gradients": 73118253824
+        }
+      },
+      "live_plus_communication_bytes": 207214118568,
+      "reserved_plus_communication_bytes": 228115611648,
+      "capacity_bytes": 197940150272,
+      "remaining_live_bytes": -9273968296,
+      "verdict": "modeled_live_exceeds_capacity",
+      "communication_sensitivity": [
+        {
+          "communication_gib": 0,
+          "live_plus_communication_bytes": 190034249384,
+          "remaining_bytes": 7905900888
+        },
+        {
+          "communication_gib": 8,
+          "live_plus_communication_bytes": 198624183976,
+          "remaining_bytes": -684033704
+        },
+        {
+          "communication_gib": 16,
+          "live_plus_communication_bytes": 207214118568,
+          "remaining_bytes": -9273968296
+        },
+        {
+          "communication_gib": 32,
+          "live_plus_communication_bytes": 224393987752,
+          "remaining_bytes": -26453837480
+        }
+      ]
+    },
+    {
+      "pp_rank": 2,
+      "dp_owner": 0,
+      "training_live_peak": {
+        "bytes": 196307190996,
+        "event": "10B57/layer64/recompute_backward",
+        "categories": {
+          "sharded_parameters": 22618986736,
+          "muon_momentum": 22618193920,
+          "muon_reserved_buffers": 4229636096,
+          "router_buffers": 43094016,
+          "adamw_moments": 1585632,
+          "fsdp_gather_staging": 0,
+          "pipeline_receive": 583188480,
+          "fsdp_unsharded_weights": 35712949760,
+          "checkpoint_inputs": 22277799936,
+          "attention_residual": 9914232836,
+          "pipeline_output": 6881624064,
+          "fp32_accumulated_gradients": 71425899520
+        }
+      },
+      "phase_peaks": {
+        "initialization": {
+          "bytes": 49511496400,
+          "event": "initialize",
+          "categories": {
+            "sharded_parameters": 22618986736,
+            "muon_momentum": 22618193920,
+            "muon_reserved_buffers": 4229636096,
+            "router_buffers": 43094016,
+            "adamw_moments": 1585632
+          }
+        },
+        "training": {
+          "bytes": 196307190996,
+          "event": "10B57/layer64/recompute_backward",
+          "categories": {
+            "sharded_parameters": 22618986736,
+            "muon_momentum": 22618193920,
+            "muon_reserved_buffers": 4229636096,
+            "router_buffers": 43094016,
+            "adamw_moments": 1585632,
+            "fsdp_gather_staging": 0,
+            "pipeline_receive": 583188480,
+            "fsdp_unsharded_weights": 35712949760,
+            "checkpoint_inputs": 22277799936,
+            "attention_residual": 9914232836,
+            "pipeline_output": 6881624064,
+            "fp32_accumulated_gradients": 71425899520
+          }
+        },
+        "optimizer": {
+          "bytes": 77943788480,
+          "event": "optimizer/stage2/layers.11.moe.routed_experts.w13.weight",
+          "categories": {
+            "sharded_parameters": 22618986736,
+            "muon_momentum": 22618193920,
+            "muon_reserved_buffers": 4229636096,
+            "router_buffers": 43094016,
+            "adamw_moments": 1585632,
+            "fsdp_gather_staging": 0,
+            "pipeline_receive": 0,
+            "fsdp_unsharded_weights": 0,
+            "checkpoint_inputs": 0,
+            "attention_residual": 0,
+            "pipeline_output": 0,
+            "fp32_accumulated_gradients": 0,
+            "bf16_optimizer_gradients": 22618986736,
+            "muon_kernel_temporary": 5813305344
+          }
+        }
+      },
+      "after_schedule_live_by_category": {
+        "sharded_parameters": 22618986736,
+        "muon_momentum": 22618193920,
+        "muon_reserved_buffers": 4229636096,
+        "router_buffers": 43094016,
+        "adamw_moments": 1585632,
+        "fsdp_gather_staging": 0,
+        "pipeline_receive": 0,
+        "fsdp_unsharded_weights": 0,
+        "checkpoint_inputs": 0,
+        "attention_residual": 0,
+        "pipeline_output": 0,
+        "fp32_accumulated_gradients": 0,
+        "bf16_optimizer_gradients": 22618986736
+      },
+      "modeled_live_peak": {
+        "bytes": 196307190996,
+        "event": "10B57/layer64/recompute_backward",
+        "categories": {
+          "sharded_parameters": 22618986736,
+          "muon_momentum": 22618193920,
+          "muon_reserved_buffers": 4229636096,
+          "router_buffers": 43094016,
+          "adamw_moments": 1585632,
+          "fsdp_gather_staging": 0,
+          "pipeline_receive": 583188480,
+          "fsdp_unsharded_weights": 35712949760,
+          "checkpoint_inputs": 22277799936,
+          "attention_residual": 9914232836,
+          "pipeline_output": 6881624064,
+          "fp32_accumulated_gradients": 71425899520
+        }
+      },
+      "modeled_reserved_peak": {
+        "bytes": 217652920320,
+        "event": "10B57/layer64/recompute_backward",
+        "live_bytes": 196307190996,
+        "categories": {
+          "sharded_parameters": 22618986736,
+          "muon_momentum": 22618193920,
+          "muon_reserved_buffers": 4229636096,
+          "router_buffers": 43094016,
+          "adamw_moments": 1585632,
+          "fsdp_gather_staging": 0,
+          "pipeline_receive": 583188480,
+          "fsdp_unsharded_weights": 35712949760,
+          "checkpoint_inputs": 22277799936,
+          "attention_residual": 9914232836,
+          "pipeline_output": 6881624064,
+          "fp32_accumulated_gradients": 71425899520
+        }
+      },
+      "live_plus_communication_bytes": 213487060180,
+      "reserved_plus_communication_bytes": 234832789504,
+      "capacity_bytes": 197940150272,
+      "remaining_live_bytes": -15546909908,
+      "verdict": "modeled_live_exceeds_capacity",
+      "communication_sensitivity": [
+        {
+          "communication_gib": 0,
+          "live_plus_communication_bytes": 196307190996,
+          "remaining_bytes": 1632959276
+        },
+        {
+          "communication_gib": 8,
+          "live_plus_communication_bytes": 204897125588,
+          "remaining_bytes": -6956975316
+        },
+        {
+          "communication_gib": 16,
+          "live_plus_communication_bytes": 213487060180,
+          "remaining_bytes": -15546909908
+        },
+        {
+          "communication_gib": 32,
+          "live_plus_communication_bytes": 230666929364,
+          "remaining_bytes": -32726779092
+        }
+      ]
+    },
+    {
+      "pp_rank": 3,
+      "dp_owner": 0,
+      "training_live_peak": {
+        "bytes": 194233206440,
+        "event": "11B56/layer65/recompute_backward",
+        "categories": {
+          "sharded_parameters": 22645429772,
+          "muon_momentum": 22644531200,
+          "muon_reserved_buffers": 4229636096,
+          "router_buffers": 43094016,
+          "adamw_moments": 1797144,
+          "fsdp_gather_staging": 0,
+          "pipeline_receive": 466550784,
+          "fsdp_unsharded_weights": 36559126912,
+          "checkpoint_inputs": 18078842880,
+          "attention_residual": 9914232836,
+          "pipeline_output": 6531710976,
+          "fp32_accumulated_gradients": 73118253824
+        }
+      },
+      "phase_peaks": {
+        "initialization": {
+          "bytes": 49564488228,
+          "event": "initialize",
+          "categories": {
+            "sharded_parameters": 22645429772,
+            "muon_momentum": 22644531200,
+            "muon_reserved_buffers": 4229636096,
+            "router_buffers": 43094016,
+            "adamw_moments": 1797144
+          }
+        },
+        "training": {
+          "bytes": 194233206440,
+          "event": "11B56/layer65/recompute_backward",
+          "categories": {
+            "sharded_parameters": 22645429772,
+            "muon_momentum": 22644531200,
+            "muon_reserved_buffers": 4229636096,
+            "router_buffers": 43094016,
+            "adamw_moments": 1797144,
+            "fsdp_gather_staging": 0,
+            "pipeline_receive": 466550784,
+            "fsdp_unsharded_weights": 36559126912,
+            "checkpoint_inputs": 18078842880,
+            "attention_residual": 9914232836,
+            "pipeline_output": 6531710976,
+            "fp32_accumulated_gradients": 73118253824
+          }
+        },
+        "optimizer": {
+          "bytes": 78023223344,
+          "event": "optimizer/stage3/layers.17.moe.routed_experts.w13.weight",
+          "categories": {
+            "sharded_parameters": 22645429772,
+            "muon_momentum": 22644531200,
+            "muon_reserved_buffers": 4229636096,
+            "router_buffers": 43094016,
+            "adamw_moments": 1797144,
+            "fsdp_gather_staging": 0,
+            "pipeline_receive": 0,
+            "fsdp_unsharded_weights": 0,
+            "checkpoint_inputs": 0,
+            "attention_residual": 0,
+            "pipeline_output": 0,
+            "fp32_accumulated_gradients": 0,
+            "bf16_optimizer_gradients": 22645429772,
+            "muon_kernel_temporary": 5813305344
+          }
+        }
+      },
+      "after_schedule_live_by_category": {
+        "sharded_parameters": 22645429772,
+        "muon_momentum": 22644531200,
+        "muon_reserved_buffers": 4229636096,
+        "router_buffers": 43094016,
+        "adamw_moments": 1797144,
+        "fsdp_gather_staging": 0,
+        "pipeline_receive": 0,
+        "fsdp_unsharded_weights": 0,
+        "checkpoint_inputs": 0,
+        "attention_residual": 0,
+        "pipeline_output": 0,
+        "fp32_accumulated_gradients": 0,
+        "bf16_optimizer_gradients": 22645429772
+      },
+      "modeled_live_peak": {
+        "bytes": 194233206440,
+        "event": "11B56/layer65/recompute_backward",
+        "categories": {
+          "sharded_parameters": 22645429772,
+          "muon_momentum": 22644531200,
+          "muon_reserved_buffers": 4229636096,
+          "router_buffers": 43094016,
+          "adamw_moments": 1797144,
+          "fsdp_gather_staging": 0,
+          "pipeline_receive": 466550784,
+          "fsdp_unsharded_weights": 36559126912,
+          "checkpoint_inputs": 18078842880,
+          "attention_residual": 9914232836,
+          "pipeline_output": 6531710976,
+          "fp32_accumulated_gradients": 73118253824
+        }
+      },
+      "modeled_reserved_peak": {
+        "bytes": 212676378624,
+        "event": "11B56/layer65/recompute_backward",
+        "live_bytes": 194233206440,
+        "categories": {
+          "sharded_parameters": 22645429772,
+          "muon_momentum": 22644531200,
+          "muon_reserved_buffers": 4229636096,
+          "router_buffers": 43094016,
+          "adamw_moments": 1797144,
+          "fsdp_gather_staging": 0,
+          "pipeline_receive": 466550784,
+          "fsdp_unsharded_weights": 36559126912,
+          "checkpoint_inputs": 18078842880,
+          "attention_residual": 9914232836,
+          "pipeline_output": 6531710976,
+          "fp32_accumulated_gradients": 73118253824
+        }
+      },
+      "live_plus_communication_bytes": 211413075624,
+      "reserved_plus_communication_bytes": 229856247808,
+      "capacity_bytes": 197940150272,
+      "remaining_live_bytes": -13472925352,
+      "verdict": "modeled_live_exceeds_capacity",
+      "communication_sensitivity": [
+        {
+          "communication_gib": 0,
+          "live_plus_communication_bytes": 194233206440,
+          "remaining_bytes": 3706943832
+        },
+        {
+          "communication_gib": 8,
+          "live_plus_communication_bytes": 202823141032,
+          "remaining_bytes": -4882990760
+        },
+        {
+          "communication_gib": 16,
+          "live_plus_communication_bytes": 211413075624,
+          "remaining_bytes": -13472925352
+        },
+        {
+          "communication_gib": 32,
+          "live_plus_communication_bytes": 228592944808,
+          "remaining_bytes": -30652794536
+        }
+      ]
+    },
+    {
+      "pp_rank": 4,
+      "dp_owner": 0,
+      "training_live_peak": {
+        "bytes": 199806321876,
+        "event": "12B8/layer71/recompute_backward",
+        "categories": {
+          "sharded_parameters": 22618986736,
+          "muon_momentum": 22618193920,
+          "muon_reserved_buffers": 4229636096,
+          "router_buffers": 43094016,
+          "adamw_moments": 1585632,
+          "fsdp_gather_staging": 0,
+          "pipeline_receive": 1049739264,
+          "fsdp_unsharded_weights": 35712949760,
+          "checkpoint_inputs": 24377278464,
+          "attention_residual": 9914232836,
+          "pipeline_output": 7814725632,
+          "fp32_accumulated_gradients": 71425899520
+        }
+      },
+      "phase_peaks": {
+        "initialization": {
+          "bytes": 49511496400,
+          "event": "initialize",
+          "categories": {
+            "sharded_parameters": 22618986736,
+            "muon_momentum": 22618193920,
+            "muon_reserved_buffers": 4229636096,
+            "router_buffers": 43094016,
+            "adamw_moments": 1585632
+          }
+        },
+        "training": {
+          "bytes": 199806321876,
+          "event": "12B8/layer71/recompute_backward",
+          "categories": {
+            "sharded_parameters": 22618986736,
+            "muon_momentum": 22618193920,
+            "muon_reserved_buffers": 4229636096,
+            "router_buffers": 43094016,
+            "adamw_moments": 1585632,
+            "fsdp_gather_staging": 0,
+            "pipeline_receive": 1049739264,
+            "fsdp_unsharded_weights": 35712949760,
+            "checkpoint_inputs": 24377278464,
+            "attention_residual": 9914232836,
+            "pipeline_output": 7814725632,
+            "fp32_accumulated_gradients": 71425899520
+          }
+        },
+        "optimizer": {
+          "bytes": 77943788480,
+          "event": "optimizer/stage4/layers.23.moe.routed_experts.w13.weight",
+          "categories": {
+            "sharded_parameters": 22618986736,
+            "muon_momentum": 22618193920,
+            "muon_reserved_buffers": 4229636096,
+            "router_buffers": 43094016,
+            "adamw_moments": 1585632,
+            "fsdp_gather_staging": 0,
+            "pipeline_receive": 0,
+            "fsdp_unsharded_weights": 0,
+            "checkpoint_inputs": 0,
+            "attention_residual": 0,
+            "pipeline_output": 0,
+            "fp32_accumulated_gradients": 0,
+            "bf16_optimizer_gradients": 22618986736,
+            "muon_kernel_temporary": 5813305344
+          }
+        }
+      },
+      "after_schedule_live_by_category": {
+        "sharded_parameters": 22618986736,
+        "muon_momentum": 22618193920,
+        "muon_reserved_buffers": 4229636096,
+        "router_buffers": 43094016,
+        "adamw_moments": 1585632,
+        "fsdp_gather_staging": 0,
+        "pipeline_receive": 0,
+        "fsdp_unsharded_weights": 0,
+        "checkpoint_inputs": 0,
+        "attention_residual": 0,
+        "pipeline_output": 0,
+        "fp32_accumulated_gradients": 0,
+        "bf16_optimizer_gradients": 22618986736
+      },
+      "modeled_live_peak": {
+        "bytes": 199806321876,
+        "event": "12B8/layer71/recompute_backward",
+        "categories": {
+          "sharded_parameters": 22618986736,
+          "muon_momentum": 22618193920,
+          "muon_reserved_buffers": 4229636096,
+          "router_buffers": 43094016,
+          "adamw_moments": 1585632,
+          "fsdp_gather_staging": 0,
+          "pipeline_receive": 1049739264,
+          "fsdp_unsharded_weights": 35712949760,
+          "checkpoint_inputs": 24377278464,
+          "attention_residual": 9914232836,
+          "pipeline_output": 7814725632,
+          "fp32_accumulated_gradients": 71425899520
+        }
+      },
+      "modeled_reserved_peak": {
+        "bytes": 218806353920,
+        "event": "12B32/layer72/recompute_backward",
+        "live_bytes": 198628591828,
+        "categories": {
+          "sharded_parameters": 22618986736,
+          "muon_momentum": 22618193920,
+          "muon_reserved_buffers": 4229636096,
+          "router_buffers": 43094016,
+          "adamw_moments": 1585632,
+          "fsdp_gather_staging": 0,
+          "pipeline_receive": 1049739264,
+          "fsdp_unsharded_weights": 33018929664,
+          "checkpoint_inputs": 24493916160,
+          "attention_residual": 11313885188,
+          "pipeline_output": 7814725632,
+          "fp32_accumulated_gradients": 71425899520
+        }
+      },
+      "live_plus_communication_bytes": 216986191060,
+      "reserved_plus_communication_bytes": 235986223104,
+      "capacity_bytes": 197940150272,
+      "remaining_live_bytes": -19046040788,
+      "verdict": "modeled_live_exceeds_capacity",
+      "communication_sensitivity": [
+        {
+          "communication_gib": 0,
+          "live_plus_communication_bytes": 199806321876,
+          "remaining_bytes": -1866171604
+        },
+        {
+          "communication_gib": 8,
+          "live_plus_communication_bytes": 208396256468,
+          "remaining_bytes": -10456106196
+        },
+        {
+          "communication_gib": 16,
+          "live_plus_communication_bytes": 216986191060,
+          "remaining_bytes": -19046040788
+        },
+        {
+          "communication_gib": 32,
+          "live_plus_communication_bytes": 234166060244,
+          "remaining_bytes": -36225909972
+        }
+      ]
+    },
+    {
+      "pp_rank": 5,
+      "dp_owner": 0,
+      "training_live_peak": {
+        "bytes": 193066829480,
+        "event": "13B8/layer77/recompute_backward",
+        "categories": {
+          "sharded_parameters": 22645429772,
+          "muon_momentum": 22644531200,
+          "muon_reserved_buffers": 4229636096,
+          "router_buffers": 43094016,
+          "adamw_moments": 1797144,
+          "fsdp_gather_staging": 0,
+          "pipeline_receive": 1049739264,
+          "fsdp_unsharded_weights": 36559126912,
+          "checkpoint_inputs": 15396175872,
+          "attention_residual": 11313885188,
+          "pipeline_output": 6065160192,
+          "fp32_accumulated_gradients": 73118253824
+        }
+      },
+      "phase_peaks": {
+        "initialization": {
+          "bytes": 49564488228,
+          "event": "initialize",
+          "categories": {
+            "sharded_parameters": 22645429772,
+            "muon_momentum": 22644531200,
+            "muon_reserved_buffers": 4229636096,
+            "router_buffers": 43094016,
+            "adamw_moments": 1797144
+          }
+        },
+        "training": {
+          "bytes": 193066829480,
+          "event": "13B8/layer77/recompute_backward",
+          "categories": {
+            "sharded_parameters": 22645429772,
+            "muon_momentum": 22644531200,
+            "muon_reserved_buffers": 4229636096,
+            "router_buffers": 43094016,
+            "adamw_moments": 1797144,
+            "fsdp_gather_staging": 0,
+            "pipeline_receive": 1049739264,
+            "fsdp_unsharded_weights": 36559126912,
+            "checkpoint_inputs": 15396175872,
+            "attention_residual": 11313885188,
+            "pipeline_output": 6065160192,
+            "fp32_accumulated_gradients": 73118253824
+          }
+        },
+        "optimizer": {
+          "bytes": 78023223344,
+          "event": "optimizer/stage5/layers.29.moe.routed_experts.w13.weight",
+          "categories": {
+            "sharded_parameters": 22645429772,
+            "muon_momentum": 22644531200,
+            "muon_reserved_buffers": 4229636096,
+            "router_buffers": 43094016,
+            "adamw_moments": 1797144,
+            "fsdp_gather_staging": 0,
+            "pipeline_receive": 0,
+            "fsdp_unsharded_weights": 0,
+            "checkpoint_inputs": 0,
+            "attention_residual": 0,
+            "pipeline_output": 0,
+            "fp32_accumulated_gradients": 0,
+            "bf16_optimizer_gradients": 22645429772,
+            "muon_kernel_temporary": 5813305344
+          }
+        }
+      },
+      "after_schedule_live_by_category": {
+        "sharded_parameters": 22645429772,
+        "muon_momentum": 22644531200,
+        "muon_reserved_buffers": 4229636096,
+        "router_buffers": 43094016,
+        "adamw_moments": 1797144,
+        "fsdp_gather_staging": 0,
+        "pipeline_receive": 0,
+        "fsdp_unsharded_weights": 0,
+        "checkpoint_inputs": 0,
+        "attention_residual": 0,
+        "pipeline_output": 0,
+        "fp32_accumulated_gradients": 0,
+        "bf16_optimizer_gradients": 22645429772
+      },
+      "modeled_live_peak": {
+        "bytes": 193066829480,
+        "event": "13B8/layer77/recompute_backward",
+        "categories": {
+          "sharded_parameters": 22645429772,
+          "muon_momentum": 22644531200,
+          "muon_reserved_buffers": 4229636096,
+          "router_buffers": 43094016,
+          "adamw_moments": 1797144,
+          "fsdp_gather_staging": 0,
+          "pipeline_receive": 1049739264,
+          "fsdp_unsharded_weights": 36559126912,
+          "checkpoint_inputs": 15396175872,
+          "attention_residual": 11313885188,
+          "pipeline_output": 6065160192,
+          "fp32_accumulated_gradients": 73118253824
+        }
+      },
+      "modeled_reserved_peak": {
+        "bytes": 215905992704,
+        "event": "13B48/layer77/recompute_backward",
+        "live_bytes": 193066829480,
+        "categories": {
+          "sharded_parameters": 22645429772,
+          "muon_momentum": 22644531200,
+          "muon_reserved_buffers": 4229636096,
+          "router_buffers": 43094016,
+          "adamw_moments": 1797144,
+          "fsdp_gather_staging": 0,
+          "pipeline_receive": 1049739264,
+          "fsdp_unsharded_weights": 36559126912,
+          "checkpoint_inputs": 15396175872,
+          "attention_residual": 11313885188,
+          "pipeline_output": 6065160192,
+          "fp32_accumulated_gradients": 73118253824
+        }
+      },
+      "live_plus_communication_bytes": 210246698664,
+      "reserved_plus_communication_bytes": 233085861888,
+      "capacity_bytes": 197940150272,
+      "remaining_live_bytes": -12306548392,
+      "verdict": "modeled_live_exceeds_capacity",
+      "communication_sensitivity": [
+        {
+          "communication_gib": 0,
+          "live_plus_communication_bytes": 193066829480,
+          "remaining_bytes": 4873320792
+        },
+        {
+          "communication_gib": 8,
+          "live_plus_communication_bytes": 201656764072,
+          "remaining_bytes": -3716613800
+        },
+        {
+          "communication_gib": 16,
+          "live_plus_communication_bytes": 210246698664,
+          "remaining_bytes": -12306548392
+        },
+        {
+          "communication_gib": 32,
+          "live_plus_communication_bytes": 227426567848,
+          "remaining_bytes": -29486417576
+        }
+      ]
+    },
+    {
+      "pp_rank": 6,
+      "dp_owner": 0,
+      "training_live_peak": {
+        "bytes": 193391248596,
+        "event": "14B8/layer83/recompute_backward",
+        "categories": {
+          "sharded_parameters": 22618986736,
+          "muon_momentum": 22618193920,
+          "muon_reserved_buffers": 4229636096,
+          "router_buffers": 43094016,
+          "adamw_moments": 1585632,
+          "fsdp_gather_staging": 0,
+          "pipeline_receive": 1049739264,
+          "fsdp_unsharded_weights": 35712949760,
+          "checkpoint_inputs": 17962205184,
+          "attention_residual": 11313885188,
+          "pipeline_output": 6415073280,
+          "fp32_accumulated_gradients": 71425899520
+        }
+      },
+      "phase_peaks": {
+        "initialization": {
+          "bytes": 49511496400,
+          "event": "initialize",
+          "categories": {
+            "sharded_parameters": 22618986736,
+            "muon_momentum": 22618193920,
+            "muon_reserved_buffers": 4229636096,
+            "router_buffers": 43094016,
+            "adamw_moments": 1585632
+          }
+        },
+        "training": {
+          "bytes": 193391248596,
+          "event": "14B8/layer83/recompute_backward",
+          "categories": {
+            "sharded_parameters": 22618986736,
+            "muon_momentum": 22618193920,
+            "muon_reserved_buffers": 4229636096,
+            "router_buffers": 43094016,
+            "adamw_moments": 1585632,
+            "fsdp_gather_staging": 0,
+            "pipeline_receive": 1049739264,
+            "fsdp_unsharded_weights": 35712949760,
+            "checkpoint_inputs": 17962205184,
+            "attention_residual": 11313885188,
+            "pipeline_output": 6415073280,
+            "fp32_accumulated_gradients": 71425899520
+          }
+        },
+        "optimizer": {
+          "bytes": 77943788480,
+          "event": "optimizer/stage6/layers.35.moe.routed_experts.w13.weight",
+          "categories": {
+            "sharded_parameters": 22618986736,
+            "muon_momentum": 22618193920,
+            "muon_reserved_buffers": 4229636096,
+            "router_buffers": 43094016,
+            "adamw_moments": 1585632,
+            "fsdp_gather_staging": 0,
+            "pipeline_receive": 0,
+            "fsdp_unsharded_weights": 0,
+            "checkpoint_inputs": 0,
+            "attention_residual": 0,
+            "pipeline_output": 0,
+            "fp32_accumulated_gradients": 0,
+            "bf16_optimizer_gradients": 22618986736,
+            "muon_kernel_temporary": 5813305344
+          }
+        }
+      },
+      "after_schedule_live_by_category": {
+        "sharded_parameters": 22618986736,
+        "muon_momentum": 22618193920,
+        "muon_reserved_buffers": 4229636096,
+        "router_buffers": 43094016,
+        "adamw_moments": 1585632,
+        "fsdp_gather_staging": 0,
+        "pipeline_receive": 0,
+        "fsdp_unsharded_weights": 0,
+        "checkpoint_inputs": 0,
+        "attention_residual": 0,
+        "pipeline_output": 0,
+        "fp32_accumulated_gradients": 0,
+        "bf16_optimizer_gradients": 22618986736
+      },
+      "modeled_live_peak": {
+        "bytes": 193391248596,
+        "event": "14B8/layer83/recompute_backward",
+        "categories": {
+          "sharded_parameters": 22618986736,
+          "muon_momentum": 22618193920,
+          "muon_reserved_buffers": 4229636096,
+          "router_buffers": 43094016,
+          "adamw_moments": 1585632,
+          "fsdp_gather_staging": 0,
+          "pipeline_receive": 1049739264,
+          "fsdp_unsharded_weights": 35712949760,
+          "checkpoint_inputs": 17962205184,
+          "attention_residual": 11313885188,
+          "pipeline_output": 6415073280,
+          "fp32_accumulated_gradients": 71425899520
+        }
+      },
+      "modeled_reserved_peak": {
+        "bytes": 213458616320,
+        "event": "14B62/layer88/recompute_backward",
+        "live_bytes": 192808060116,
+        "categories": {
+          "sharded_parameters": 22618986736,
+          "muon_momentum": 22618193920,
+          "muon_reserved_buffers": 4229636096,
+          "router_buffers": 43094016,
+          "adamw_moments": 1585632,
+          "fsdp_gather_staging": 0,
+          "pipeline_receive": 583188480,
+          "fsdp_unsharded_weights": 35712949760,
+          "checkpoint_inputs": 17029103616,
+          "attention_residual": 12713537540,
+          "pipeline_output": 5831884800,
+          "fp32_accumulated_gradients": 71425899520
+        }
+      },
+      "live_plus_communication_bytes": 210571117780,
+      "reserved_plus_communication_bytes": 230638485504,
+      "capacity_bytes": 197940150272,
+      "remaining_live_bytes": -12630967508,
+      "verdict": "modeled_live_exceeds_capacity",
+      "communication_sensitivity": [
+        {
+          "communication_gib": 0,
+          "live_plus_communication_bytes": 193391248596,
+          "remaining_bytes": 4548901676
+        },
+        {
+          "communication_gib": 8,
+          "live_plus_communication_bytes": 201981183188,
+          "remaining_bytes": -4041032916
+        },
+        {
+          "communication_gib": 16,
+          "live_plus_communication_bytes": 210571117780,
+          "remaining_bytes": -12630967508
+        },
+        {
+          "communication_gib": 32,
+          "live_plus_communication_bytes": 227750986964,
+          "remaining_bytes": -29810836692
+        }
+      ]
+    },
+    {
+      "pp_rank": 7,
+      "dp_owner": 0,
+      "training_live_peak": {
+        "bytes": 167296838698,
+        "event": "15B62/layer89/recompute_backward",
+        "categories": {
+          "sharded_parameters": 18926978338,
+          "muon_momentum": 18852884480,
+          "muon_reserved_buffers": 4237864960,
+          "router_buffers": 35911680,
+          "adamw_moments": 148187716,
+          "fsdp_gather_staging": 0,
+          "pipeline_receive": 1516290048,
+          "fsdp_unsharded_weights": 32250674240,
+          "checkpoint_inputs": 10380754944,
+          "attention_residual": 12713537540,
+          "pipeline_output": 3732406272,
+          "fp32_accumulated_gradients": 64501348480
+        }
+      },
+      "phase_peaks": {
+        "initialization": {
+          "bytes": 42201827174,
+          "event": "initialize",
+          "categories": {
+            "sharded_parameters": 18926978338,
+            "muon_momentum": 18852884480,
+            "muon_reserved_buffers": 4237864960,
+            "router_buffers": 35911680,
+            "adamw_moments": 148187716
+          }
+        },
+        "training": {
+          "bytes": 167296838698,
+          "event": "15B62/layer89/recompute_backward",
+          "categories": {
+            "sharded_parameters": 18926978338,
+            "muon_momentum": 18852884480,
+            "muon_reserved_buffers": 4237864960,
+            "router_buffers": 35911680,
+            "adamw_moments": 148187716,
+            "fsdp_gather_staging": 0,
+            "pipeline_receive": 1516290048,
+            "fsdp_unsharded_weights": 32250674240,
+            "checkpoint_inputs": 10380754944,
+            "attention_residual": 12713537540,
+            "pipeline_output": 3732406272,
+            "fp32_accumulated_gradients": 64501348480
+          }
+        },
+        "optimizer": {
+          "bytes": 66942110856,
+          "event": "optimizer/stage7/layers.41.moe.routed_experts.w13.weight",
+          "categories": {
+            "sharded_parameters": 18926978338,
+            "muon_momentum": 18852884480,
+            "muon_reserved_buffers": 4237864960,
+            "router_buffers": 35911680,
+            "adamw_moments": 148187716,
+            "fsdp_gather_staging": 0,
+            "pipeline_receive": 0,
+            "fsdp_unsharded_weights": 0,
+            "checkpoint_inputs": 0,
+            "attention_residual": 0,
+            "pipeline_output": 0,
+            "fp32_accumulated_gradients": 0,
+            "bf16_optimizer_gradients": 18926978338,
+            "muon_kernel_temporary": 5813305344
+          }
+        }
+      },
+      "after_schedule_live_by_category": {
+        "sharded_parameters": 18926978338,
+        "muon_momentum": 18852884480,
+        "muon_reserved_buffers": 4237864960,
+        "router_buffers": 35911680,
+        "adamw_moments": 148187716,
+        "fsdp_gather_staging": 0,
+        "pipeline_receive": 0,
+        "fsdp_unsharded_weights": 0,
+        "checkpoint_inputs": 0,
+        "attention_residual": 0,
+        "pipeline_output": 0,
+        "fp32_accumulated_gradients": 0,
+        "bf16_optimizer_gradients": 18926978338
+      },
+      "modeled_live_peak": {
+        "bytes": 167296838698,
+        "event": "15B62/layer89/recompute_backward",
+        "categories": {
+          "sharded_parameters": 18926978338,
+          "muon_momentum": 18852884480,
+          "muon_reserved_buffers": 4237864960,
+          "router_buffers": 35911680,
+          "adamw_moments": 148187716,
+          "fsdp_gather_staging": 0,
+          "pipeline_receive": 1516290048,
+          "fsdp_unsharded_weights": 32250674240,
+          "checkpoint_inputs": 10380754944,
+          "attention_residual": 12713537540,
+          "pipeline_output": 3732406272,
+          "fp32_accumulated_gradients": 64501348480
+        }
+      },
+      "modeled_reserved_peak": {
+        "bytes": 184238997504,
+        "event": "7RECV_B60",
+        "live_bytes": 120040956866,
+        "categories": {
+          "sharded_parameters": 18926978338,
+          "muon_momentum": 18852884480,
+          "muon_reserved_buffers": 4237864960,
+          "router_buffers": 35911680,
+          "adamw_moments": 148187716,
+          "fsdp_gather_staging": 0,
+          "pipeline_receive": 2332753920,
+          "fsdp_unsharded_weights": 18279563456,
+          "checkpoint_inputs": 9331015680,
+          "attention_residual": 0,
+          "pipeline_output": 3732406272,
+          "fp32_accumulated_gradients": 36559126912,
+          "bf16_optimizer_gradients": 7604263452
+        }
+      },
+      "live_plus_communication_bytes": 184476707882,
+      "reserved_plus_communication_bytes": 201418866688,
+      "capacity_bytes": 197940150272,
+      "remaining_live_bytes": 13463442390,
+      "verdict": "fit_unproven",
+      "communication_sensitivity": [
+        {
+          "communication_gib": 0,
+          "live_plus_communication_bytes": 167296838698,
+          "remaining_bytes": 30643311574
+        },
+        {
+          "communication_gib": 8,
+          "live_plus_communication_bytes": 175886773290,
+          "remaining_bytes": 22053376982
+        },
+        {
+          "communication_gib": 16,
+          "live_plus_communication_bytes": 184476707882,
+          "remaining_bytes": 13463442390
+        },
+        {
+          "communication_gib": 32,
+          "live_plus_communication_bytes": 201656577066,
+          "remaining_bytes": -3716426794
+        }
+      ]
+    }
+  ],
+  "full_model_fit_verified": false,
+  "coverage": {
+    "muon_momentum": true,
+    "muon_persistent_redistribution_buffers": true,
+    "muon_newton_schulz_and_update": true,
+    "adamw_bf16_moments": true,
+    "fsdp_dense_and_edp1_expert_unsharded_copies": true,
+    "fullac_checkpoint_input_release": true,
+    "attention_residual_helper": true,
+    "allocator_lifetime_replay": true
+  },
+  "assumptions": [
+    "Worst persistent-buffer Muon DP owner selected independently for each PP rank.",
+    "FSDP layer groups model source UNSHARD, wait/copy-out, forward reshard and backward retention.",
+    "EDP1 copies expert parameters in target wait_for_unshard despite requiring no network all-gather.",
+    "FullAC checkpoint inputs freed per layer in backward; unchanged residual stacks share storage.",
+    "One exact attention-residual helper per layer: original forward temporaries released, backward recreates them.",
+    "FullAC whole-block recompute may retain multiple helpers and other kernel tensors concurrently.",
+    "Allocator frees complete immediately within explicit compute/gather/pipeline/transfer domains.",
+    "Communication is an uncalibrated aggregate allowance resident throughout, disjoint from tensor payloads.",
+    "No allocator allocation-failure retry/empty-cache simulation; reserved above capacity alone is not OOM proof."
+  ],
+  "excluded": [
+    "Full MLA/KDA/MoE activation graph, kernel-internal workspaces, registered FullAC effects",
+    "Residual cache/deposit lifetimes beyond existing checkpoint/wire aliases",
+    "Loss logits/intermediates and root-only small parameters beyond inventory aggregates",
+    "FSDP shard-reorder temporaries, exact padding, reduction packing/casts and delayed stream frees",
+    "Vision forward/backward activation temporaries; CUDA/library external allocations"
+  ],
+  "source_commit": "b4d5b404bd30dec67f86873203fbd4ba5f457531",
+  "source_sha256": {
+    "target_fsdp_param_group.py": "4901c6bd3ededb5fe4ac33e5ef6c03283139386bb91247be726f53cab4b7dd64",
+    "target_fsdp_collectives.py": "e7e9d6be8cb35969b4665ef58b7d9a8c3ed68cacce85f544928294d464513118",
+    "target_pipeline_stage.py": "bb0ece062dd3200b6d666b3be1ea9c1f4cb85cb9b556f069d94f53e38611f717",
+    "gpu-pipeline-schedules.py": "61c4e103e3bcb17c11c4dc46db138d2c3400b76e3a8b2d4797cf106e51e931da",
+    "pipeline_parallel.py": "7fbe51d5e194c44cba0b4939d459bfc0ed432c5a20400d894c7d992d22210755",
+    "layout.py": "5b156f384a5fee38802dfa0f11262d4f8a7e8f58334f6f340971708378b08229"
+  }
+}
