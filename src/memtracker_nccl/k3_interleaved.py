@@ -26,7 +26,7 @@ def parse_action(value):
     return int(stage), op, int(mb) if mb else None
 
 
-def stage_shapes(stage, *, tokens, last_stage):
+def stage_shapes(stage, *, tokens, last_stage, dim=7168, block_size=12):
     """Unique saved FullAC inputs + PP outputs; shared residual stacks counted once.
 
     Each layer has a distinct hidden input. A residual stack changes storage only
@@ -34,8 +34,8 @@ def stage_shapes(stage, *, tokens, last_stage):
     The fresh stage-entry assembled stack is distinct from incoming delta backing.
     """
     first, last = stage['first_layer'], stage['last_layer']
-    h = tokens*7168*2
-    prefixes = {(layer+11)//12 for layer in range(first, last+1)}
+    h = tokens*dim*2
+    prefixes = {(layer+block_size-1)//block_size for layer in range(first, last+1)}
     checkpoint_inputs = (last-first+1 + sum(prefixes))*h
     # _pack_outgoing_delta uses torch.stack: a distinct retained payload allocation.
     outgoing = (1+len(stage['outgoing_delta_blocks']))*h if stage['stage'] != last_stage else 0

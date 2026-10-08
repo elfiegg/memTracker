@@ -13,7 +13,7 @@ from pathlib import Path
 
 from .allocator_model import AllocatorConfig, CachingAllocatorModel
 from .k3_experiment import inventory
-from .k3_interleaved import parse_action, run as boundary_report
+from .k3_interleaved import parse_action, run as boundary_report, stage_shapes
 from .report_io import read_report, write_report
 from .run_metadata import (K3_MODEL_PROFILE, add_metadata_arguments, compare_metadata,
                            metadata_from_args, modeled_metadata, resolve_metadata, validate_resolved)
@@ -32,6 +32,10 @@ class Ledger:
         self.sequence = 0
         self.phase = "initialization"
         self.phase_peaks = {}
+        self.active_bytes = 0
+        self.active_peak = dict(bytes=0)
+        self.phase_active_peaks = {}
+        self.rounding = self.allocator.describe()["rules"]["request_rounding_bytes"]
 
     def sample(self):
         self.sequence += 1
@@ -45,6 +49,10 @@ class Ledger:
         if reserved > self.reserved_peak["bytes"]:
             self.reserved_peak = dict(bytes=reserved, event=self.event, live_bytes=total,
                                       categories=dict(self.categories))
+        if self.active_bytes > self.active_peak["bytes"]:
+            self.active_peak = dict(bytes=self.active_bytes, event=self.event, phase=self.phase)
+        if self.active_bytes > self.phase_active_peaks.get(self.phase, {}).get("bytes", -1):
+            self.phase_active_peaks[self.phase] = dict(bytes=self.active_bytes, event=self.event)
 
     def alloc(self, name, size, category, stream="compute"):
         if name in self.live:
@@ -52,12 +60,14 @@ class Ledger:
         self.live[name] = (size, category)
         self.categories[category] += size
         self.allocator.allocate(name, size, stream=stream)
+        self.active_bytes += ((size+self.rounding-1)//self.rounding)*self.rounding
         self.sample()
 
     def free(self, name):
         size, category = self.live.pop(name)
         self.categories[category] -= size
         self.allocator.free(name)
+        self.active_bytes -= ((size+self.rounding-1)//self.rounding)*self.rounding
         self.sample()
 
     def trace(self, events, prefix, *, phases=None, category="attention_residual"):
@@ -76,37 +86,70 @@ class Ledger:
 
 
 def run(schedule, muon, residual, adam, *, expandable=True, communication_gib=16,
-        sequence=4068, microbatch_size=2, capacity_bytes=197940150272, run_metadata=None):
+        sequence=4068, microbatch_size=2, capacity_bytes=197940150272, run_metadata=None,
+        recipe=None, aggregate=None, initialized_optimizer=True, dp_owner=None, pp_ranks=None):
     identity = resolve_metadata(profile=K3_MODEL_PROFILE) if run_metadata is None else validate_resolved(run_metadata)
     # The schedule artifact is authoritative about its extracted PyTorch source.
     model_identity = modeled_metadata({"source_commit": muon["source_commit"]},
                                       pytorch=schedule.get("torch_runtime"))
     compatibility = compare_metadata(identity, model_identity)
-    if sequence * microbatch_size != residual["tokens"] or residual["dim"] != 7168:
+    dim = recipe["model"]["dim"] if recipe else 7168
+    block_size = schedule.get("residual_block_size", 12)
+    pp = schedule["pp"]
+    dp = recipe["parallelism"]["data_parallel_shard_degree"] if recipe else 32
+    ep = recipe["parallelism"]["expert_parallel_degree"] if recipe else 32
+    last_stage = schedule["virtual_stages"]-1
+    vision = recipe["model"]["vision_encoder"] is not None if recipe else True
+    rounds = 1
+    if recipe:
+        p, t = recipe["parallelism"], recipe["training"]
+        if dp != ep or any(p[k] != 1 for k in ("tensor_parallel_degree", "context_parallel_degree", "data_parallel_replicate_degree")):
+            raise ValueError("Recipe replay currently requires DP=EP, TP=CP=replication=1")
+        if (t["dtype"],t["mixed_precision_param"],t["mixed_precision_reduce"],p["fsdp_reshard_after_forward"]) != ("bfloat16","bfloat16","float32","always"):
+            raise ValueError("Unsupported recipe precision or reshard policy")
+        group_tokens = sequence*microbatch_size*dp*schedule["microbatches"]
+        if t["num_tokens_per_train_step"] % group_tokens:
+            raise ValueError("Global tokens must be divisible by one pipeline group")
+        rounds = t["num_tokens_per_train_step"] // group_tokens
+        if not aggregate or rounds < 1:
+            raise ValueError("Recipe needs a nonempty inventory and accumulation rounds")
+    if sequence * microbatch_size != residual["tokens"] or residual["dim"] != dim:
         raise ValueError("Residual probe shape does not match training tokens/dim")
     if isinstance(communication_gib, bool) or not math.isfinite(communication_gib) or communication_gib < 0:
         raise ValueError("communication_gib must be nonnegative")
     if not (muon["source_commit"] == adam["source_commit"] == residual["source_commit"] == schedule["training_source"]):
         raise ValueError("Source probe revisions must match the schedule")
-    if not adam.get("vision_encoder_present"):
+    if bool(adam.get("vision_encoder_present")) != vision:
         raise ValueError("Full-model recipe requires the vision encoder and its AdamW states")
-    baseline = boundary_report(schedule, sequence=sequence, microbatch_size=microbatch_size,
-                               capacity_bytes=capacity_bytes)
+    if recipe:
+        baseline = dict(stages=[dict(s, **stage_shapes(s, tokens=sequence*microbatch_size,
+            last_stage=last_stage, dim=dim, block_size=block_size)) for s in schedule["stages"]],
+            scenario=dict(sequence=sequence, microbatch_size=microbatch_size, microbatches=schedule["microbatches"],
+                          pp=pp, fsdp=dp, ep=ep, tp=1, cp=1, schedule=schedule["schedule"],
+                          cuda_graphs=not recipe["training"]["disable_cuda_graphs"], accumulation_rounds=rounds,
+                          initialized_optimizer=initialized_optimizer))
+    else:
+        baseline = boundary_report(schedule, sequence=sequence, microbatch_size=microbatch_size,
+                                   capacity_bytes=capacity_bytes)
+    items = aggregate if recipe else inventory()
     stage_info = {s["stage"]: s for s in baseline["stages"]}
-    item_info = {r["layer"]: r for r in inventory() if r["layer"] is not None}
+    item_info = {r["layer"]: r for r in items if r["layer"] is not None}
     probes = {r["residual_entries"]: r for r in residual["probes"] if not r["full_ac"]}
     forward_probes = {r["residual_entries"]: r for r in residual["probes"] if r["full_ac"]}
-    h = sequence * microbatch_size * 7168 * 2
+    h = sequence * microbatch_size * dim * 2
     ranks = []
-    for rank in range(8):
+    selected_ranks = list(range(pp)) if pp_ranks is None else list(pp_ranks)
+    if not selected_ranks or len(set(selected_ranks)) != len(selected_ranks) or any(type(r) is not int or not 0 <= r < pp for r in selected_ranks):
+        raise ValueError("pp_ranks must select distinct valid pipeline ranks")
+    for rank in selected_ranks:
         owners = [r for r in muon["ranks"] if r["pp_rank"] == rank]
-        if {r["dp_owner"] for r in owners} != set(range(32)):
-            raise ValueError("Need all 32 Muon owner ranks for each PP rank")
+        if dp_owner is None and {r["dp_owner"] for r in owners} != set(range(dp)):
+            raise ValueError("Need all Muon owner ranks when selecting the largest reservation")
         # Dense momentum/state are owner-independent. Runtime reserve differs.
-        owner = max(owners, key=lambda r: r["reserved_buffer_bytes"])["dp_owner"]
+        owner = dp_owner if dp_owner is not None else max(owners, key=lambda r: r["reserved_buffer_bytes"])["dp_owner"]
         chosen = [r for r in muon["stage_owners"] if r["pp_rank"] == rank and r["dp_owner"] == owner]
-        if len(chosen) != 2:
-            raise ValueError("Need both virtual stages per physical PP rank")
+        if len(chosen) != schedule["stages_per_rank"]:
+            raise ValueError("Need every local stage for selected owner")
         ledger = Ledger(expandable)
         layers = {}; groups = {}; pending = set(); gathered = set(); active = {}; gradients = set()
         local_gradients = Counter()
@@ -125,7 +168,8 @@ def run(schedule, muon, residual, adam, *, expandable=True, communication_gib=16
                 if allocation["kind"] == "momentum":
                     name = allocation["allocation_id"]
                     ledger.alloc(f"params/{name}", allocation["bytes"], "sharded_parameters")
-                    ledger.alloc(f"momentum/{name}", allocation["bytes"], "muon_momentum")
+                    if initialized_optimizer:
+                        ledger.alloc(f"momentum/{name}", allocation["bytes"], "muon_momentum")
                     local_gradients[group_for_parameter(st, allocation["fqn"])] += allocation["bytes"]
             for parameter in a["local_parameter_inventory"]:
                 ledger.alloc(f"params/{st}/{parameter['fqn']}", 2*parameter["local_numel"], "sharded_parameters")
@@ -137,14 +181,17 @@ def run(schedule, muon, residual, adam, *, expandable=True, communication_gib=16
                 row = item_info[layer]
                 # Distinct output copies even at EDP1: target wait_for_unshard
                 # calls alloc_storage + tensor.copy_(all_gather_input).
-                groups[(st, layer)] = (row["dense_parameters"]*2, row["expert_parameters"]//32*2)
+                groups[(st, layer)] = (row["dense_parameters"]*2, row["expert_parameters"]//ep*2)
                 ledger.alloc(f"router/{layer}", row["replicated_buffer_bytes"], "router_buffers")
-            extras = [r for r in inventory() if r["layer"] is None and
-                      ((st == 0 and r["name"] in ("tok_embeddings", "vision_encoder")) or (st == 15 and r["name"] == "output"))]
+            extras = [r for r in items if r["layer"] is None and
+                      ((st == 0 and r["name"] in ("tok_embeddings", "vision_encoder")) or (st == last_stage and r["name"] == "output"))]
             for row in extras:
                 groups[(st, row["name"])] = (row["dense_parameters"]*2, 0)
-            for allocation in a["persistent_allocations"]:
-                ledger.alloc(allocation["allocation_id"], allocation["bytes"], "adamw_moments")
+                if recipe and row["replicated_buffer_bytes"]:
+                    ledger.alloc(f"buffer/{st}/{row['name']}", row["replicated_buffer_bytes"], "model_buffers")
+            if initialized_optimizer:
+                for allocation in a["persistent_allocations"]:
+                    ledger.alloc(allocation["allocation_id"], allocation["bytes"], "adamw_moments")
 
         def start_gather(key):
             if key in gathered or key in pending:
@@ -169,7 +216,7 @@ def run(schedule, muon, residual, adam, *, expandable=True, communication_gib=16
                 ledger.free(f"gather_flat/{key}"); pending.remove(key)
 
         ledger.phase = "training"
-        for position, action in enumerate(schedule["actions"][str(rank)]):
+        for position, action in enumerate(schedule["actions"][str(rank)] * rounds):
             st, op, mb = parse_action(action); info = stage_info[st]
             ledger.event = action
             key = (st, mb)
@@ -192,14 +239,15 @@ def run(schedule, muon, residual, adam, *, expandable=True, communication_gib=16
                     if group in pending:
                         wait_gather(group)
                 if st == 0:
-                    wait_gather((st, "vision_encoder"))
+                    if vision:
+                        wait_gather((st, "vision_encoder"))
                     wait_gather((st, "tok_embeddings"))
                     release_gather((st, "tok_embeddings"))
-                refs = Counter((layer+11)//12 for layer in layers[st])
+                refs = Counter((layer+block_size-1)//block_size for layer in layers[st])
                 active[key] = refs
                 for layer in layers[st]:
                     ledger.event = f"{action}/layer{layer}/forward"
-                    prefix = (layer+11)//12
+                    prefix = (layer+block_size-1)//block_size
                     ledger.alloc(f"hidden/{key}/{layer}", h, "checkpoint_inputs")
                     stack_name = f"stack/{key}/{prefix}"
                     if stack_name not in ledger.live:
@@ -208,7 +256,7 @@ def run(schedule, muon, residual, adam, *, expandable=True, communication_gib=16
                     index = layers[st].index(layer)
                     if index+1 < len(layers[st]):
                         start_gather((st, layers[st][index+1]))
-                    probe = forward_probes[layer//12+1]
+                    probe = forward_probes[layer//block_size+1]
                     ledger.trace(probe["storage_events"], f"helper/{position}/{layer}", phases={"forward"})
                     release_gather((st, layer))  # reshard_after_forward='always'
                 for group in stage_groups:
@@ -221,9 +269,9 @@ def run(schedule, muon, residual, adam, *, expandable=True, communication_gib=16
                 for group in stage_groups:
                     if group in pending:
                         wait_gather(group)
-                if st == 0:
+                if st == 0 and vision:
                     wait_gather((st, "vision_encoder"))
-                if st == 15:
+                if st == last_stage:
                     wait_gather((st, "output"))
                     if (st, "output") not in gradients:
                         ledger.alloc(f"grad/{st}/output", 2*sum(groups[(st, "output")]), "fp32_accumulated_gradients")
@@ -232,13 +280,13 @@ def run(schedule, muon, residual, adam, *, expandable=True, communication_gib=16
                 for layer in reversed(layers[st]):
                     ledger.event = f"{action}/layer{layer}/recompute_backward"
                     wait_gather((st, layer))
-                    ledger.trace(probes[layer//12+1]["storage_events"], f"helper/{position}/{layer}")
+                    ledger.trace(probes[layer//block_size+1]["storage_events"], f"helper/{position}/{layer}")
                     if (st, layer) not in gradients:
                         dense, expert = groups[(st, layer)]
                         ledger.alloc(f"grad/{st}/{layer}", 2*(dense+expert), "fp32_accumulated_gradients")
                         gradients.add((st, layer))
                     ledger.free(f"hidden/{key}/{layer}")
-                    prefix = (layer+11)//12; refs[prefix] -= 1
+                    prefix = (layer+block_size-1)//block_size; refs[prefix] -= 1
                     if not refs[prefix]:
                         ledger.free(f"stack/{key}/{prefix}")
                     # set_reshard_after_backward(False): full parameters persist.
@@ -248,7 +296,7 @@ def run(schedule, muon, residual, adam, *, expandable=True, communication_gib=16
                         if group not in gradients:
                             ledger.alloc(f"grad/{st}/{group[1]}", 2*sum(groups[group]), "fp32_accumulated_gradients")
                             gradients.add(group)
-                if st != 15:
+                if st != last_stage:
                     ledger.free(f"RECV_B/{key}")
                 ledger.free(f"output/{key}"); del active[key]
             elif op == "REDUCE_GRAD":
@@ -257,7 +305,8 @@ def run(schedule, muon, residual, adam, *, expandable=True, communication_gib=16
                 for group in sorted(gradients, key=str):
                     if group[0] == st:
                         release_gather(group)
-                        ledger.alloc(f"optimizer_grad/{group}", local_gradients[group], "bf16_optimizer_gradients")
+                        if f"optimizer_grad/{group}" not in ledger.live:
+                            ledger.alloc(f"optimizer_grad/{group}", local_gradients[group], "bf16_optimizer_gradients")
                         ledger.free(f"grad/{st}/{group[1]}"); gradients.remove(group)
         if active or pending or gathered or gradients:
             raise ValueError("Schedule failed to drain modeled training lifetimes")
@@ -265,12 +314,21 @@ def run(schedule, muon, residual, adam, *, expandable=True, communication_gib=16
         after_schedule_categories = dict(ledger.categories)
         ledger.phase = "optimizer"
         for m in chosen:
+            if not initialized_optimizer:
+                ledger.event = f"optimizer/stage{m['stage']}/initialize_momentum"
+                for allocation in m["persistent_allocations"]:
+                    if allocation["kind"] == "momentum":
+                        ledger.alloc(f"momentum/{allocation['allocation_id']}", allocation["bytes"], "muon_momentum")
             for bucket in m["buckets"]:
                 for computation in bucket["computations"]:
                     ledger.event = f"optimizer/stage{m['stage']}/{computation['fqn']}"
                     ledger.trace(muon["kernel_probes"][computation["probe"]]["storage_events"],
                                  "muon_kernel", category="muon_kernel_temporary")
             a = adam_chosen[(m["stage"], owner)]
+            if not initialized_optimizer:
+                ledger.event = f"optimizer/stage{m['stage']}/initialize_adamw"
+                for allocation in a["persistent_allocations"]:
+                    ledger.alloc(allocation["allocation_id"], allocation["bytes"], "adamw_moments")
             ledger.event = f"optimizer/stage{m['stage']}/adamw_foreach"
             ledger.trace(adam["kernel_probes"][a["probe"]]["steady_step"]["storage_events"],
                          "adamw_kernel", category="adamw_kernel_temporary")
@@ -285,6 +343,9 @@ def run(schedule, muon, residual, adam, *, expandable=True, communication_gib=16
                           communication_sensitivity=[dict(communication_gib=c,
                               live_plus_communication_bytes=ledger.peak["bytes"]+c*GiB,
                               remaining_bytes=capacity_bytes-ledger.peak["bytes"]-c*GiB) for c in (0,8,16,32)]))
+        if recipe:
+            ranks[-1].update(modeled_active_peak=ledger.active_peak, phase_active_peaks=ledger.phase_active_peaks,
+                             global_rank=rank*dp+owner)
     return dict(schema_version=1, scenario=baseline["scenario"], allocator_mode="expandable" if expandable else "fixed",
                 run_metadata=identity, modeled_metadata=model_identity, runtime_compatibility=compatibility,
                 communication_gib=communication_gib, ranks=ranks, full_model_fit_verified=False,
@@ -293,7 +354,10 @@ def run(schedule, muon, residual, adam, *, expandable=True, communication_gib=16
                               fsdp_dense_and_edp1_expert_unsharded_copies=True,
                               fullac_checkpoint_input_release=True, attention_residual_helper=True,
                               allocator_lifetime_replay=True),
-                assumptions=["Worst persistent-buffer Muon DP owner selected independently for each PP rank.",
+                assumptions=[("Worst persistent-buffer Muon DP owner selected independently for each PP rank." if dp_owner is None
+                              else f"Explicit DP owner {dp_owner} replayed on every PP rank; not a global worst-owner claim."),
+                             ("Optimizer momentum and AdamW states initialized before training." if initialized_optimizer
+                              else "First optimizer step creates momentum before each stage's Muon update and AdamW moments before its foreach update."),
                              "FSDP layer groups model source UNSHARD, wait/copy-out, forward reshard and backward retention.",
                              "EDP1 copies expert parameters in target wait_for_unshard despite requiring no network all-gather.",
                              "FullAC checkpoint inputs freed per layer in backward; unchanged residual stacks share storage.",

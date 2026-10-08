@@ -79,11 +79,11 @@ def adamw_inventory():
     return rows
 
 
-def local_rows(rows,owner):
+def local_rows(rows,owner,dp_degree=32):
     result=[]
     for row in rows:
         shape=list(row["shape"])
-        shape[0],offset=Shard(0)._local_shard_size_and_offset(shape[0],32,owner)
+        shape[0],offset=Shard(0)._local_shard_size_and_offset(shape[0],dp_degree,owner)
         result.append(dict(row,local_shape=shape,local_numel=math.prod(shape),shard_offset=offset))
     return result
 
@@ -128,20 +128,21 @@ def probe(local_shapes):
                     first_step=first,steady_step=steady)
 
 
-def run(source: Path,stages,*,owners=range(32),include_vision=True):
+def run(source: Path,stages,*,owners=range(32),include_vision=True, parameter_inventory=None,
+        dp_degree=32, final_stage=15):
     _,_,_,_,hashes=load_source(source)
-    rows=adamw_inventory()
+    rows=adamw_inventory() if parameter_inventory is None else parameter_inventory
     probes={}; outputs=[]
     for stage in stages:
         selected=[row for row in rows if row["layer"] is not None and stage["first_layer"]<=row["layer"]<=stage["last_layer"]]
         if stage["stage"]==0:
             selected += [r for r in rows if r["fqn"]=="tok_embeddings.weight" or
                          (include_vision and r["fqn"].startswith("vision_encoder."))]
-        if stage["stage"]==15:
+        if stage["stage"]==final_stage:
             selected += [r for r in rows if r["layer"] is None and r["fqn"]!="tok_embeddings.weight"
                          and not r["fqn"].startswith("vision_encoder.")]
         for owner in owners:
-            local=local_rows(selected,owner)
+            local=local_rows(selected,owner,dp_degree)
             shapes=[r["local_shape"] for r in local]
             key=hashlib.sha256(repr(shapes).encode()).hexdigest()[:16]
             if key not in probes: probes[key]=probe(shapes)

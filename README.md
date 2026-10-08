@@ -17,11 +17,16 @@ subtotal is **186.084 GiB before external communication**, versus **184.346 GiB*
 capacity. This is a modeled no-fit with explicit remaining kernel/communication
 coverage gaps, not a measured full-training CUDA OOM.
 
-The [historical GB200 validation audit](docs/gb200-historical-validation.md)
-examines six full-model OOMs and three debug-model passes. None matches this
-prediction's configuration; accuracy is **not validated**. OOM snapshots remain
-censored observations, and outside-allocator memory is kept separate from tensor
-and reserved-memory metrics. The audit does not tune the model to observed peaks.
+The [GB200 workload backtest](docs/gb200-workload-backtest.md) now replays all nine
+saved configurations: six full-model OOMs and three successful debug runs. Saved
+geometry, PP4/PP8, ordinary/interleaved 1F1B, optimizer owner plans, vision presence,
+and accumulation rounds drive the predictions. First-step optimizer states are
+created lazily. The partial model predicts **57–60 MiB active** versus about
+**278 MiB** in the debug runs' first logged windows. Full peak accuracy remains
+**unvalidated**; no memory observations were used to tune predictions. OOM
+snapshots remain censored constraints. [Reproduction and scope](docs/gb200-workload-reproduction.md).
+The earlier [compatibility-only audit](docs/gb200-historical-validation.md) remains
+available as historical evidence for the fixed 4068-token prediction.
 
 [Per-run source/runtime metadata](docs/run-metadata.md) takes one input per
 component: `training_code`, `torchao`, `pytorch`, `cuda`, `nccl`, and `container`.

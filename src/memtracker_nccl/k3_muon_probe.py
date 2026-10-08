@@ -279,25 +279,29 @@ def packing_probe(plan, runtime, local_specs):
                     storage_events=[e for e in tracker.storage_events if e["phase"]=="packing"])
 
 
-def run(source: Path, stages: list[dict], *, owners=range(32)) -> dict:
+def run(source: Path, stages: list[dict], *, owners=range(32), dp_degree=32, ep_degree=32,
+        parameter_inventory=None, optimizer_config_factory=None, optimizer_kwargs=None) -> dict:
+    if dp_degree != ep_degree or dp_degree < 1:
+        raise ValueError("Optimizer probe currently requires DP=EP and EDP=1")
     owners = tuple(owners)
-    if not owners or len(set(owners)) != len(owners) or any(type(o) is not int or not 0 <= o < 32 for o in owners):
-        raise ValueError("owners must contain unique integers in [0,32)")
+    if not owners or len(set(owners)) != len(owners) or any(type(o) is not int or not 0 <= o < dp_degree for o in owners):
+        raise ValueError("owners must contain unique integers in [0,dp_degree)")
     if not stages:
         raise ValueError("At least one stage is required")
     config, schedule, runtime, muon, hashes = load_source(source)
-    opt_config = optimizer_config(source, config)
-    inventory = muon_inventory()
+    opt_config = (optimizer_config_factory(config) if optimizer_config_factory is not None
+                  else optimizer_config(source, config))
+    inventory = muon_inventory() if parameter_inventory is None else parameter_inventory
     if {r["fqn"] for r in inventory} != set(opt_config.compute_sharding_by_fqn):
         raise AssertionError("Muon shape inventory and exact source config disagree")
     from torch.testing._internal.distributed.fake_pg import FakeStore
     if dist.is_initialized():
         raise RuntimeError("Run optimizer probe in its own process")
-    dist.init_process_group("fake", store=FakeStore(), rank=0, world_size=32)
+    dist.init_process_group("fake", store=FakeStore(), rank=0, world_size=dp_degree)
     outputs, probes, packing_probes = [], {}, {}
     try:
-        dense_mesh = init_device_mesh("cpu", (32,), mesh_dim_names=("dp_shard",))
-        expert_mesh = init_device_mesh("cpu", (1,32), mesh_dim_names=("edp_shard","ep"))
+        dense_mesh = init_device_mesh("cpu", (dp_degree,), mesh_dim_names=("dp_shard",))
+        expert_mesh = init_device_mesh("cpu", (1,ep_degree), mesh_dim_names=("edp_shard","ep"))
         for stage in stages:
             rows = [r for r in inventory if stage["first_layer"] <= r["layer"] <= stage["last_layer"]]
             with patch.object(muon.DistMuon, "_validate_plan_across_ranks"), patch.object(torch, "get_device_module", return_value=_CPUStreams):
@@ -306,7 +310,9 @@ def run(source: Path, stages: list[dict], *, owners=range(32)) -> dict:
                     shape = row["shape"]
                     local_shape = list(shape)
                     dim = row["storage_shard_dim"]
-                    local_shape[dim] = math.ceil(shape[dim]/32)
+                    if shape[dim] % dp_degree:
+                        raise ValueError(f"Uneven Muon storage shards unsupported: {row['fqn']}")
+                    local_shape[dim] = shape[dim]//dp_degree
                     local = torch.empty(local_shape, dtype=torch.bfloat16, device="meta")
                     mesh = expert_mesh if row["expert"] else dense_mesh
                     placements = (Shard(0),Shard(0)) if row["expert"] else (Shard(dim),)
@@ -315,13 +321,14 @@ def run(source: Path, stages: list[dict], *, owners=range(32)) -> dict:
                 with patch.object(runtime._BucketedRedistributionRuntime, "reserve_buffers"):
                     optimizer = muon.DistMuon([dict(params=params,param_names=[r["fqn"] for r in rows])],
                         compute_sharding_by_fqn=opt_config.compute_sharding_by_fqn,
-                        bucket_configs=opt_config.bucket_configs, adjust_lr_fn="match_rms_adamw")
+                        bucket_configs=opt_config.bucket_configs,
+                        **(optimizer_kwargs if optimizer_kwargs is not None else dict(adjust_lr_fn="match_rms_adamw")))
                 # Execute the source momentum constructor for every Muon parameter.
                 for item in optimizer._parameter_compute_layouts:
                     item.param.grad = torch.empty_like(item.param)
                     optimizer._momentum(item, item.param.grad)
                 momentum_bytes = sum(v["momentum_buffer"].to_local().numel()*2 for v in optimizer.state.values())
-                expert_momentum = sum(math.prod(r["shape"])*2//32 for r in rows if r["expert"])
+                expert_momentum = sum(math.prod(r["shape"])*2//dp_degree for r in rows if r["expert"])
                 for owner in owners:
                     plans = rank_plans(optimizer._bucket_plans, owner, schedule)
                     rt = runtime._BucketedRedistributionRuntime(torch.device("cpu"))
@@ -376,9 +383,9 @@ def run(source: Path, stages: list[dict], *, owners=range(32)) -> dict:
                         b["transient_peak_bytes"] = max(max((x["transient_peak_bytes"] for x in calculations),default=0),
                                                        b.get("packing_transient_peak_bytes",0))
                         bucket_rows.append(b)
-                    transient = max(b["transient_peak_bytes"] for b in bucket_rows)
+                    transient = max((b["transient_peak_bytes"] for b in bucket_rows), default=0)
                     persistent = [dict(allocation_id=f"muon-s{stage['stage']}-d{owner}-momentum-{row['fqn']}",
-                                       bytes=row["numel"]*2//32, pool="default", stream="compute", kind="momentum",
+                                       bytes=row["numel"]*2//dp_degree, pool="default", stream="compute", kind="momentum",
                                        fqn=row["fqn"], expert=row["expert"]) for row in rows]
                     persistent += [dict(buffer, kind="runtime_reservation") for buffer in buffers]
                     outputs.append(dict(stage=stage["stage"], pp_rank=stage["rank"], dp_owner=owner,
