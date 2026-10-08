@@ -17,6 +17,12 @@ subtotal is **186.084 GiB before external communication**, versus **184.346 GiB*
 capacity. This is a modeled no-fit with explicit remaining kernel/communication
 coverage gaps, not a measured full-training CUDA OOM.
 
+The [historical GB200 validation audit](docs/gb200-historical-validation.md)
+examines six full-model OOMs and three debug-model passes. None matches this
+prediction's configuration; accuracy is **not validated**. OOM snapshots remain
+censored observations, and outside-allocator memory is kept separate from tensor
+and reserved-memory metrics. The audit does not tune the model to observed peaks.
+
 ## Install and test
 
 Python 3.11+; tested with Python 3.12 and **PyTorch 2.14.1 CPU**. PyTorch private

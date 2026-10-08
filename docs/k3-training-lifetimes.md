@@ -8,6 +8,12 @@ supersedes the earlier 142.475 GiB boundary-only subtotal. It is a **modeled
 no-fit under the stated lifetimes**, not a measured full-training OOM or a
 certified lower bound.
 
+The subsequent [historical GB200 audit](gb200-historical-validation.md) found
+configuration and measurement-window mismatches in all nine supplied runs.
+Those observations do not validate this 186.084 GiB prediction; they also show
+that a universal 16 GiB external-memory allowance is insufficient for the
+reported full-model failure snapshots.
+
 Recipe: PP8/FSDP32/EP32/TP1/CP1, Interleaved1F1B with two virtual stages per rank,
 4068 tokens, microbatch 2 × 64, BF16 parameters, FP32 accumulated/reduction
 gradients, DistMuon + AdamW, FullAC, HybridEP, CUDA graphs off. Communication

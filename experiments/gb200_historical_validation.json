@@ -1,0 +1,1072 @@
+{
+  "schema_version": 1,
+  "status": "not_validated",
+  "estimator_tuned": false,
+  "frozen_prediction_reproduced": true,
+  "source_dataset_sha256": "94049c448e51368346c888dacdf3b7c1d2b9710aeff28acaef33ef556b452b45",
+  "estimator_report_sha256": "b32ecf14b716691709b10990d6f42d45841601031bc487f4b6b8e92114a3fb39",
+  "estimator_configuration": {
+    "layers": 93,
+    "hidden_dim": 7168,
+    "vocab_size": 163840,
+    "experts": 896,
+    "top_k": 16,
+    "expert_input_dim": 3584,
+    "expert_ffn_dim": 3072,
+    "vision_encoder": true,
+    "sequence": 4068,
+    "microbatch_size": 2,
+    "microbatches": 64,
+    "pp": 8,
+    "fsdp": 32,
+    "ep": 32,
+    "tp": 1,
+    "cp": 1,
+    "schedule": "Interleaved1F1B",
+    "cuda_graphs": false,
+    "accumulation_rounds": 1,
+    "replication": 1,
+    "parameter_dtype": "bfloat16",
+    "storage_dtype": "bfloat16",
+    "reduction_dtype": "float32",
+    "checkpointing": "FullAC",
+    "optimizer_types": [
+      "DistMuon",
+      "AdamW"
+    ],
+    "reshard_after_forward": "always",
+    "forced_load_balance": true
+  },
+  "frozen_estimator": {
+    "source_commit": "b4d5b404bd30dec67f86873203fbd4ba5f457531",
+    "worst_live_peak_gib": 186.08413811400533,
+    "resident_communication_allowance_gib": 16,
+    "pp_rank": 4
+  },
+  "counts": {
+    "experiments": 9,
+    "outcomes": {
+      "OOM": 6,
+      "PASS": 3
+    },
+    "known_configuration_matches": 0,
+    "scored_peak_comparisons": 0,
+    "scored_fit_classifications": 0
+  },
+  "jobs_sharing_known_configuration": [
+    [
+      3233459,
+      3238922
+    ],
+    [
+      3250214,
+      3256150
+    ]
+  ],
+  "accuracy": {
+    "allocated_peak_error_percent": null,
+    "reserved_peak_error_percent": null,
+    "false_fit_rate": null,
+    "success": false
+  },
+  "external_memory_observations": [
+    {
+      "job": 3227951,
+      "process_outside_allocator_gib": 24.789999999999992,
+      "minus_previous_allowance_gib": 8.789999999999992
+    },
+    {
+      "job": 3233459,
+      "process_outside_allocator_gib": 22.95999999999998,
+      "minus_previous_allowance_gib": 6.9599999999999795
+    },
+    {
+      "job": 3238922,
+      "process_outside_allocator_gib": 22.95999999999998,
+      "minus_previous_allowance_gib": 6.9599999999999795
+    },
+    {
+      "job": 3244815,
+      "process_outside_allocator_gib": 24.159999999999997,
+      "minus_previous_allowance_gib": 8.159999999999997
+    }
+  ],
+  "communication_warmup": {
+    "samples": 16,
+    "distinct_external_delta_bytes": [
+      0,
+      452984832
+    ],
+    "all_allocator_allocated_deltas_zero": true,
+    "scope": "Observed debug-rank warmup deltas; not a 32-rank full-model NCCL calibration"
+  },
+  "metric_semantics": [
+    "OOM torch_allocated values are failure-point snapshots, never completed-step peaks.",
+    "The failed requested allocation is not added to observed allocated memory.",
+    "Reserved = allocated + reserved-unused, not allocated + reserved.",
+    "Pinned TorchTitan DeviceMemoryMonitor reads active_bytes.all.peak for memory/max_active(GiB); do not assume requested live tensor bytes are identical.",
+    "Logger windows with CUDA graphs must be aligned before scoring; first/last logged windows are not automatically named warmup/steady state.",
+    "External process residuals include CUDA/NCCL/HybridEP/library memory; no exclusive attribution is inferred."
+  ],
+  "next_requirements": [
+    "Add recipe-driven shape/topology/vision/schedule adapters, including PP4 debug and ordinary 1F1B.",
+    "Represent first-step initialization, accumulation rounds and CUDA graph warmup/capture/replay separately.",
+    "Model active allocator bytes including pending frees and mirror logger peak resets.",
+    "Reconstruct eager communication and optimizer initialization from the recorded runtime; replace universal allowances with scoped calibration.",
+    "Pin runtime/source and score held-out configuration groups after these adapters; repeated recipes must not straddle calibration and validation splits."
+  ],
+  "experiments": [
+    {
+      "job": 3227951,
+      "outcome": "OOM",
+      "scope": "full_model",
+      "phase": "pipeline backward",
+      "configuration": {
+        "layers": 93,
+        "hidden_dim": 7168,
+        "vocab_size": 163840,
+        "experts": 896,
+        "top_k": 16,
+        "expert_input_dim": 3584,
+        "expert_ffn_dim": 3072,
+        "vision_encoder": true,
+        "sequence": 4068,
+        "microbatch_size": 2,
+        "microbatches": 64,
+        "accumulation_rounds": 1,
+        "pp": 8,
+        "fsdp": 32,
+        "ep": 32,
+        "tp": 1,
+        "cp": 1,
+        "replication": 1,
+        "schedule": "1F1B",
+        "cuda_graphs": false,
+        "parameter_dtype": "bfloat16",
+        "storage_dtype": "bfloat16",
+        "reduction_dtype": "float32",
+        "checkpointing": "FullAC",
+        "optimizer_types": [
+          "DistMuon",
+          "AdamW"
+        ],
+        "reshard_after_forward": "always",
+        "forced_load_balance": true
+      },
+      "mismatches": [
+        {
+          "field": "schedule",
+          "measured": "1F1B",
+          "estimator": "Interleaved1F1B"
+        }
+      ],
+      "blockers": [
+        "configuration_mismatch",
+        "censored_failure_no_completed_peak",
+        "estimator_missing_full_training_components",
+        "source_runtime_identity_unverified",
+        "metric_and_window_alignment_unverified"
+      ],
+      "comparison_status": "not_scored",
+      "peak_error_percent": null,
+      "fit_classification_correct": null,
+      "observed_failure": {
+        "torch_reserved_gib": 156.0,
+        "process_outside_allocator_gib": 24.789999999999992,
+        "device_used_gib": 182.84,
+        "metric_kind": "rounded_failure_point_snapshot_not_completed_peak",
+        "completed_iteration_peak_gib": null,
+        "requested_allocation_included_in_allocated": false,
+        "attribution": "Unattributed process GPU memory outside PyTorch reservation; not NCCL-only"
+      },
+      "logged_step_windows": {
+        "memory/max_active(GiB)": null,
+        "memory/max_reserved(GiB)": null
+      }
+    },
+    {
+      "job": 3233459,
+      "outcome": "OOM",
+      "scope": "full_model",
+      "phase": "pipeline backward",
+      "configuration": {
+        "layers": 93,
+        "hidden_dim": 7168,
+        "vocab_size": 163840,
+        "experts": 896,
+        "top_k": 16,
+        "expert_input_dim": 3584,
+        "expert_ffn_dim": 3072,
+        "vision_encoder": true,
+        "sequence": 2048,
+        "microbatch_size": 2,
+        "microbatches": 64,
+        "accumulation_rounds": 1,
+        "pp": 8,
+        "fsdp": 32,
+        "ep": 32,
+        "tp": 1,
+        "cp": 1,
+        "replication": 1,
+        "schedule": "1F1B",
+        "cuda_graphs": false,
+        "parameter_dtype": "bfloat16",
+        "storage_dtype": "bfloat16",
+        "reduction_dtype": "float32",
+        "checkpointing": "FullAC",
+        "optimizer_types": [
+          "DistMuon",
+          "AdamW"
+        ],
+        "reshard_after_forward": "always",
+        "forced_load_balance": true
+      },
+      "mismatches": [
+        {
+          "field": "sequence",
+          "measured": 2048,
+          "estimator": 4068
+        },
+        {
+          "field": "schedule",
+          "measured": "1F1B",
+          "estimator": "Interleaved1F1B"
+        }
+      ],
+      "blockers": [
+        "configuration_mismatch",
+        "censored_failure_no_completed_peak",
+        "estimator_missing_full_training_components",
+        "source_runtime_identity_unverified",
+        "metric_and_window_alignment_unverified"
+      ],
+      "comparison_status": "not_scored",
+      "peak_error_percent": null,
+      "fit_classification_correct": null,
+      "observed_failure": {
+        "torch_reserved_gib": 158.93,
+        "process_outside_allocator_gib": 22.95999999999998,
+        "device_used_gib": 183.936953125,
+        "metric_kind": "rounded_failure_point_snapshot_not_completed_peak",
+        "completed_iteration_peak_gib": null,
+        "requested_allocation_included_in_allocated": false,
+        "attribution": "Unattributed process GPU memory outside PyTorch reservation; not NCCL-only"
+      },
+      "logged_step_windows": {
+        "memory/max_active(GiB)": null,
+        "memory/max_reserved(GiB)": null
+      }
+    },
+    {
+      "job": 3238922,
+      "outcome": "OOM",
+      "scope": "full_model",
+      "phase": "pipeline backward",
+      "configuration": {
+        "layers": 93,
+        "hidden_dim": 7168,
+        "vocab_size": 163840,
+        "experts": 896,
+        "top_k": 16,
+        "expert_input_dim": 3584,
+        "expert_ffn_dim": 3072,
+        "vision_encoder": true,
+        "sequence": 2048,
+        "microbatch_size": 2,
+        "microbatches": 64,
+        "accumulation_rounds": 1,
+        "pp": 8,
+        "fsdp": 32,
+        "ep": 32,
+        "tp": 1,
+        "cp": 1,
+        "replication": 1,
+        "schedule": "1F1B",
+        "cuda_graphs": false,
+        "parameter_dtype": "bfloat16",
+        "storage_dtype": "bfloat16",
+        "reduction_dtype": "float32",
+        "checkpointing": "FullAC",
+        "optimizer_types": [
+          "DistMuon",
+          "AdamW"
+        ],
+        "reshard_after_forward": "always",
+        "forced_load_balance": true
+      },
+      "mismatches": [
+        {
+          "field": "sequence",
+          "measured": 2048,
+          "estimator": 4068
+        },
+        {
+          "field": "schedule",
+          "measured": "1F1B",
+          "estimator": "Interleaved1F1B"
+        }
+      ],
+      "blockers": [
+        "configuration_mismatch",
+        "censored_failure_no_completed_peak",
+        "estimator_missing_full_training_components",
+        "source_runtime_identity_unverified",
+        "metric_and_window_alignment_unverified"
+      ],
+      "comparison_status": "not_scored",
+      "peak_error_percent": null,
+      "fit_classification_correct": null,
+      "observed_failure": {
+        "torch_reserved_gib": 158.93,
+        "process_outside_allocator_gib": 22.95999999999998,
+        "device_used_gib": 183.936953125,
+        "metric_kind": "rounded_failure_point_snapshot_not_completed_peak",
+        "completed_iteration_peak_gib": null,
+        "requested_allocation_included_in_allocated": false,
+        "attribution": "Unattributed process GPU memory outside PyTorch reservation; not NCCL-only"
+      },
+      "logged_step_windows": {
+        "memory/max_active(GiB)": null,
+        "memory/max_reserved(GiB)": null
+      }
+    },
+    {
+      "job": 3240283,
+      "outcome": "OOM",
+      "scope": "full_model",
+      "phase": "DistMuon optimizer NCCL storage-to-compute redistribution",
+      "configuration": {
+        "layers": 93,
+        "hidden_dim": 7168,
+        "vocab_size": 163840,
+        "experts": 896,
+        "top_k": 16,
+        "expert_input_dim": 3584,
+        "expert_ffn_dim": 3072,
+        "vision_encoder": true,
+        "sequence": 2048,
+        "microbatch_size": 1,
+        "microbatches": 128,
+        "accumulation_rounds": 1,
+        "pp": 8,
+        "fsdp": 32,
+        "ep": 32,
+        "tp": 1,
+        "cp": 1,
+        "replication": 1,
+        "schedule": "1F1B",
+        "cuda_graphs": false,
+        "parameter_dtype": "bfloat16",
+        "storage_dtype": "bfloat16",
+        "reduction_dtype": "float32",
+        "checkpointing": "FullAC",
+        "optimizer_types": [
+          "DistMuon",
+          "AdamW"
+        ],
+        "reshard_after_forward": "always",
+        "forced_load_balance": true
+      },
+      "mismatches": [
+        {
+          "field": "sequence",
+          "measured": 2048,
+          "estimator": 4068
+        },
+        {
+          "field": "microbatch_size",
+          "measured": 1,
+          "estimator": 2
+        },
+        {
+          "field": "microbatches",
+          "measured": 128,
+          "estimator": 64
+        },
+        {
+          "field": "schedule",
+          "measured": "1F1B",
+          "estimator": "Interleaved1F1B"
+        }
+      ],
+      "blockers": [
+        "configuration_mismatch",
+        "censored_failure_no_completed_peak",
+        "estimator_missing_full_training_components",
+        "source_runtime_identity_unverified",
+        "metric_and_window_alignment_unverified"
+      ],
+      "comparison_status": "not_scored",
+      "peak_error_percent": null,
+      "fit_classification_correct": null,
+      "observed_failure": {
+        "torch_reserved_gib": null,
+        "process_outside_allocator_gib": null,
+        "device_used_gib": null,
+        "metric_kind": "rounded_failure_point_snapshot_not_completed_peak",
+        "completed_iteration_peak_gib": null,
+        "requested_allocation_included_in_allocated": false,
+        "attribution": "Unattributed process GPU memory outside PyTorch reservation; not NCCL-only"
+      },
+      "logged_step_windows": {
+        "memory/max_active(GiB)": null,
+        "memory/max_reserved(GiB)": null
+      }
+    },
+    {
+      "job": 3244815,
+      "outcome": "OOM",
+      "scope": "full_model",
+      "phase": "first-step eager graph warmup; virtual stage13 backward microbatch40",
+      "configuration": {
+        "layers": 93,
+        "hidden_dim": 7168,
+        "vocab_size": 163840,
+        "experts": 896,
+        "top_k": 16,
+        "expert_input_dim": 3584,
+        "expert_ffn_dim": 3072,
+        "vision_encoder": false,
+        "sequence": 2048,
+        "microbatch_size": 1,
+        "microbatches": 128,
+        "accumulation_rounds": 1,
+        "pp": 8,
+        "fsdp": 32,
+        "ep": 32,
+        "tp": 1,
+        "cp": 1,
+        "replication": 1,
+        "schedule": "Interleaved1F1B",
+        "cuda_graphs": true,
+        "parameter_dtype": "bfloat16",
+        "storage_dtype": "bfloat16",
+        "reduction_dtype": "float32",
+        "checkpointing": "FullAC",
+        "optimizer_types": [
+          "DistMuon",
+          "AdamW"
+        ],
+        "reshard_after_forward": "always",
+        "forced_load_balance": true
+      },
+      "mismatches": [
+        {
+          "field": "vision_encoder",
+          "measured": false,
+          "estimator": true
+        },
+        {
+          "field": "sequence",
+          "measured": 2048,
+          "estimator": 4068
+        },
+        {
+          "field": "microbatch_size",
+          "measured": 1,
+          "estimator": 2
+        },
+        {
+          "field": "microbatches",
+          "measured": 128,
+          "estimator": 64
+        },
+        {
+          "field": "cuda_graphs",
+          "measured": true,
+          "estimator": false
+        }
+      ],
+      "blockers": [
+        "configuration_mismatch",
+        "censored_failure_no_completed_peak",
+        "graph_warmup_capture_replay_windows_not_modeled",
+        "estimator_missing_full_training_components",
+        "source_runtime_identity_unverified",
+        "metric_and_window_alignment_unverified"
+      ],
+      "comparison_status": "not_scored",
+      "peak_error_percent": null,
+      "fit_classification_correct": null,
+      "observed_failure": {
+        "torch_reserved_gib": 157.96,
+        "process_outside_allocator_gib": 24.159999999999997,
+        "device_used_gib": 184.167421875,
+        "metric_kind": "rounded_failure_point_snapshot_not_completed_peak",
+        "completed_iteration_peak_gib": null,
+        "requested_allocation_included_in_allocated": false,
+        "attribution": "Unattributed process GPU memory outside PyTorch reservation; not NCCL-only"
+      },
+      "logged_step_windows": {
+        "memory/max_active(GiB)": null,
+        "memory/max_reserved(GiB)": null
+      }
+    },
+    {
+      "job": 3250222,
+      "outcome": "OOM",
+      "scope": "full_model",
+      "phase": "first optimizer NCCL storage-to-compute redistribution",
+      "configuration": {
+        "layers": 93,
+        "hidden_dim": 7168,
+        "vocab_size": 163840,
+        "experts": 896,
+        "top_k": 16,
+        "expert_input_dim": 3584,
+        "expert_ffn_dim": 3072,
+        "vision_encoder": false,
+        "sequence": 1024,
+        "microbatch_size": 1,
+        "microbatches": 16,
+        "accumulation_rounds": 16,
+        "pp": 8,
+        "fsdp": 32,
+        "ep": 32,
+        "tp": 1,
+        "cp": 1,
+        "replication": 1,
+        "schedule": "Interleaved1F1B",
+        "cuda_graphs": true,
+        "parameter_dtype": "bfloat16",
+        "storage_dtype": "bfloat16",
+        "reduction_dtype": "float32",
+        "checkpointing": "FullAC",
+        "optimizer_types": [
+          "DistMuon",
+          "AdamW"
+        ],
+        "reshard_after_forward": "always",
+        "forced_load_balance": true
+      },
+      "mismatches": [
+        {
+          "field": "vision_encoder",
+          "measured": false,
+          "estimator": true
+        },
+        {
+          "field": "sequence",
+          "measured": 1024,
+          "estimator": 4068
+        },
+        {
+          "field": "microbatch_size",
+          "measured": 1,
+          "estimator": 2
+        },
+        {
+          "field": "microbatches",
+          "measured": 16,
+          "estimator": 64
+        },
+        {
+          "field": "accumulation_rounds",
+          "measured": 16,
+          "estimator": 1
+        },
+        {
+          "field": "cuda_graphs",
+          "measured": true,
+          "estimator": false
+        }
+      ],
+      "blockers": [
+        "configuration_mismatch",
+        "censored_failure_no_completed_peak",
+        "graph_warmup_capture_replay_windows_not_modeled",
+        "estimator_missing_full_training_components",
+        "source_runtime_identity_unverified",
+        "metric_and_window_alignment_unverified"
+      ],
+      "comparison_status": "not_scored",
+      "peak_error_percent": null,
+      "fit_classification_correct": null,
+      "observed_failure": {
+        "torch_reserved_gib": null,
+        "process_outside_allocator_gib": null,
+        "device_used_gib": null,
+        "metric_kind": "rounded_failure_point_snapshot_not_completed_peak",
+        "completed_iteration_peak_gib": null,
+        "requested_allocation_included_in_allocated": false,
+        "attribution": "Unattributed process GPU memory outside PyTorch reservation; not NCCL-only"
+      },
+      "logged_step_windows": {
+        "memory/max_active(GiB)": null,
+        "memory/max_reserved(GiB)": null
+      }
+    },
+    {
+      "job": 3244745,
+      "outcome": "PASS",
+      "scope": "reduced_debug_model",
+      "phase": "small-model functional gate",
+      "configuration": {
+        "layers": 17,
+        "hidden_dim": 256,
+        "vocab_size": 2048,
+        "experts": 8,
+        "top_k": 2,
+        "expert_input_dim": 128,
+        "expert_ffn_dim": 128,
+        "vision_encoder": false,
+        "sequence": 128,
+        "microbatch_size": 1,
+        "microbatches": 8,
+        "accumulation_rounds": 1,
+        "pp": 4,
+        "fsdp": 2,
+        "ep": 2,
+        "tp": 1,
+        "cp": 1,
+        "replication": 1,
+        "schedule": "Interleaved1F1B",
+        "cuda_graphs": true,
+        "parameter_dtype": "bfloat16",
+        "storage_dtype": "bfloat16",
+        "reduction_dtype": "float32",
+        "checkpointing": "FullAC",
+        "optimizer_types": [
+          "DistMuon",
+          "AdamW"
+        ],
+        "reshard_after_forward": "always",
+        "forced_load_balance": true
+      },
+      "mismatches": [
+        {
+          "field": "layers",
+          "measured": 17,
+          "estimator": 93
+        },
+        {
+          "field": "hidden_dim",
+          "measured": 256,
+          "estimator": 7168
+        },
+        {
+          "field": "vocab_size",
+          "measured": 2048,
+          "estimator": 163840
+        },
+        {
+          "field": "experts",
+          "measured": 8,
+          "estimator": 896
+        },
+        {
+          "field": "top_k",
+          "measured": 2,
+          "estimator": 16
+        },
+        {
+          "field": "expert_input_dim",
+          "measured": 128,
+          "estimator": 3584
+        },
+        {
+          "field": "expert_ffn_dim",
+          "measured": 128,
+          "estimator": 3072
+        },
+        {
+          "field": "vision_encoder",
+          "measured": false,
+          "estimator": true
+        },
+        {
+          "field": "sequence",
+          "measured": 128,
+          "estimator": 4068
+        },
+        {
+          "field": "microbatch_size",
+          "measured": 1,
+          "estimator": 2
+        },
+        {
+          "field": "microbatches",
+          "measured": 8,
+          "estimator": 64
+        },
+        {
+          "field": "pp",
+          "measured": 4,
+          "estimator": 8
+        },
+        {
+          "field": "fsdp",
+          "measured": 2,
+          "estimator": 32
+        },
+        {
+          "field": "ep",
+          "measured": 2,
+          "estimator": 32
+        },
+        {
+          "field": "cuda_graphs",
+          "measured": true,
+          "estimator": false
+        }
+      ],
+      "blockers": [
+        "configuration_mismatch",
+        "graph_warmup_capture_replay_windows_not_modeled",
+        "estimator_missing_full_training_components",
+        "source_runtime_identity_unverified",
+        "metric_and_window_alignment_unverified"
+      ],
+      "comparison_status": "not_scored",
+      "peak_error_percent": null,
+      "fit_classification_correct": null,
+      "observed_failure": {
+        "torch_reserved_gib": null,
+        "process_outside_allocator_gib": null,
+        "device_used_gib": null,
+        "metric_kind": "rounded_failure_point_snapshot_not_completed_peak",
+        "completed_iteration_peak_gib": null,
+        "requested_allocation_included_in_allocated": false,
+        "attribution": "Unattributed process GPU memory outside PyTorch reservation; not NCCL-only"
+      },
+      "logged_step_windows": {
+        "memory/max_active(GiB)": {
+          "max_logged_window_gib": 0.2717723846435547,
+          "max_rank": "0",
+          "max_window_index": 0,
+          "first_logged_window_max_gib": 0.2717723846435547,
+          "last_logged_window_max_gib": 0.05965232849121094,
+          "observations": 80,
+          "window_semantics": "Logger windows; no inferred mapping to whole-iteration/graph-capture peaks"
+        },
+        "memory/max_reserved(GiB)": {
+          "max_logged_window_gib": 0.455078125,
+          "max_rank": "0",
+          "max_window_index": 1,
+          "first_logged_window_max_gib": 0.451171875,
+          "last_logged_window_max_gib": 0.279296875,
+          "observations": 80,
+          "window_semantics": "Logger windows; no inferred mapping to whole-iteration/graph-capture peaks"
+        }
+      }
+    },
+    {
+      "job": 3250214,
+      "outcome": "PASS",
+      "scope": "reduced_debug_model",
+      "phase": "small-model functional gate",
+      "configuration": {
+        "layers": 17,
+        "hidden_dim": 256,
+        "vocab_size": 2048,
+        "experts": 8,
+        "top_k": 2,
+        "expert_input_dim": 128,
+        "expert_ffn_dim": 128,
+        "vision_encoder": false,
+        "sequence": 128,
+        "microbatch_size": 1,
+        "microbatches": 16,
+        "accumulation_rounds": 16,
+        "pp": 4,
+        "fsdp": 2,
+        "ep": 2,
+        "tp": 1,
+        "cp": 1,
+        "replication": 1,
+        "schedule": "Interleaved1F1B",
+        "cuda_graphs": true,
+        "parameter_dtype": "bfloat16",
+        "storage_dtype": "bfloat16",
+        "reduction_dtype": "float32",
+        "checkpointing": "FullAC",
+        "optimizer_types": [
+          "DistMuon",
+          "AdamW"
+        ],
+        "reshard_after_forward": "always",
+        "forced_load_balance": true
+      },
+      "mismatches": [
+        {
+          "field": "layers",
+          "measured": 17,
+          "estimator": 93
+        },
+        {
+          "field": "hidden_dim",
+          "measured": 256,
+          "estimator": 7168
+        },
+        {
+          "field": "vocab_size",
+          "measured": 2048,
+          "estimator": 163840
+        },
+        {
+          "field": "experts",
+          "measured": 8,
+          "estimator": 896
+        },
+        {
+          "field": "top_k",
+          "measured": 2,
+          "estimator": 16
+        },
+        {
+          "field": "expert_input_dim",
+          "measured": 128,
+          "estimator": 3584
+        },
+        {
+          "field": "expert_ffn_dim",
+          "measured": 128,
+          "estimator": 3072
+        },
+        {
+          "field": "vision_encoder",
+          "measured": false,
+          "estimator": true
+        },
+        {
+          "field": "sequence",
+          "measured": 128,
+          "estimator": 4068
+        },
+        {
+          "field": "microbatch_size",
+          "measured": 1,
+          "estimator": 2
+        },
+        {
+          "field": "microbatches",
+          "measured": 16,
+          "estimator": 64
+        },
+        {
+          "field": "accumulation_rounds",
+          "measured": 16,
+          "estimator": 1
+        },
+        {
+          "field": "pp",
+          "measured": 4,
+          "estimator": 8
+        },
+        {
+          "field": "fsdp",
+          "measured": 2,
+          "estimator": 32
+        },
+        {
+          "field": "ep",
+          "measured": 2,
+          "estimator": 32
+        },
+        {
+          "field": "cuda_graphs",
+          "measured": true,
+          "estimator": false
+        }
+      ],
+      "blockers": [
+        "configuration_mismatch",
+        "graph_warmup_capture_replay_windows_not_modeled",
+        "estimator_missing_full_training_components",
+        "source_runtime_identity_unverified",
+        "metric_and_window_alignment_unverified"
+      ],
+      "comparison_status": "not_scored",
+      "peak_error_percent": null,
+      "fit_classification_correct": null,
+      "observed_failure": {
+        "torch_reserved_gib": null,
+        "process_outside_allocator_gib": null,
+        "device_used_gib": null,
+        "metric_kind": "rounded_failure_point_snapshot_not_completed_peak",
+        "completed_iteration_peak_gib": null,
+        "requested_allocation_included_in_allocated": false,
+        "attribution": "Unattributed process GPU memory outside PyTorch reservation; not NCCL-only"
+      },
+      "logged_step_windows": {
+        "memory/max_active(GiB)": {
+          "max_logged_window_gib": 0.2718372344970703,
+          "max_rank": "0",
+          "max_window_index": 0,
+          "first_logged_window_max_gib": 0.2718372344970703,
+          "last_logged_window_max_gib": 0.05971717834472656,
+          "observations": 80,
+          "window_semantics": "Logger windows; no inferred mapping to whole-iteration/graph-capture peaks"
+        },
+        "memory/max_reserved(GiB)": {
+          "max_logged_window_gib": 0.455078125,
+          "max_rank": "0",
+          "max_window_index": 0,
+          "first_logged_window_max_gib": 0.455078125,
+          "last_logged_window_max_gib": 0.259765625,
+          "observations": 80,
+          "window_semantics": "Logger windows; no inferred mapping to whole-iteration/graph-capture peaks"
+        }
+      }
+    },
+    {
+      "job": 3256150,
+      "outcome": "PASS",
+      "scope": "reduced_debug_model",
+      "phase": "small-model functional gate with optimizer warmup",
+      "configuration": {
+        "layers": 17,
+        "hidden_dim": 256,
+        "vocab_size": 2048,
+        "experts": 8,
+        "top_k": 2,
+        "expert_input_dim": 128,
+        "expert_ffn_dim": 128,
+        "vision_encoder": false,
+        "sequence": 128,
+        "microbatch_size": 1,
+        "microbatches": 16,
+        "accumulation_rounds": 16,
+        "pp": 4,
+        "fsdp": 2,
+        "ep": 2,
+        "tp": 1,
+        "cp": 1,
+        "replication": 1,
+        "schedule": "Interleaved1F1B",
+        "cuda_graphs": true,
+        "parameter_dtype": "bfloat16",
+        "storage_dtype": "bfloat16",
+        "reduction_dtype": "float32",
+        "checkpointing": "FullAC",
+        "optimizer_types": [
+          "DistMuon",
+          "AdamW"
+        ],
+        "reshard_after_forward": "always",
+        "forced_load_balance": true
+      },
+      "mismatches": [
+        {
+          "field": "layers",
+          "measured": 17,
+          "estimator": 93
+        },
+        {
+          "field": "hidden_dim",
+          "measured": 256,
+          "estimator": 7168
+        },
+        {
+          "field": "vocab_size",
+          "measured": 2048,
+          "estimator": 163840
+        },
+        {
+          "field": "experts",
+          "measured": 8,
+          "estimator": 896
+        },
+        {
+          "field": "top_k",
+          "measured": 2,
+          "estimator": 16
+        },
+        {
+          "field": "expert_input_dim",
+          "measured": 128,
+          "estimator": 3584
+        },
+        {
+          "field": "expert_ffn_dim",
+          "measured": 128,
+          "estimator": 3072
+        },
+        {
+          "field": "vision_encoder",
+          "measured": false,
+          "estimator": true
+        },
+        {
+          "field": "sequence",
+          "measured": 128,
+          "estimator": 4068
+        },
+        {
+          "field": "microbatch_size",
+          "measured": 1,
+          "estimator": 2
+        },
+        {
+          "field": "microbatches",
+          "measured": 16,
+          "estimator": 64
+        },
+        {
+          "field": "accumulation_rounds",
+          "measured": 16,
+          "estimator": 1
+        },
+        {
+          "field": "pp",
+          "measured": 4,
+          "estimator": 8
+        },
+        {
+          "field": "fsdp",
+          "measured": 2,
+          "estimator": 32
+        },
+        {
+          "field": "ep",
+          "measured": 2,
+          "estimator": 32
+        },
+        {
+          "field": "cuda_graphs",
+          "measured": true,
+          "estimator": false
+        }
+      ],
+      "blockers": [
+        "configuration_mismatch",
+        "graph_warmup_capture_replay_windows_not_modeled",
+        "estimator_missing_full_training_components",
+        "source_runtime_identity_unverified",
+        "metric_and_window_alignment_unverified"
+      ],
+      "comparison_status": "not_scored",
+      "peak_error_percent": null,
+      "fit_classification_correct": null,
+      "observed_failure": {
+        "torch_reserved_gib": null,
+        "process_outside_allocator_gib": null,
+        "device_used_gib": null,
+        "metric_kind": "rounded_failure_point_snapshot_not_completed_peak",
+        "completed_iteration_peak_gib": null,
+        "requested_allocation_included_in_allocated": false,
+        "attribution": "Unattributed process GPU memory outside PyTorch reservation; not NCCL-only"
+      },
+      "logged_step_windows": {
+        "memory/max_active(GiB)": {
+          "max_logged_window_gib": 0.2718372344970703,
+          "max_rank": "0",
+          "max_window_index": 0,
+          "first_logged_window_max_gib": 0.2718372344970703,
+          "last_logged_window_max_gib": 0.05971717834472656,
+          "observations": 80,
+          "window_semantics": "Logger windows; no inferred mapping to whole-iteration/graph-capture peaks"
+        },
+        "memory/max_reserved(GiB)": {
+          "max_logged_window_gib": 0.412109375,
+          "max_rank": "0",
+          "max_window_index": 0,
+          "first_logged_window_max_gib": 0.412109375,
+          "last_logged_window_max_gib": 0.259765625,
+          "observations": 80,
+          "window_semantics": "Logger windows; no inferred mapping to whole-iteration/graph-capture peaks"
+        }
+      }
+    }
+  ]
+}
