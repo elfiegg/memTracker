@@ -10,6 +10,9 @@ configuration or calibration data. Unsupported overhead is reported explicitly.
 The included Kimi K3 experiment is a **partial parameter/state/communication
 estimate**, not a full forward/backward or OOM prediction.
 
+Agent workflow: [estimate-model-memory skill](skills/estimate-model-memory/SKILL.md)
+covers inputs, CPU estimates, optional TorchTitan capture, and validation.
+
 The new [framework capture and attribution layer](docs/framework-memory-capture.md)
 uses model-independent allocator events, stack traces, storage ownership and
 phase labels. A thin TorchTitan adapter records initialization, forward/backward
