@@ -1,0 +1,1097 @@
+{
+  "schema_version": 1,
+  "kind": "source-schedule replay with partial storage lifetimes; not full model execution",
+  "scenario": {
+    "sequence": 4068,
+    "microbatch_size": 2,
+    "microbatches": 64,
+    "pp": 8,
+    "fsdp": 32,
+    "ep": 32,
+    "tp": 1,
+    "cp": 1,
+    "virtual_stages": 16,
+    "schedule": "Interleaved1F1B",
+    "checkpointing": "FullAC",
+    "parameter_dtype": "BF16",
+    "reduction_dtype": "FP32",
+    "optimizer": "DistMuon + AdamW",
+    "cuda_graphs": false,
+    "communication_initialization": "eager",
+    "receive_policy": "on demand at scheduled RECV",
+    "defer_pp_recv": false
+  },
+  "capacity_bytes": 197940150272,
+  "source_provenance": {
+    "torch_runtime": "2.15.0.dev20260928+cu130",
+    "training_source": "b4d5b404bd30dec67f86873203fbd4ba5f457531",
+    "source_sha256": {
+      "gpu-pipeline-schedules.py": "61c4e103e3bcb17c11c4dc46db138d2c3400b76e3a8b2d4797cf106e51e931da",
+      "pipeline_parallel.py": "7fbe51d5e194c44cba0b4939d459bfc0ed432c5a20400d894c7d992d22210755",
+      "layout.py": "5b156f384a5fee38802dfa0f11262d4f8a7e8f58334f6f340971708378b08229"
+    }
+  },
+  "assumptions": [
+    "Later optimizer iteration: expert momentum already exists.",
+    "All text-path trainable parameters get full FP32 accumulated gradient allocations after their virtual stage backward.",
+    "FullAC keeps layer inputs; unchanged residual stacks alias one storage within a stage.",
+    "Only completed-action boundaries are sampled; intra-kernel peaks are omitted.",
+    "Communication allowances are assumed aggregate backing per GPU, resident for the entire timeline.",
+    "Per-stage activation maxima are not added independently; the common local action sequence determines co-residency."
+  ],
+  "excluded": [
+    "Additional gathered dense parameters and dense optimizer state",
+    "Backward/recompute kernels and their intermediates; FullAC preserved effects",
+    "Rank-local residual cache backing and backward gradient deposits beyond counted aliases",
+    "Last-stage loss/output retained intermediates; input/mask/position storage",
+    "CUDA/library memory and communication temporaries",
+    "Allocator cache, rounding, pending stream frees and fragmentation"
+  ],
+  "full_model_fit_verified": false,
+  "stages": [
+    {
+      "stage": 0,
+      "rank": 0,
+      "first_layer": 0,
+      "last_layer": 4,
+      "incoming_delta_blocks": [],
+      "outgoing_delta_blocks": [
+        0
+      ],
+      "cached_blocks_at_entry": [],
+      "committed_blocks": [
+        0
+      ],
+      "checkpoint_input_bytes": 699826176,
+      "retained_boundary_bytes": 933101568,
+      "forward_receive_bytes": 0,
+      "backward_receive_bytes": 233275392,
+      "distinct_checkpoint_stack_sizes": [
+        0,
+        1
+      ],
+      "persistent_parameter_bytes": 7718470584,
+      "persistent_expert_momentum_bytes": 7398752256,
+      "fp32_accumulated_gradient_bytes": 33470041600
+    },
+    {
+      "stage": 1,
+      "rank": 1,
+      "first_layer": 5,
+      "last_layer": 10,
+      "incoming_delta_blocks": [
+        0
+      ],
+      "outgoing_delta_blocks": [
+        0
+      ],
+      "cached_blocks_at_entry": [],
+      "committed_blocks": [],
+      "checkpoint_input_bytes": 816463872,
+      "retained_boundary_bytes": 1049739264,
+      "forward_receive_bytes": 233275392,
+      "backward_receive_bytes": 233275392,
+      "distinct_checkpoint_stack_sizes": [
+        1
+      ],
+      "persistent_parameter_bytes": 11322548230,
+      "persistent_expert_momentum_bytes": 11098128384,
+      "fp32_accumulated_gradient_bytes": 36559126912
+    },
+    {
+      "stage": 2,
+      "rank": 2,
+      "first_layer": 11,
+      "last_layer": 16,
+      "incoming_delta_blocks": [
+        0
+      ],
+      "outgoing_delta_blocks": [
+        0,
+        1
+      ],
+      "cached_blocks_at_entry": [],
+      "committed_blocks": [
+        1
+      ],
+      "checkpoint_input_bytes": 1049739264,
+      "retained_boundary_bytes": 1399652352,
+      "forward_receive_bytes": 233275392,
+      "backward_receive_bytes": 349913088,
+      "distinct_checkpoint_stack_sizes": [
+        1,
+        2
+      ],
+      "persistent_parameter_bytes": 11309326712,
+      "persistent_expert_momentum_bytes": 11098128384,
+      "fp32_accumulated_gradient_bytes": 35712949760
+    },
+    {
+      "stage": 3,
+      "rank": 3,
+      "first_layer": 17,
+      "last_layer": 22,
+      "incoming_delta_blocks": [
+        0,
+        1
+      ],
+      "outgoing_delta_blocks": [
+        0,
+        1
+      ],
+      "cached_blocks_at_entry": [],
+      "committed_blocks": [],
+      "checkpoint_input_bytes": 933101568,
+      "retained_boundary_bytes": 1283014656,
+      "forward_receive_bytes": 349913088,
+      "backward_receive_bytes": 349913088,
+      "distinct_checkpoint_stack_sizes": [
+        2
+      ],
+      "persistent_parameter_bytes": 11322548230,
+      "persistent_expert_momentum_bytes": 11098128384,
+      "fp32_accumulated_gradient_bytes": 36559126912
+    },
+    {
+      "stage": 4,
+      "rank": 4,
+      "first_layer": 23,
+      "last_layer": 28,
+      "incoming_delta_blocks": [
+        0,
+        1
+      ],
+      "outgoing_delta_blocks": [
+        0,
+        1,
+        2
+      ],
+      "cached_blocks_at_entry": [],
+      "committed_blocks": [
+        2
+      ],
+      "checkpoint_input_bytes": 1283014656,
+      "retained_boundary_bytes": 1749565440,
+      "forward_receive_bytes": 349913088,
+      "backward_receive_bytes": 466550784,
+      "distinct_checkpoint_stack_sizes": [
+        2,
+        3
+      ],
+      "persistent_parameter_bytes": 11309326712,
+      "persistent_expert_momentum_bytes": 11098128384,
+      "fp32_accumulated_gradient_bytes": 35712949760
+    },
+    {
+      "stage": 5,
+      "rank": 5,
+      "first_layer": 29,
+      "last_layer": 34,
+      "incoming_delta_blocks": [
+        0,
+        1,
+        2
+      ],
+      "outgoing_delta_blocks": [
+        0,
+        1,
+        2
+      ],
+      "cached_blocks_at_entry": [],
+      "committed_blocks": [],
+      "checkpoint_input_bytes": 1049739264,
+      "retained_boundary_bytes": 1516290048,
+      "forward_receive_bytes": 466550784,
+      "backward_receive_bytes": 466550784,
+      "distinct_checkpoint_stack_sizes": [
+        3
+      ],
+      "persistent_parameter_bytes": 11322548230,
+      "persistent_expert_momentum_bytes": 11098128384,
+      "fp32_accumulated_gradient_bytes": 36559126912
+    },
+    {
+      "stage": 6,
+      "rank": 6,
+      "first_layer": 35,
+      "last_layer": 40,
+      "incoming_delta_blocks": [
+        0,
+        1,
+        2
+      ],
+      "outgoing_delta_blocks": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "cached_blocks_at_entry": [],
+      "committed_blocks": [
+        3
+      ],
+      "checkpoint_input_bytes": 1516290048,
+      "retained_boundary_bytes": 2099478528,
+      "forward_receive_bytes": 466550784,
+      "backward_receive_bytes": 583188480,
+      "distinct_checkpoint_stack_sizes": [
+        3,
+        4
+      ],
+      "persistent_parameter_bytes": 11309326712,
+      "persistent_expert_momentum_bytes": 11098128384,
+      "fp32_accumulated_gradient_bytes": 35712949760
+    },
+    {
+      "stage": 7,
+      "rank": 7,
+      "first_layer": 41,
+      "last_layer": 46,
+      "incoming_delta_blocks": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "outgoing_delta_blocks": [
+        1,
+        2,
+        3
+      ],
+      "cached_blocks_at_entry": [],
+      "committed_blocks": [],
+      "checkpoint_input_bytes": 1166376960,
+      "retained_boundary_bytes": 1632927744,
+      "forward_receive_bytes": 583188480,
+      "backward_receive_bytes": 466550784,
+      "distinct_checkpoint_stack_sizes": [
+        4
+      ],
+      "persistent_parameter_bytes": 11322548230,
+      "persistent_expert_momentum_bytes": 11098128384,
+      "fp32_accumulated_gradient_bytes": 36559126912
+    },
+    {
+      "stage": 8,
+      "rank": 0,
+      "first_layer": 47,
+      "last_layer": 52,
+      "incoming_delta_blocks": [
+        1,
+        2,
+        3
+      ],
+      "outgoing_delta_blocks": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "cached_blocks_at_entry": [
+        0
+      ],
+      "committed_blocks": [
+        4
+      ],
+      "checkpoint_input_bytes": 1749565440,
+      "retained_boundary_bytes": 2332753920,
+      "forward_receive_bytes": 466550784,
+      "backward_receive_bytes": 583188480,
+      "distinct_checkpoint_stack_sizes": [
+        4,
+        5
+      ],
+      "persistent_parameter_bytes": 11309326712,
+      "persistent_expert_momentum_bytes": 11098128384,
+      "fp32_accumulated_gradient_bytes": 35712949760
+    },
+    {
+      "stage": 9,
+      "rank": 1,
+      "first_layer": 53,
+      "last_layer": 58,
+      "incoming_delta_blocks": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "outgoing_delta_blocks": [
+        2,
+        3,
+        4
+      ],
+      "cached_blocks_at_entry": [
+        0
+      ],
+      "committed_blocks": [],
+      "checkpoint_input_bytes": 1283014656,
+      "retained_boundary_bytes": 1749565440,
+      "forward_receive_bytes": 583188480,
+      "backward_receive_bytes": 466550784,
+      "distinct_checkpoint_stack_sizes": [
+        5
+      ],
+      "persistent_parameter_bytes": 11322548230,
+      "persistent_expert_momentum_bytes": 11098128384,
+      "fp32_accumulated_gradient_bytes": 36559126912
+    },
+    {
+      "stage": 10,
+      "rank": 2,
+      "first_layer": 59,
+      "last_layer": 64,
+      "incoming_delta_blocks": [
+        2,
+        3,
+        4
+      ],
+      "outgoing_delta_blocks": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "cached_blocks_at_entry": [
+        0,
+        1
+      ],
+      "committed_blocks": [
+        5
+      ],
+      "checkpoint_input_bytes": 1982840832,
+      "retained_boundary_bytes": 2566029312,
+      "forward_receive_bytes": 466550784,
+      "backward_receive_bytes": 583188480,
+      "distinct_checkpoint_stack_sizes": [
+        5,
+        6
+      ],
+      "persistent_parameter_bytes": 11309326712,
+      "persistent_expert_momentum_bytes": 11098128384,
+      "fp32_accumulated_gradient_bytes": 35712949760
+    },
+    {
+      "stage": 11,
+      "rank": 3,
+      "first_layer": 65,
+      "last_layer": 70,
+      "incoming_delta_blocks": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "outgoing_delta_blocks": [
+        3,
+        4,
+        5
+      ],
+      "cached_blocks_at_entry": [
+        0,
+        1
+      ],
+      "committed_blocks": [],
+      "checkpoint_input_bytes": 1399652352,
+      "retained_boundary_bytes": 1866203136,
+      "forward_receive_bytes": 583188480,
+      "backward_receive_bytes": 466550784,
+      "distinct_checkpoint_stack_sizes": [
+        6
+      ],
+      "persistent_parameter_bytes": 11322548230,
+      "persistent_expert_momentum_bytes": 11098128384,
+      "fp32_accumulated_gradient_bytes": 36559126912
+    },
+    {
+      "stage": 12,
+      "rank": 4,
+      "first_layer": 71,
+      "last_layer": 76,
+      "incoming_delta_blocks": [
+        3,
+        4,
+        5
+      ],
+      "outgoing_delta_blocks": [
+        3,
+        4,
+        5,
+        6
+      ],
+      "cached_blocks_at_entry": [
+        0,
+        1,
+        2
+      ],
+      "committed_blocks": [
+        6
+      ],
+      "checkpoint_input_bytes": 2216116224,
+      "retained_boundary_bytes": 2799304704,
+      "forward_receive_bytes": 466550784,
+      "backward_receive_bytes": 583188480,
+      "distinct_checkpoint_stack_sizes": [
+        6,
+        7
+      ],
+      "persistent_parameter_bytes": 11309326712,
+      "persistent_expert_momentum_bytes": 11098128384,
+      "fp32_accumulated_gradient_bytes": 35712949760
+    },
+    {
+      "stage": 13,
+      "rank": 5,
+      "first_layer": 77,
+      "last_layer": 82,
+      "incoming_delta_blocks": [
+        3,
+        4,
+        5,
+        6
+      ],
+      "outgoing_delta_blocks": [
+        4,
+        5,
+        6
+      ],
+      "cached_blocks_at_entry": [
+        0,
+        1,
+        2
+      ],
+      "committed_blocks": [],
+      "checkpoint_input_bytes": 1516290048,
+      "retained_boundary_bytes": 1982840832,
+      "forward_receive_bytes": 583188480,
+      "backward_receive_bytes": 466550784,
+      "distinct_checkpoint_stack_sizes": [
+        7
+      ],
+      "persistent_parameter_bytes": 11322548230,
+      "persistent_expert_momentum_bytes": 11098128384,
+      "fp32_accumulated_gradient_bytes": 36559126912
+    },
+    {
+      "stage": 14,
+      "rank": 6,
+      "first_layer": 83,
+      "last_layer": 88,
+      "incoming_delta_blocks": [
+        4,
+        5,
+        6
+      ],
+      "outgoing_delta_blocks": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "cached_blocks_at_entry": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "committed_blocks": [
+        7
+      ],
+      "checkpoint_input_bytes": 2449391616,
+      "retained_boundary_bytes": 3032580096,
+      "forward_receive_bytes": 466550784,
+      "backward_receive_bytes": 583188480,
+      "distinct_checkpoint_stack_sizes": [
+        7,
+        8
+      ],
+      "persistent_parameter_bytes": 11309326712,
+      "persistent_expert_momentum_bytes": 11098128384,
+      "fp32_accumulated_gradient_bytes": 35712949760
+    },
+    {
+      "stage": 15,
+      "rank": 7,
+      "first_layer": 89,
+      "last_layer": 92,
+      "incoming_delta_blocks": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "outgoing_delta_blocks": [],
+      "cached_blocks_at_entry": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "committed_blocks": [],
+      "checkpoint_input_bytes": 1399652352,
+      "retained_boundary_bytes": 1399652352,
+      "forward_receive_bytes": 583188480,
+      "backward_receive_bytes": 0,
+      "distinct_checkpoint_stack_sizes": [
+        8
+      ],
+      "persistent_parameter_bytes": 7604138460,
+      "persistent_expert_momentum_bytes": 7398752256,
+      "fp32_accumulated_gradient_bytes": 27942221568
+    }
+  ],
+  "ranks": [
+    {
+      "rank": 0,
+      "virtual_stages": [
+        0,
+        8
+      ],
+      "layers": [
+        [
+          0,
+          4
+        ],
+        [
+          47,
+          52
+        ]
+      ],
+      "peak_live_pairs": 23,
+      "peak_live_per_virtual_stage": {
+        "0": 16,
+        "8": 8
+      },
+      "live_pairs_before_first_backward": 23,
+      "max_pending_forward_receives": 8,
+      "max_pending_backward_receives": 1,
+      "persistent_parameter_and_expert_momentum_bytes": 37524677936,
+      "peak_accumulated_gradient_bytes": 69182991360,
+      "peak_retained_boundary_bytes": 32658554880,
+      "partial_peak_bytes": 139949412656,
+      "partial_peak_event": {
+        "position": 135,
+        "action": "0F22",
+        "live_stage_microbatches": 23,
+        "live_by_stage": {
+          "0": 15,
+          "8": 8
+        },
+        "persistent_state_bytes": 37524677936,
+        "accumulated_gradient_bytes": 69182991360,
+        "retained_boundary_bytes": 32658554880,
+        "pending_receive_bytes": 583188480,
+        "subtotal_bytes": 139949412656
+      },
+      "communication_budget": [
+        {
+          "eager_communication_gib": 0,
+          "partial_peak_plus_communication_bytes": 139949412656,
+          "remaining_for_omitted_memory_bytes": 57990737616,
+          "verdict": "fit_unproven"
+        },
+        {
+          "eager_communication_gib": 8,
+          "partial_peak_plus_communication_bytes": 148539347248,
+          "remaining_for_omitted_memory_bytes": 49400803024,
+          "verdict": "fit_unproven"
+        },
+        {
+          "eager_communication_gib": 16,
+          "partial_peak_plus_communication_bytes": 157129281840,
+          "remaining_for_omitted_memory_bytes": 40810868432,
+          "verdict": "fit_unproven"
+        },
+        {
+          "eager_communication_gib": 32,
+          "partial_peak_plus_communication_bytes": 174309151024,
+          "remaining_for_omitted_memory_bytes": 23630999248,
+          "verdict": "fit_unproven"
+        }
+      ]
+    },
+    {
+      "rank": 1,
+      "virtual_stages": [
+        1,
+        9
+      ],
+      "layers": [
+        [
+          5,
+          10
+        ],
+        [
+          53,
+          58
+        ]
+      ],
+      "peak_live_pairs": 21,
+      "peak_live_per_virtual_stage": {
+        "1": 16,
+        "9": 8
+      },
+      "live_pairs_before_first_backward": 21,
+      "max_pending_forward_receives": 2,
+      "max_pending_backward_receives": 1,
+      "persistent_parameter_and_expert_momentum_bytes": 44841353228,
+      "peak_accumulated_gradient_bytes": 73118253824,
+      "peak_retained_boundary_bytes": 27643133952,
+      "partial_peak_bytes": 146302567180,
+      "partial_peak_event": {
+        "position": 161,
+        "action": "1F20",
+        "live_stage_microbatches": 21,
+        "live_by_stage": {
+          "1": 13,
+          "9": 8
+        },
+        "persistent_state_bytes": 44841353228,
+        "accumulated_gradient_bytes": 73118253824,
+        "retained_boundary_bytes": 27643133952,
+        "pending_receive_bytes": 699826176,
+        "subtotal_bytes": 146302567180
+      },
+      "communication_budget": [
+        {
+          "eager_communication_gib": 0,
+          "partial_peak_plus_communication_bytes": 146302567180,
+          "remaining_for_omitted_memory_bytes": 51637583092,
+          "verdict": "fit_unproven"
+        },
+        {
+          "eager_communication_gib": 8,
+          "partial_peak_plus_communication_bytes": 154892501772,
+          "remaining_for_omitted_memory_bytes": 43047648500,
+          "verdict": "fit_unproven"
+        },
+        {
+          "eager_communication_gib": 16,
+          "partial_peak_plus_communication_bytes": 163482436364,
+          "remaining_for_omitted_memory_bytes": 34457713908,
+          "verdict": "fit_unproven"
+        },
+        {
+          "eager_communication_gib": 32,
+          "partial_peak_plus_communication_bytes": 180662305548,
+          "remaining_for_omitted_memory_bytes": 17277844724,
+          "verdict": "fit_unproven"
+        }
+      ]
+    },
+    {
+      "rank": 2,
+      "virtual_stages": [
+        2,
+        10
+      ],
+      "layers": [
+        [
+          11,
+          16
+        ],
+        [
+          59,
+          64
+        ]
+      ],
+      "peak_live_pairs": 19,
+      "peak_live_per_virtual_stage": {
+        "2": 16,
+        "10": 8
+      },
+      "live_pairs_before_first_backward": 19,
+      "max_pending_forward_receives": 2,
+      "max_pending_backward_receives": 1,
+      "persistent_parameter_and_expert_momentum_bytes": 44814910192,
+      "peak_accumulated_gradient_bytes": 71425899520,
+      "peak_retained_boundary_bytes": 35924410368,
+      "partial_peak_bytes": 152981683952,
+      "partial_peak_event": {
+        "position": 155,
+        "action": "2F18",
+        "live_stage_microbatches": 19,
+        "live_by_stage": {
+          "2": 11,
+          "10": 8
+        },
+        "persistent_state_bytes": 44814910192,
+        "accumulated_gradient_bytes": 71425899520,
+        "retained_boundary_bytes": 35924410368,
+        "pending_receive_bytes": 816463872,
+        "subtotal_bytes": 152981683952
+      },
+      "communication_budget": [
+        {
+          "eager_communication_gib": 0,
+          "partial_peak_plus_communication_bytes": 152981683952,
+          "remaining_for_omitted_memory_bytes": 44958466320,
+          "verdict": "fit_unproven"
+        },
+        {
+          "eager_communication_gib": 8,
+          "partial_peak_plus_communication_bytes": 161571618544,
+          "remaining_for_omitted_memory_bytes": 36368531728,
+          "verdict": "fit_unproven"
+        },
+        {
+          "eager_communication_gib": 16,
+          "partial_peak_plus_communication_bytes": 170161553136,
+          "remaining_for_omitted_memory_bytes": 27778597136,
+          "verdict": "fit_unproven"
+        },
+        {
+          "eager_communication_gib": 32,
+          "partial_peak_plus_communication_bytes": 187341422320,
+          "remaining_for_omitted_memory_bytes": 10598727952,
+          "verdict": "fit_unproven"
+        }
+      ]
+    },
+    {
+      "rank": 3,
+      "virtual_stages": [
+        3,
+        11
+      ],
+      "layers": [
+        [
+          17,
+          22
+        ],
+        [
+          65,
+          70
+        ]
+      ],
+      "peak_live_pairs": 17,
+      "peak_live_per_virtual_stage": {
+        "3": 16,
+        "11": 8
+      },
+      "live_pairs_before_first_backward": 17,
+      "max_pending_forward_receives": 2,
+      "max_pending_backward_receives": 1,
+      "persistent_parameter_and_expert_momentum_bytes": 44841353228,
+      "peak_accumulated_gradient_bytes": 73118253824,
+      "peak_retained_boundary_bytes": 26476756992,
+      "partial_peak_bytes": 145252827916,
+      "partial_peak_event": {
+        "position": 149,
+        "action": "3F16",
+        "live_stage_microbatches": 17,
+        "live_by_stage": {
+          "3": 9,
+          "11": 8
+        },
+        "persistent_state_bytes": 44841353228,
+        "accumulated_gradient_bytes": 73118253824,
+        "retained_boundary_bytes": 26476756992,
+        "pending_receive_bytes": 816463872,
+        "subtotal_bytes": 145252827916
+      },
+      "communication_budget": [
+        {
+          "eager_communication_gib": 0,
+          "partial_peak_plus_communication_bytes": 145252827916,
+          "remaining_for_omitted_memory_bytes": 52687322356,
+          "verdict": "fit_unproven"
+        },
+        {
+          "eager_communication_gib": 8,
+          "partial_peak_plus_communication_bytes": 153842762508,
+          "remaining_for_omitted_memory_bytes": 44097387764,
+          "verdict": "fit_unproven"
+        },
+        {
+          "eager_communication_gib": 16,
+          "partial_peak_plus_communication_bytes": 162432697100,
+          "remaining_for_omitted_memory_bytes": 35507453172,
+          "verdict": "fit_unproven"
+        },
+        {
+          "eager_communication_gib": 32,
+          "partial_peak_plus_communication_bytes": 179612566284,
+          "remaining_for_omitted_memory_bytes": 18327583988,
+          "verdict": "fit_unproven"
+        }
+      ]
+    },
+    {
+      "rank": 4,
+      "virtual_stages": [
+        4,
+        12
+      ],
+      "layers": [
+        [
+          23,
+          28
+        ],
+        [
+          71,
+          76
+        ]
+      ],
+      "peak_live_pairs": 15,
+      "peak_live_per_virtual_stage": {
+        "4": 15,
+        "12": 7
+      },
+      "live_pairs_before_first_backward": 15,
+      "max_pending_forward_receives": 2,
+      "max_pending_backward_receives": 1,
+      "persistent_parameter_and_expert_momentum_bytes": 44814910192,
+      "peak_accumulated_gradient_bytes": 71425899520,
+      "peak_retained_boundary_bytes": 33591656448,
+      "partial_peak_bytes": 150882205424,
+      "partial_peak_event": {
+        "position": 143,
+        "action": "12F14",
+        "live_stage_microbatches": 15,
+        "live_by_stage": {
+          "4": 8,
+          "12": 7
+        },
+        "persistent_state_bytes": 44814910192,
+        "accumulated_gradient_bytes": 71425899520,
+        "retained_boundary_bytes": 33591656448,
+        "pending_receive_bytes": 1049739264,
+        "subtotal_bytes": 150882205424
+      },
+      "communication_budget": [
+        {
+          "eager_communication_gib": 0,
+          "partial_peak_plus_communication_bytes": 150882205424,
+          "remaining_for_omitted_memory_bytes": 47057944848,
+          "verdict": "fit_unproven"
+        },
+        {
+          "eager_communication_gib": 8,
+          "partial_peak_plus_communication_bytes": 159472140016,
+          "remaining_for_omitted_memory_bytes": 38468010256,
+          "verdict": "fit_unproven"
+        },
+        {
+          "eager_communication_gib": 16,
+          "partial_peak_plus_communication_bytes": 168062074608,
+          "remaining_for_omitted_memory_bytes": 29878075664,
+          "verdict": "fit_unproven"
+        },
+        {
+          "eager_communication_gib": 32,
+          "partial_peak_plus_communication_bytes": 185241943792,
+          "remaining_for_omitted_memory_bytes": 12698206480,
+          "verdict": "fit_unproven"
+        }
+      ]
+    },
+    {
+      "rank": 5,
+      "virtual_stages": [
+        5,
+        13
+      ],
+      "layers": [
+        [
+          29,
+          34
+        ],
+        [
+          77,
+          82
+        ]
+      ],
+      "peak_live_pairs": 13,
+      "peak_live_per_virtual_stage": {
+        "5": 13,
+        "13": 5
+      },
+      "live_pairs_before_first_backward": 13,
+      "max_pending_forward_receives": 2,
+      "max_pending_backward_receives": 1,
+      "persistent_parameter_and_expert_momentum_bytes": 44841353228,
+      "peak_accumulated_gradient_bytes": 73118253824,
+      "peak_retained_boundary_bytes": 22044524544,
+      "partial_peak_bytes": 141053870860,
+      "partial_peak_event": {
+        "position": 137,
+        "action": "13F12",
+        "live_stage_microbatches": 13,
+        "live_by_stage": {
+          "5": 8,
+          "13": 5
+        },
+        "persistent_state_bytes": 44841353228,
+        "accumulated_gradient_bytes": 73118253824,
+        "retained_boundary_bytes": 22044524544,
+        "pending_receive_bytes": 1049739264,
+        "subtotal_bytes": 141053870860
+      },
+      "communication_budget": [
+        {
+          "eager_communication_gib": 0,
+          "partial_peak_plus_communication_bytes": 141053870860,
+          "remaining_for_omitted_memory_bytes": 56886279412,
+          "verdict": "fit_unproven"
+        },
+        {
+          "eager_communication_gib": 8,
+          "partial_peak_plus_communication_bytes": 149643805452,
+          "remaining_for_omitted_memory_bytes": 48296344820,
+          "verdict": "fit_unproven"
+        },
+        {
+          "eager_communication_gib": 16,
+          "partial_peak_plus_communication_bytes": 158233740044,
+          "remaining_for_omitted_memory_bytes": 39706410228,
+          "verdict": "fit_unproven"
+        },
+        {
+          "eager_communication_gib": 32,
+          "partial_peak_plus_communication_bytes": 175413609228,
+          "remaining_for_omitted_memory_bytes": 22526541044,
+          "verdict": "fit_unproven"
+        }
+      ]
+    },
+    {
+      "rank": 6,
+      "virtual_stages": [
+        6,
+        14
+      ],
+      "layers": [
+        [
+          35,
+          40
+        ],
+        [
+          83,
+          88
+        ]
+      ],
+      "peak_live_pairs": 11,
+      "peak_live_per_virtual_stage": {
+        "6": 11,
+        "14": 3
+      },
+      "live_pairs_before_first_backward": 11,
+      "max_pending_forward_receives": 2,
+      "max_pending_backward_receives": 1,
+      "persistent_parameter_and_expert_momentum_bytes": 44814910192,
+      "peak_accumulated_gradient_bytes": 71425899520,
+      "peak_retained_boundary_bytes": 25893568512,
+      "partial_peak_bytes": 143184117488,
+      "partial_peak_event": {
+        "position": 131,
+        "action": "14F10",
+        "live_stage_microbatches": 11,
+        "live_by_stage": {
+          "6": 8,
+          "14": 3
+        },
+        "persistent_state_bytes": 44814910192,
+        "accumulated_gradient_bytes": 71425899520,
+        "retained_boundary_bytes": 25893568512,
+        "pending_receive_bytes": 1049739264,
+        "subtotal_bytes": 143184117488
+      },
+      "communication_budget": [
+        {
+          "eager_communication_gib": 0,
+          "partial_peak_plus_communication_bytes": 143184117488,
+          "remaining_for_omitted_memory_bytes": 54756032784,
+          "verdict": "fit_unproven"
+        },
+        {
+          "eager_communication_gib": 8,
+          "partial_peak_plus_communication_bytes": 151774052080,
+          "remaining_for_omitted_memory_bytes": 46166098192,
+          "verdict": "fit_unproven"
+        },
+        {
+          "eager_communication_gib": 16,
+          "partial_peak_plus_communication_bytes": 160363986672,
+          "remaining_for_omitted_memory_bytes": 37576163600,
+          "verdict": "fit_unproven"
+        },
+        {
+          "eager_communication_gib": 32,
+          "partial_peak_plus_communication_bytes": 177543855856,
+          "remaining_for_omitted_memory_bytes": 20396294416,
+          "verdict": "fit_unproven"
+        }
+      ]
+    },
+    {
+      "rank": 7,
+      "virtual_stages": [
+        7,
+        15
+      ],
+      "layers": [
+        [
+          41,
+          46
+        ],
+        [
+          89,
+          92
+        ]
+      ],
+      "peak_live_pairs": 9,
+      "peak_live_per_virtual_stage": {
+        "7": 9,
+        "15": 1
+      },
+      "live_pairs_before_first_backward": 9,
+      "max_pending_forward_receives": 2,
+      "max_pending_backward_receives": 5,
+      "persistent_parameter_and_expert_momentum_bytes": 37423567330,
+      "peak_accumulated_gradient_bytes": 64501348480,
+      "peak_retained_boundary_bytes": 14696349696,
+      "partial_peak_bytes": 118137555554,
+      "partial_peak_event": {
+        "position": 69,
+        "action": "7RECV_B2",
+        "live_stage_microbatches": 9,
+        "live_by_stage": {
+          "7": 9
+        },
+        "persistent_state_bytes": 37423567330,
+        "accumulated_gradient_bytes": 64501348480,
+        "retained_boundary_bytes": 14696349696,
+        "pending_receive_bytes": 1516290048,
+        "subtotal_bytes": 118137555554
+      },
+      "communication_budget": [
+        {
+          "eager_communication_gib": 0,
+          "partial_peak_plus_communication_bytes": 118137555554,
+          "remaining_for_omitted_memory_bytes": 79802594718,
+          "verdict": "fit_unproven"
+        },
+        {
+          "eager_communication_gib": 8,
+          "partial_peak_plus_communication_bytes": 126727490146,
+          "remaining_for_omitted_memory_bytes": 71212660126,
+          "verdict": "fit_unproven"
+        },
+        {
+          "eager_communication_gib": 16,
+          "partial_peak_plus_communication_bytes": 135317424738,
+          "remaining_for_omitted_memory_bytes": 62622725534,
+          "verdict": "fit_unproven"
+        },
+        {
+          "eager_communication_gib": 32,
+          "partial_peak_plus_communication_bytes": 152497293922,
+          "remaining_for_omitted_memory_bytes": 45442856350,
+          "verdict": "fit_unproven"
+        }
+      ]
+    }
+  ],
+  "largest_partial_peak_rank": 2
+}

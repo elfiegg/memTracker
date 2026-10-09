@@ -1,0 +1,992 @@
+{
+  "schema_version": 1,
+  "kind": "measured GPU calibration and independent allocator replay",
+  "topology": "One exclusively allocated node; two GB200 GPUs with NV18 connectivity",
+  "scope": "One run per allocator mode; validates only this allocation schedule. External residuals are observations, not predictions.",
+  "runs": [
+    {
+      "allocator_mode": "fixed",
+      "rank": 0,
+      "world_size": 2,
+      "raw_report_sha256": "8119be48feabbe57984d230a4d9955772dd194a4a10a4845387238213685c63b",
+      "runtime": {
+        "torch_version": "2.15.0.dev20260928+cu130",
+        "cuda_version": "13.0",
+        "nccl_version": [
+          2,
+          30,
+          7
+        ],
+        "device_name": "NVIDIA GB200",
+        "device_total_memory": 197940150272,
+        "driver": "615.74\n615.74\n615.74\n615.74"
+      },
+      "allocator_config": "backend:native,expandable_segments:False",
+      "runtime_environment": {
+        "NCCL_MNNVL_CLIQUE_ID": "-2",
+        "NCCL_MNNVL_CROSS_NVLD": "1",
+        "NCCL_NET_PLUGIN": "none",
+        "NCCL_VERSION": "2.31.2",
+        "NCCL_SOCKET_IFNAME": "enP6p3s0f1np1",
+        "NCCL_DEBUG_SUBSYS": "INIT,ALLOC,NVLS,ENV,GRAPH",
+        "NCCL_DEBUG": "INFO",
+        "NCCL_MNNVL_CROSS_CLIQUE": "1",
+        "NCCL_IB_SL": "1"
+      },
+      "allocator_comparisons": [
+        {
+          "phase": "allocator_3x16",
+          "predicted_allocated_bytes": 50331648,
+          "measured_allocated_bytes": 50331648,
+          "allocated_error_bytes": 0,
+          "predicted_reserved_bytes": 50331648,
+          "measured_reserved_bytes": 50331648,
+          "reserved_error_bytes": 0
+        },
+        {
+          "phase": "allocator_3x14",
+          "predicted_allocated_bytes": 44040192,
+          "measured_allocated_bytes": 44040192,
+          "allocated_error_bytes": 0,
+          "predicted_reserved_bytes": 50331648,
+          "measured_reserved_bytes": 50331648,
+          "reserved_error_bytes": 0
+        },
+        {
+          "phase": "allocator_fragmentation",
+          "predicted_allocated_bytes": 49283072,
+          "measured_allocated_bytes": 49283072,
+          "allocated_error_bytes": 0,
+          "predicted_reserved_bytes": 71303168,
+          "measured_reserved_bytes": 71303168,
+          "reserved_error_bytes": 0
+        },
+        {
+          "phase": "allocator_released",
+          "predicted_allocated_bytes": 0,
+          "measured_allocated_bytes": 0,
+          "allocated_error_bytes": 0,
+          "predicted_reserved_bytes": 0,
+          "measured_reserved_bytes": 0,
+          "reserved_error_bytes": 0
+        }
+      ],
+      "phases": [
+        {
+          "phase": "context",
+          "allocated_bytes": 0,
+          "reserved_bytes": 0,
+          "driver_used_bytes": 728104960,
+          "driver_residual_bytes": 728104960,
+          "inactive_split_bytes": 0,
+          "active_bytes": 0,
+          "device_used_bytes": 1462697984,
+          "unattributed_device_bytes": 1462697984
+        },
+        {
+          "phase": "allocator_3x16",
+          "allocated_bytes": 50331648,
+          "reserved_bytes": 50331648,
+          "driver_used_bytes": 778436608,
+          "driver_residual_bytes": 728104960,
+          "inactive_split_bytes": 0,
+          "active_bytes": 50331648,
+          "device_used_bytes": 1513029632,
+          "unattributed_device_bytes": 1462697984
+        },
+        {
+          "phase": "allocator_3x14",
+          "allocated_bytes": 44040192,
+          "reserved_bytes": 50331648,
+          "driver_used_bytes": 778436608,
+          "driver_residual_bytes": 728104960,
+          "inactive_split_bytes": 6291456,
+          "active_bytes": 44040192,
+          "device_used_bytes": 1513029632,
+          "unattributed_device_bytes": 1462697984
+        },
+        {
+          "phase": "allocator_fragmentation",
+          "allocated_bytes": 49283072,
+          "reserved_bytes": 71303168,
+          "driver_used_bytes": 799408128,
+          "driver_residual_bytes": 728104960,
+          "inactive_split_bytes": 22020096,
+          "active_bytes": 49283072,
+          "device_used_bytes": 1534001152,
+          "unattributed_device_bytes": 1462697984
+        },
+        {
+          "phase": "allocator_released",
+          "allocated_bytes": 0,
+          "reserved_bytes": 0,
+          "driver_used_bytes": 728104960,
+          "driver_residual_bytes": 728104960,
+          "inactive_split_bytes": 0,
+          "active_bytes": 0,
+          "device_used_bytes": 1462697984,
+          "unattributed_device_bytes": 1462697984
+        },
+        {
+          "phase": "payload_before_nccl",
+          "allocated_bytes": 33554432,
+          "reserved_bytes": 33554432,
+          "driver_used_bytes": 872808448,
+          "driver_residual_bytes": 839254016,
+          "inactive_split_bytes": 0,
+          "active_bytes": 33554432,
+          "device_used_bytes": 1607401472,
+          "unattributed_device_bytes": 1573847040
+        },
+        {
+          "phase": "communicator_created",
+          "allocated_bytes": 33554432,
+          "reserved_bytes": 33554432,
+          "driver_used_bytes": 1311113216,
+          "driver_residual_bytes": 1277558784,
+          "inactive_split_bytes": 0,
+          "active_bytes": 33554432,
+          "device_used_bytes": 2045706240,
+          "unattributed_device_bytes": 2012151808
+        },
+        {
+          "phase": "first_small_collective",
+          "allocated_bytes": 33554432,
+          "reserved_bytes": 33554432,
+          "driver_used_bytes": 2623733760,
+          "driver_residual_bytes": 2590179328,
+          "inactive_split_bytes": 0,
+          "active_bytes": 33554432,
+          "device_used_bytes": 3358326784,
+          "unattributed_device_bytes": 3324772352
+        },
+        {
+          "phase": "repeat_small_collective",
+          "allocated_bytes": 33554432,
+          "reserved_bytes": 33554432,
+          "driver_used_bytes": 2623733760,
+          "driver_residual_bytes": 2590179328,
+          "inactive_split_bytes": 0,
+          "active_bytes": 33554432,
+          "device_used_bytes": 3358326784,
+          "unattributed_device_bytes": 3324772352
+        },
+        {
+          "phase": "first_large_collective",
+          "allocated_bytes": 33554432,
+          "reserved_bytes": 33554432,
+          "driver_used_bytes": 2623733760,
+          "driver_residual_bytes": 2590179328,
+          "inactive_split_bytes": 0,
+          "active_bytes": 33554432,
+          "device_used_bytes": 3358326784,
+          "unattributed_device_bytes": 3324772352
+        },
+        {
+          "phase": "repeat_large_collective",
+          "allocated_bytes": 33554432,
+          "reserved_bytes": 33554432,
+          "driver_used_bytes": 2623733760,
+          "driver_residual_bytes": 2590179328,
+          "inactive_split_bytes": 0,
+          "active_bytes": 33554432,
+          "device_used_bytes": 3358326784,
+          "unattributed_device_bytes": 3324772352
+        },
+        {
+          "phase": "second_communicator",
+          "allocated_bytes": 33554432,
+          "reserved_bytes": 33554432,
+          "driver_used_bytes": 3284336640,
+          "driver_residual_bytes": 3250782208,
+          "inactive_split_bytes": 0,
+          "active_bytes": 33554432,
+          "device_used_bytes": 4018929664,
+          "unattributed_device_bytes": 3985375232
+        },
+        {
+          "phase": "communicators_destroyed",
+          "allocated_bytes": 33554432,
+          "reserved_bytes": 33554432,
+          "driver_used_bytes": 1963130880,
+          "driver_residual_bytes": 1929576448,
+          "inactive_split_bytes": 0,
+          "active_bytes": 33554432,
+          "device_used_bytes": 2697723904,
+          "unattributed_device_bytes": 2664169472
+        },
+        {
+          "phase": "all_released",
+          "allocated_bytes": 0,
+          "reserved_bytes": 0,
+          "driver_used_bytes": 1929576448,
+          "driver_residual_bytes": 1929576448,
+          "inactive_split_bytes": 0,
+          "active_bytes": 0,
+          "device_used_bytes": 2664169472,
+          "unattributed_device_bytes": 2664169472
+        }
+      ],
+      "external_calibration": {
+        "category": "Unattributed CUDA/NCCL/driver overhead",
+        "evidence": "measured",
+        "pre_nccl_driver_residual_bytes": 839254016,
+        "checkpoint_deltas_from_pre_nccl": {
+          "communicator_created": 438304768,
+          "first_small_collective": 1750925312,
+          "repeat_small_collective": 1750925312,
+          "first_large_collective": 1750925312,
+          "repeat_large_collective": 1750925312,
+          "second_communicator": 2411528192,
+          "communicators_destroyed": 1090322432,
+          "all_released": 1090322432
+        },
+        "ownership": "Unattributed; do not add an NCCL formula/profile on top of this residual."
+      },
+      "limitations": [
+        "Device-wide residual includes CUDA context, libraries, NCCL, driver accounting and any other process.",
+        "Checkpoint deltas are NCCL-associated, not exact ownership attribution.",
+        "Synchronized checkpoints do not measure asynchronous transient peaks.",
+        "This topology and version do not calibrate other clusters or communicator sizes."
+      ]
+    },
+    {
+      "allocator_mode": "fixed",
+      "rank": 1,
+      "world_size": 2,
+      "raw_report_sha256": "f4316a775956f790db65c51459fe25b8b7cacdc1f867e9d7bf1179cf861f8076",
+      "runtime": {
+        "torch_version": "2.15.0.dev20260928+cu130",
+        "cuda_version": "13.0",
+        "nccl_version": [
+          2,
+          30,
+          7
+        ],
+        "device_name": "NVIDIA GB200",
+        "device_total_memory": 197940150272,
+        "driver": "615.74\n615.74\n615.74\n615.74"
+      },
+      "allocator_config": "backend:native,expandable_segments:False",
+      "runtime_environment": {
+        "NCCL_MNNVL_CLIQUE_ID": "-2",
+        "NCCL_MNNVL_CROSS_NVLD": "1",
+        "NCCL_NET_PLUGIN": "none",
+        "NCCL_VERSION": "2.31.2",
+        "NCCL_SOCKET_IFNAME": "enP6p3s0f1np1",
+        "NCCL_DEBUG_SUBSYS": "INIT,ALLOC,NVLS,ENV,GRAPH",
+        "NCCL_DEBUG": "INFO",
+        "NCCL_MNNVL_CROSS_CLIQUE": "1",
+        "NCCL_IB_SL": "1"
+      },
+      "allocator_comparisons": [
+        {
+          "phase": "allocator_3x16",
+          "predicted_allocated_bytes": 50331648,
+          "measured_allocated_bytes": 50331648,
+          "allocated_error_bytes": 0,
+          "predicted_reserved_bytes": 50331648,
+          "measured_reserved_bytes": 50331648,
+          "reserved_error_bytes": 0
+        },
+        {
+          "phase": "allocator_3x14",
+          "predicted_allocated_bytes": 44040192,
+          "measured_allocated_bytes": 44040192,
+          "allocated_error_bytes": 0,
+          "predicted_reserved_bytes": 50331648,
+          "measured_reserved_bytes": 50331648,
+          "reserved_error_bytes": 0
+        },
+        {
+          "phase": "allocator_fragmentation",
+          "predicted_allocated_bytes": 49283072,
+          "measured_allocated_bytes": 49283072,
+          "allocated_error_bytes": 0,
+          "predicted_reserved_bytes": 71303168,
+          "measured_reserved_bytes": 71303168,
+          "reserved_error_bytes": 0
+        },
+        {
+          "phase": "allocator_released",
+          "predicted_allocated_bytes": 0,
+          "measured_allocated_bytes": 0,
+          "allocated_error_bytes": 0,
+          "predicted_reserved_bytes": 0,
+          "measured_reserved_bytes": 0,
+          "reserved_error_bytes": 0
+        }
+      ],
+      "phases": [
+        {
+          "phase": "context",
+          "allocated_bytes": 0,
+          "reserved_bytes": 0,
+          "driver_used_bytes": 728104960,
+          "driver_residual_bytes": 728104960,
+          "inactive_split_bytes": 0,
+          "active_bytes": 0,
+          "device_used_bytes": 1462697984,
+          "unattributed_device_bytes": 1462697984
+        },
+        {
+          "phase": "allocator_3x16",
+          "allocated_bytes": 50331648,
+          "reserved_bytes": 50331648,
+          "driver_used_bytes": 778436608,
+          "driver_residual_bytes": 728104960,
+          "inactive_split_bytes": 0,
+          "active_bytes": 50331648,
+          "device_used_bytes": 1513029632,
+          "unattributed_device_bytes": 1462697984
+        },
+        {
+          "phase": "allocator_3x14",
+          "allocated_bytes": 44040192,
+          "reserved_bytes": 50331648,
+          "driver_used_bytes": 778436608,
+          "driver_residual_bytes": 728104960,
+          "inactive_split_bytes": 6291456,
+          "active_bytes": 44040192,
+          "device_used_bytes": 1513029632,
+          "unattributed_device_bytes": 1462697984
+        },
+        {
+          "phase": "allocator_fragmentation",
+          "allocated_bytes": 49283072,
+          "reserved_bytes": 71303168,
+          "driver_used_bytes": 799408128,
+          "driver_residual_bytes": 728104960,
+          "inactive_split_bytes": 22020096,
+          "active_bytes": 49283072,
+          "device_used_bytes": 1534001152,
+          "unattributed_device_bytes": 1462697984
+        },
+        {
+          "phase": "allocator_released",
+          "allocated_bytes": 0,
+          "reserved_bytes": 0,
+          "driver_used_bytes": 728104960,
+          "driver_residual_bytes": 728104960,
+          "inactive_split_bytes": 0,
+          "active_bytes": 0,
+          "device_used_bytes": 1462697984,
+          "unattributed_device_bytes": 1462697984
+        },
+        {
+          "phase": "payload_before_nccl",
+          "allocated_bytes": 33554432,
+          "reserved_bytes": 33554432,
+          "driver_used_bytes": 872808448,
+          "driver_residual_bytes": 839254016,
+          "inactive_split_bytes": 0,
+          "active_bytes": 33554432,
+          "device_used_bytes": 1607401472,
+          "unattributed_device_bytes": 1573847040
+        },
+        {
+          "phase": "communicator_created",
+          "allocated_bytes": 33554432,
+          "reserved_bytes": 33554432,
+          "driver_used_bytes": 1311113216,
+          "driver_residual_bytes": 1277558784,
+          "inactive_split_bytes": 0,
+          "active_bytes": 33554432,
+          "device_used_bytes": 2045706240,
+          "unattributed_device_bytes": 2012151808
+        },
+        {
+          "phase": "first_small_collective",
+          "allocated_bytes": 33554432,
+          "reserved_bytes": 33554432,
+          "driver_used_bytes": 1898315776,
+          "driver_residual_bytes": 1864761344,
+          "inactive_split_bytes": 0,
+          "active_bytes": 33554432,
+          "device_used_bytes": 2632908800,
+          "unattributed_device_bytes": 2599354368
+        },
+        {
+          "phase": "repeat_small_collective",
+          "allocated_bytes": 33554432,
+          "reserved_bytes": 33554432,
+          "driver_used_bytes": 1898315776,
+          "driver_residual_bytes": 1864761344,
+          "inactive_split_bytes": 0,
+          "active_bytes": 33554432,
+          "device_used_bytes": 2632908800,
+          "unattributed_device_bytes": 2599354368
+        },
+        {
+          "phase": "first_large_collective",
+          "allocated_bytes": 33554432,
+          "reserved_bytes": 33554432,
+          "driver_used_bytes": 1898315776,
+          "driver_residual_bytes": 1864761344,
+          "inactive_split_bytes": 0,
+          "active_bytes": 33554432,
+          "device_used_bytes": 2632908800,
+          "unattributed_device_bytes": 2599354368
+        },
+        {
+          "phase": "repeat_large_collective",
+          "allocated_bytes": 33554432,
+          "reserved_bytes": 33554432,
+          "driver_used_bytes": 1898315776,
+          "driver_residual_bytes": 1864761344,
+          "inactive_split_bytes": 0,
+          "active_bytes": 33554432,
+          "device_used_bytes": 2632908800,
+          "unattributed_device_bytes": 2599354368
+        },
+        {
+          "phase": "second_communicator",
+          "allocated_bytes": 33554432,
+          "reserved_bytes": 33554432,
+          "driver_used_bytes": 2558918656,
+          "driver_residual_bytes": 2525364224,
+          "inactive_split_bytes": 0,
+          "active_bytes": 33554432,
+          "device_used_bytes": 3293511680,
+          "unattributed_device_bytes": 3259957248
+        },
+        {
+          "phase": "communicators_destroyed",
+          "allocated_bytes": 33554432,
+          "reserved_bytes": 33554432,
+          "driver_used_bytes": 1237712896,
+          "driver_residual_bytes": 1204158464,
+          "inactive_split_bytes": 0,
+          "active_bytes": 33554432,
+          "device_used_bytes": 1972305920,
+          "unattributed_device_bytes": 1938751488
+        },
+        {
+          "phase": "all_released",
+          "allocated_bytes": 0,
+          "reserved_bytes": 0,
+          "driver_used_bytes": 1204158464,
+          "driver_residual_bytes": 1204158464,
+          "inactive_split_bytes": 0,
+          "active_bytes": 0,
+          "device_used_bytes": 1938751488,
+          "unattributed_device_bytes": 1938751488
+        }
+      ],
+      "external_calibration": {
+        "category": "Unattributed CUDA/NCCL/driver overhead",
+        "evidence": "measured",
+        "pre_nccl_driver_residual_bytes": 839254016,
+        "checkpoint_deltas_from_pre_nccl": {
+          "communicator_created": 438304768,
+          "first_small_collective": 1025507328,
+          "repeat_small_collective": 1025507328,
+          "first_large_collective": 1025507328,
+          "repeat_large_collective": 1025507328,
+          "second_communicator": 1686110208,
+          "communicators_destroyed": 364904448,
+          "all_released": 364904448
+        },
+        "ownership": "Unattributed; do not add an NCCL formula/profile on top of this residual."
+      },
+      "limitations": [
+        "Device-wide residual includes CUDA context, libraries, NCCL, driver accounting and any other process.",
+        "Checkpoint deltas are NCCL-associated, not exact ownership attribution.",
+        "Synchronized checkpoints do not measure asynchronous transient peaks.",
+        "This topology and version do not calibrate other clusters or communicator sizes."
+      ]
+    },
+    {
+      "allocator_mode": "expandable",
+      "rank": 0,
+      "world_size": 2,
+      "raw_report_sha256": "4403ebcaa12ae0b647a53ca1f5454aa2e0925211efcfd677f31536df5b3c5f2b",
+      "runtime": {
+        "torch_version": "2.15.0.dev20260928+cu130",
+        "cuda_version": "13.0",
+        "nccl_version": [
+          2,
+          30,
+          7
+        ],
+        "device_name": "NVIDIA GB200",
+        "device_total_memory": 197940150272,
+        "driver": "615.74\n615.74\n615.74\n615.74"
+      },
+      "allocator_config": "backend:native,expandable_segments:True",
+      "runtime_environment": {
+        "NCCL_MNNVL_CLIQUE_ID": "-2",
+        "NCCL_MNNVL_CROSS_NVLD": "1",
+        "NCCL_NET_PLUGIN": "none",
+        "NCCL_VERSION": "2.31.2",
+        "NCCL_SOCKET_IFNAME": "enP6p3s0f1np1",
+        "NCCL_DEBUG_SUBSYS": "INIT,ALLOC,NVLS,ENV,GRAPH",
+        "NCCL_DEBUG": "INFO",
+        "NCCL_MNNVL_CROSS_CLIQUE": "1",
+        "NCCL_IB_SL": "1"
+      },
+      "allocator_comparisons": [
+        {
+          "phase": "allocator_3x16",
+          "predicted_allocated_bytes": 50331648,
+          "measured_allocated_bytes": 50331648,
+          "allocated_error_bytes": 0,
+          "predicted_reserved_bytes": 62914560,
+          "measured_reserved_bytes": 62914560,
+          "reserved_error_bytes": 0
+        },
+        {
+          "phase": "allocator_3x14",
+          "predicted_allocated_bytes": 44040192,
+          "measured_allocated_bytes": 44040192,
+          "allocated_error_bytes": 0,
+          "predicted_reserved_bytes": 62914560,
+          "measured_reserved_bytes": 62914560,
+          "reserved_error_bytes": 0
+        },
+        {
+          "phase": "allocator_fragmentation",
+          "predicted_allocated_bytes": 49283072,
+          "measured_allocated_bytes": 49283072,
+          "allocated_error_bytes": 0,
+          "predicted_reserved_bytes": 62914560,
+          "measured_reserved_bytes": 62914560,
+          "reserved_error_bytes": 0
+        },
+        {
+          "phase": "allocator_released",
+          "predicted_allocated_bytes": 0,
+          "measured_allocated_bytes": 0,
+          "allocated_error_bytes": 0,
+          "predicted_reserved_bytes": 0,
+          "measured_reserved_bytes": 0,
+          "reserved_error_bytes": 0
+        }
+      ],
+      "phases": [
+        {
+          "phase": "context",
+          "allocated_bytes": 0,
+          "reserved_bytes": 0,
+          "driver_used_bytes": 728104960,
+          "driver_residual_bytes": 728104960,
+          "inactive_split_bytes": 0,
+          "active_bytes": 0,
+          "device_used_bytes": 1462697984,
+          "unattributed_device_bytes": 1462697984
+        },
+        {
+          "phase": "allocator_3x16",
+          "allocated_bytes": 50331648,
+          "reserved_bytes": 62914560,
+          "driver_used_bytes": 791019520,
+          "driver_residual_bytes": 728104960,
+          "inactive_split_bytes": 0,
+          "active_bytes": 50331648,
+          "device_used_bytes": 1525612544,
+          "unattributed_device_bytes": 1462697984
+        },
+        {
+          "phase": "allocator_3x14",
+          "allocated_bytes": 44040192,
+          "reserved_bytes": 62914560,
+          "driver_used_bytes": 791019520,
+          "driver_residual_bytes": 728104960,
+          "inactive_split_bytes": 0,
+          "active_bytes": 44040192,
+          "device_used_bytes": 1525612544,
+          "unattributed_device_bytes": 1462697984
+        },
+        {
+          "phase": "allocator_fragmentation",
+          "allocated_bytes": 49283072,
+          "reserved_bytes": 62914560,
+          "driver_used_bytes": 791019520,
+          "driver_residual_bytes": 728104960,
+          "inactive_split_bytes": 0,
+          "active_bytes": 49283072,
+          "device_used_bytes": 1525612544,
+          "unattributed_device_bytes": 1462697984
+        },
+        {
+          "phase": "allocator_released",
+          "allocated_bytes": 0,
+          "reserved_bytes": 0,
+          "driver_used_bytes": 728104960,
+          "driver_residual_bytes": 728104960,
+          "inactive_split_bytes": 0,
+          "active_bytes": 0,
+          "device_used_bytes": 1462697984,
+          "unattributed_device_bytes": 1462697984
+        },
+        {
+          "phase": "payload_before_nccl",
+          "allocated_bytes": 33554432,
+          "reserved_bytes": 41943040,
+          "driver_used_bytes": 881197056,
+          "driver_residual_bytes": 839254016,
+          "inactive_split_bytes": 0,
+          "active_bytes": 33554432,
+          "device_used_bytes": 1615790080,
+          "unattributed_device_bytes": 1573847040
+        },
+        {
+          "phase": "communicator_created",
+          "allocated_bytes": 33554432,
+          "reserved_bytes": 41943040,
+          "driver_used_bytes": 1319501824,
+          "driver_residual_bytes": 1277558784,
+          "inactive_split_bytes": 0,
+          "active_bytes": 33554432,
+          "device_used_bytes": 2054094848,
+          "unattributed_device_bytes": 2012151808
+        },
+        {
+          "phase": "first_small_collective",
+          "allocated_bytes": 33554432,
+          "reserved_bytes": 41943040,
+          "driver_used_bytes": 2632122368,
+          "driver_residual_bytes": 2590179328,
+          "inactive_split_bytes": 0,
+          "active_bytes": 33554432,
+          "device_used_bytes": 3366715392,
+          "unattributed_device_bytes": 3324772352
+        },
+        {
+          "phase": "repeat_small_collective",
+          "allocated_bytes": 33554432,
+          "reserved_bytes": 41943040,
+          "driver_used_bytes": 2632122368,
+          "driver_residual_bytes": 2590179328,
+          "inactive_split_bytes": 0,
+          "active_bytes": 33554432,
+          "device_used_bytes": 3366715392,
+          "unattributed_device_bytes": 3324772352
+        },
+        {
+          "phase": "first_large_collective",
+          "allocated_bytes": 33554432,
+          "reserved_bytes": 41943040,
+          "driver_used_bytes": 2632122368,
+          "driver_residual_bytes": 2590179328,
+          "inactive_split_bytes": 0,
+          "active_bytes": 33554432,
+          "device_used_bytes": 3366715392,
+          "unattributed_device_bytes": 3324772352
+        },
+        {
+          "phase": "repeat_large_collective",
+          "allocated_bytes": 33554432,
+          "reserved_bytes": 41943040,
+          "driver_used_bytes": 2632122368,
+          "driver_residual_bytes": 2590179328,
+          "inactive_split_bytes": 0,
+          "active_bytes": 33554432,
+          "device_used_bytes": 3366715392,
+          "unattributed_device_bytes": 3324772352
+        },
+        {
+          "phase": "second_communicator",
+          "allocated_bytes": 33554432,
+          "reserved_bytes": 41943040,
+          "driver_used_bytes": 3292725248,
+          "driver_residual_bytes": 3250782208,
+          "inactive_split_bytes": 0,
+          "active_bytes": 33554432,
+          "device_used_bytes": 4027318272,
+          "unattributed_device_bytes": 3985375232
+        },
+        {
+          "phase": "communicators_destroyed",
+          "allocated_bytes": 33554432,
+          "reserved_bytes": 41943040,
+          "driver_used_bytes": 1971519488,
+          "driver_residual_bytes": 1929576448,
+          "inactive_split_bytes": 0,
+          "active_bytes": 33554432,
+          "device_used_bytes": 2706112512,
+          "unattributed_device_bytes": 2664169472
+        },
+        {
+          "phase": "all_released",
+          "allocated_bytes": 0,
+          "reserved_bytes": 0,
+          "driver_used_bytes": 1929576448,
+          "driver_residual_bytes": 1929576448,
+          "inactive_split_bytes": 0,
+          "active_bytes": 0,
+          "device_used_bytes": 2664169472,
+          "unattributed_device_bytes": 2664169472
+        }
+      ],
+      "external_calibration": {
+        "category": "Unattributed CUDA/NCCL/driver overhead",
+        "evidence": "measured",
+        "pre_nccl_driver_residual_bytes": 839254016,
+        "checkpoint_deltas_from_pre_nccl": {
+          "communicator_created": 438304768,
+          "first_small_collective": 1750925312,
+          "repeat_small_collective": 1750925312,
+          "first_large_collective": 1750925312,
+          "repeat_large_collective": 1750925312,
+          "second_communicator": 2411528192,
+          "communicators_destroyed": 1090322432,
+          "all_released": 1090322432
+        },
+        "ownership": "Unattributed; do not add an NCCL formula/profile on top of this residual."
+      },
+      "limitations": [
+        "Device-wide residual includes CUDA context, libraries, NCCL, driver accounting and any other process.",
+        "Checkpoint deltas are NCCL-associated, not exact ownership attribution.",
+        "Synchronized checkpoints do not measure asynchronous transient peaks.",
+        "This topology and version do not calibrate other clusters or communicator sizes."
+      ]
+    },
+    {
+      "allocator_mode": "expandable",
+      "rank": 1,
+      "world_size": 2,
+      "raw_report_sha256": "0ba00d8276d6e097504a93c5ecef44b1c98850f473509834215bf3a671999e77",
+      "runtime": {
+        "torch_version": "2.15.0.dev20260928+cu130",
+        "cuda_version": "13.0",
+        "nccl_version": [
+          2,
+          30,
+          7
+        ],
+        "device_name": "NVIDIA GB200",
+        "device_total_memory": 197940150272,
+        "driver": "615.74\n615.74\n615.74\n615.74"
+      },
+      "allocator_config": "backend:native,expandable_segments:True",
+      "runtime_environment": {
+        "NCCL_MNNVL_CLIQUE_ID": "-2",
+        "NCCL_MNNVL_CROSS_NVLD": "1",
+        "NCCL_NET_PLUGIN": "none",
+        "NCCL_VERSION": "2.31.2",
+        "NCCL_SOCKET_IFNAME": "enP6p3s0f1np1",
+        "NCCL_DEBUG_SUBSYS": "INIT,ALLOC,NVLS,ENV,GRAPH",
+        "NCCL_DEBUG": "INFO",
+        "NCCL_MNNVL_CROSS_CLIQUE": "1",
+        "NCCL_IB_SL": "1"
+      },
+      "allocator_comparisons": [
+        {
+          "phase": "allocator_3x16",
+          "predicted_allocated_bytes": 50331648,
+          "measured_allocated_bytes": 50331648,
+          "allocated_error_bytes": 0,
+          "predicted_reserved_bytes": 62914560,
+          "measured_reserved_bytes": 62914560,
+          "reserved_error_bytes": 0
+        },
+        {
+          "phase": "allocator_3x14",
+          "predicted_allocated_bytes": 44040192,
+          "measured_allocated_bytes": 44040192,
+          "allocated_error_bytes": 0,
+          "predicted_reserved_bytes": 62914560,
+          "measured_reserved_bytes": 62914560,
+          "reserved_error_bytes": 0
+        },
+        {
+          "phase": "allocator_fragmentation",
+          "predicted_allocated_bytes": 49283072,
+          "measured_allocated_bytes": 49283072,
+          "allocated_error_bytes": 0,
+          "predicted_reserved_bytes": 62914560,
+          "measured_reserved_bytes": 62914560,
+          "reserved_error_bytes": 0
+        },
+        {
+          "phase": "allocator_released",
+          "predicted_allocated_bytes": 0,
+          "measured_allocated_bytes": 0,
+          "allocated_error_bytes": 0,
+          "predicted_reserved_bytes": 0,
+          "measured_reserved_bytes": 0,
+          "reserved_error_bytes": 0
+        }
+      ],
+      "phases": [
+        {
+          "phase": "context",
+          "allocated_bytes": 0,
+          "reserved_bytes": 0,
+          "driver_used_bytes": 728104960,
+          "driver_residual_bytes": 728104960,
+          "inactive_split_bytes": 0,
+          "active_bytes": 0,
+          "device_used_bytes": 1462697984,
+          "unattributed_device_bytes": 1462697984
+        },
+        {
+          "phase": "allocator_3x16",
+          "allocated_bytes": 50331648,
+          "reserved_bytes": 62914560,
+          "driver_used_bytes": 791019520,
+          "driver_residual_bytes": 728104960,
+          "inactive_split_bytes": 0,
+          "active_bytes": 50331648,
+          "device_used_bytes": 1525612544,
+          "unattributed_device_bytes": 1462697984
+        },
+        {
+          "phase": "allocator_3x14",
+          "allocated_bytes": 44040192,
+          "reserved_bytes": 62914560,
+          "driver_used_bytes": 791019520,
+          "driver_residual_bytes": 728104960,
+          "inactive_split_bytes": 0,
+          "active_bytes": 44040192,
+          "device_used_bytes": 1525612544,
+          "unattributed_device_bytes": 1462697984
+        },
+        {
+          "phase": "allocator_fragmentation",
+          "allocated_bytes": 49283072,
+          "reserved_bytes": 62914560,
+          "driver_used_bytes": 791019520,
+          "driver_residual_bytes": 728104960,
+          "inactive_split_bytes": 0,
+          "active_bytes": 49283072,
+          "device_used_bytes": 1525612544,
+          "unattributed_device_bytes": 1462697984
+        },
+        {
+          "phase": "allocator_released",
+          "allocated_bytes": 0,
+          "reserved_bytes": 0,
+          "driver_used_bytes": 728104960,
+          "driver_residual_bytes": 728104960,
+          "inactive_split_bytes": 0,
+          "active_bytes": 0,
+          "device_used_bytes": 1462697984,
+          "unattributed_device_bytes": 1462697984
+        },
+        {
+          "phase": "payload_before_nccl",
+          "allocated_bytes": 33554432,
+          "reserved_bytes": 41943040,
+          "driver_used_bytes": 881197056,
+          "driver_residual_bytes": 839254016,
+          "inactive_split_bytes": 0,
+          "active_bytes": 33554432,
+          "device_used_bytes": 1615790080,
+          "unattributed_device_bytes": 1573847040
+        },
+        {
+          "phase": "communicator_created",
+          "allocated_bytes": 33554432,
+          "reserved_bytes": 41943040,
+          "driver_used_bytes": 1319501824,
+          "driver_residual_bytes": 1277558784,
+          "inactive_split_bytes": 0,
+          "active_bytes": 33554432,
+          "device_used_bytes": 2054094848,
+          "unattributed_device_bytes": 2012151808
+        },
+        {
+          "phase": "first_small_collective",
+          "allocated_bytes": 33554432,
+          "reserved_bytes": 41943040,
+          "driver_used_bytes": 1906704384,
+          "driver_residual_bytes": 1864761344,
+          "inactive_split_bytes": 0,
+          "active_bytes": 33554432,
+          "device_used_bytes": 2641297408,
+          "unattributed_device_bytes": 2599354368
+        },
+        {
+          "phase": "repeat_small_collective",
+          "allocated_bytes": 33554432,
+          "reserved_bytes": 41943040,
+          "driver_used_bytes": 1906704384,
+          "driver_residual_bytes": 1864761344,
+          "inactive_split_bytes": 0,
+          "active_bytes": 33554432,
+          "device_used_bytes": 2641297408,
+          "unattributed_device_bytes": 2599354368
+        },
+        {
+          "phase": "first_large_collective",
+          "allocated_bytes": 33554432,
+          "reserved_bytes": 41943040,
+          "driver_used_bytes": 1906704384,
+          "driver_residual_bytes": 1864761344,
+          "inactive_split_bytes": 0,
+          "active_bytes": 33554432,
+          "device_used_bytes": 2641297408,
+          "unattributed_device_bytes": 2599354368
+        },
+        {
+          "phase": "repeat_large_collective",
+          "allocated_bytes": 33554432,
+          "reserved_bytes": 41943040,
+          "driver_used_bytes": 1906704384,
+          "driver_residual_bytes": 1864761344,
+          "inactive_split_bytes": 0,
+          "active_bytes": 33554432,
+          "device_used_bytes": 2641297408,
+          "unattributed_device_bytes": 2599354368
+        },
+        {
+          "phase": "second_communicator",
+          "allocated_bytes": 33554432,
+          "reserved_bytes": 41943040,
+          "driver_used_bytes": 2567307264,
+          "driver_residual_bytes": 2525364224,
+          "inactive_split_bytes": 0,
+          "active_bytes": 33554432,
+          "device_used_bytes": 3301900288,
+          "unattributed_device_bytes": 3259957248
+        },
+        {
+          "phase": "communicators_destroyed",
+          "allocated_bytes": 33554432,
+          "reserved_bytes": 41943040,
+          "driver_used_bytes": 1246101504,
+          "driver_residual_bytes": 1204158464,
+          "inactive_split_bytes": 0,
+          "active_bytes": 33554432,
+          "device_used_bytes": 1980694528,
+          "unattributed_device_bytes": 1938751488
+        },
+        {
+          "phase": "all_released",
+          "allocated_bytes": 0,
+          "reserved_bytes": 0,
+          "driver_used_bytes": 1204158464,
+          "driver_residual_bytes": 1204158464,
+          "inactive_split_bytes": 0,
+          "active_bytes": 0,
+          "device_used_bytes": 1938751488,
+          "unattributed_device_bytes": 1938751488
+        }
+      ],
+      "external_calibration": {
+        "category": "Unattributed CUDA/NCCL/driver overhead",
+        "evidence": "measured",
+        "pre_nccl_driver_residual_bytes": 839254016,
+        "checkpoint_deltas_from_pre_nccl": {
+          "communicator_created": 438304768,
+          "first_small_collective": 1025507328,
+          "repeat_small_collective": 1025507328,
+          "first_large_collective": 1025507328,
+          "repeat_large_collective": 1025507328,
+          "second_communicator": 1686110208,
+          "communicators_destroyed": 364904448,
+          "all_released": 364904448
+        },
+        "ownership": "Unattributed; do not add an NCCL formula/profile on top of this residual."
+      },
+      "limitations": [
+        "Device-wide residual includes CUDA context, libraries, NCCL, driver accounting and any other process.",
+        "Checkpoint deltas are NCCL-associated, not exact ownership attribution.",
+        "Synchronized checkpoints do not measure asynchronous transient peaks.",
+        "This topology and version do not calibrate other clusters or communicator sizes."
+      ]
+    }
+  ]
+}

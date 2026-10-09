@@ -93,7 +93,8 @@ def inventory(shape: K3Shape = K3Shape()) -> list[dict]:
 def simulate(*, pp: int = 8, dp: int = 64, ep: int = 8,
              prefetch: int = 2, nccl_mib_per_communicator: int = 128,
              communicators: int = 3, activation_mib: int = 0,
-             nccl_profile: str = "allowance", channels: int = 16) -> dict:
+             nccl_profile: str = "allowance", channels: int = 16,
+             allocator_mode: str | None = None, other_memory_mib: int = 0) -> dict:
     """Run real fake tensor allocations for an explicitly supplied partial schedule.
 
     TP=CP=DP_REPLICATE=1. EP overlays DP, EDP=DP/EP. FP32 parameters,
@@ -106,6 +107,12 @@ def simulate(*, pp: int = 8, dp: int = 64, ep: int = 8,
         raise ValueError("Require 1<=PP<=93, DP divisible by EP, and EP dividing 896")
     if prefetch < 1 or min(nccl_mib_per_communicator, communicators, activation_mib) < 0:
         raise ValueError("Prefetch must be positive; byte allowances/counts nonnegative")
+    if allocator_mode not in (None, "fixed", "expandable"):
+        raise ValueError("allocator_mode must be fixed, expandable, or None")
+    if isinstance(other_memory_mib, bool) or not isinstance(other_memory_mib, int) or other_memory_mib < 0:
+        raise ValueError("other_memory_mib must be a nonnegative integer")
+    from .allocator_model import AllocatorConfig
+    from .overhead_model import MemoryComponent, OtherMemoryModel
     items = inventory()
     stages = [[] for _ in range(pp)]
     for row in items:
@@ -130,7 +137,13 @@ def simulate(*, pp: int = 8, dp: int = 64, ep: int = 8,
                            + (r["expert_parameters"] + dp-1)//dp for r in rows)
         buffer_bytes = sum(r["replicated_buffer_bytes"] for r in rows)
         with FakeTensorMode(allow_fallback_kernels=False):
-            tracker = ExtendedMemTracker()
+            tracker = ExtendedMemTracker(allocator_config=(
+                AllocatorConfig(expandable_segments=allocator_mode == "expandable")
+                if allocator_mode is not None else None))
+            other = OtherMemoryModel(tracker)
+            if other_memory_mib:
+                other.start(MemoryComponent("other-allowance", other_memory_mib * 2**20,
+                    "Other external", "assumed", "User-supplied constant; disjoint from NCCL and allocator"))
             model = NcclMemoryModel(tracker)
             runner = FakeCollectiveRunner(model)
             with tracker:
@@ -158,6 +171,8 @@ def simulate(*, pp: int = 8, dp: int = 64, ep: int = 8,
                 report = tracker.report()
                 for i in range(communicators):
                     model.destroy_communicator(f"comm-{i}")
+                if other_memory_mib:
+                    other.stop("other-allowance")
                 del live, state, buffers, activation
                 gc.collect()
             peak = report["peak"]["cpu"]
@@ -167,7 +182,14 @@ def simulate(*, pp: int = 8, dp: int = 64, ep: int = 8,
                             "partial_envelope_bytes": peak["combined_bytes"],
                             "partial_envelope_gib": peak["combined_bytes"] / 2**30,
                             "accounting": report})
+    optional = {}
+    if allocator_mode is not None:
+        for row in results:
+            row["partial_backing_envelope_bytes"] = row["accounting"]["resident"]["peak"]["cpu"]["combined_bytes"]
+        optional["worst_stage_partial_backing_envelope_gib"] = max(
+            r["partial_backing_envelope_bytes"] for r in results) / 2**30
     return {
+        **optional,
         "schema_version": 1,
         "result_kind": "partial source-derived state and gathered-parameter envelope; NOT full K3 peak",
         "source_commit": COMMIT,
@@ -184,10 +206,12 @@ def simulate(*, pp: int = 8, dp: int = 64, ep: int = 8,
                      "nccl_mib_per_communicator": nccl_mib_per_communicator,
                      "nccl_profile": nccl_profile, "channels": channels,
                      "activation_allowance_mib": activation_mib,
+                     "allocator_mode": allocator_mode, "other_memory_allowance_mib": other_memory_mib,
                      "batch_size": None, "sequence_length": None, "checkpointing": "not modeled"},
         "coverage": {"actual_k3_forward_backward_executed": False, "actual_fake_tensor_and_memtracker_executed": True,
                      "full_training_peak_bytes": None, "oom_prediction": None},
-        "excluded": ["Activation graph, KDA/MLA saved tensors and backward workspaces", "EP dispatch/combine payloads and routing imbalance", "Pipeline sends, receives, residual cache and schedule", "Gradient reduction/full gradients and optimizer temporaries", "CUDA context, reserved allocator memory, fragmentation and library workspaces", "Exact FSDP wrapping/padding and vision rotary/cache buffers", "NCCL topology/transport discovery; allowance is uncalibrated"],
+        "excluded": ["Activation graph, KDA/MLA saved tensors and backward workspaces", "EP dispatch/combine payloads and routing imbalance", "Pipeline sends, receives, residual cache and schedule", "Gradient reduction/full gradients and optimizer temporaries", ("Exact allocator behavior, CUDA/library memory beyond supplied external allowance"
+                      if allocator_mode is not None else "CUDA context, reserved allocator memory, fragmentation and library workspaces"), "Exact FSDP wrapping/padding and vision rotary/cache buffers", "NCCL topology/transport discovery; allowance is uncalibrated"],
         "worst_stage_partial_envelope_gib": max(r["partial_envelope_gib"] for r in results),
         "stages": results,
     }
@@ -201,6 +225,8 @@ def main():
     parser.add_argument("--output", type=Path)
     parser.add_argument("--nccl-profile", choices=["allowance", "shared-net-component"], default="allowance")
     parser.add_argument("--channels", type=int, default=16)
+    parser.add_argument("--allocator-mode", choices=["fixed", "expandable"])
+    parser.add_argument("--other-memory-mib", type=int, default=0)
     args = vars(parser.parse_args())
     output = args.pop("output")
     result = simulate(**args)

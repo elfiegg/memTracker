@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "status": "blocked_before_submission",
+  "gpu_executed": false,
+  "job_submitted": false,
+  "source_commit": "b4d5b404bd30dec67f86873203fbd4ba5f457531",
+  "cluster": "Polyphe",
+  "intended_max_nodes": 1,
+  "intended_devices_used": 1,
+  "intended_walltime_minutes": 8,
+  "partition": "backfill",
+  "partition_constraint_observed": "OverSubscribe=EXCLUSIVE; no GPU GRES reported; minimum scheduling unit is one node",
+  "remote_source": "/lustre/fsw/core_dlfw_ci/elfieg/kimi-k3-distmuon-20260929/torchtitan",
+  "remote_source_hashes_verified": {
+    "torchtitan/models/kimi_k3/model.py": "ee48193981eebb9fe65930211890277dcfcf8a646af078e106fb7bace6b6d4c8",
+    "torchtitan/distributed/activation_checkpoint.py": "829a96827cb8daa41588fe7d4ac8189cb375ea0040723785af1a977da780cc46",
+    "torchtitan/distributed/flex_shard/dist_muon.py": "26ce80ac34a1ca85a22c83a44e542ab3d2a683f969154d78c7cc34e8b6a03b8b"
+  },
+  "container_image": "/lustre/fsw/core_dlfw_ci/elfieg/kimi-k3-distmuon-20260929/containers/kimi-distmuon-hybridep.sqsh",
+  "remote_probe_directory": "/lustre/fsw/core_dlfw_ci/elfieg/memtracker-components-20261008",
+  "script": "scripts/calibrate_k3_components_cuda.py",
+  "requested_components": [
+    "Exact attention-residual helper with tokens=8136, dim=7168, residuals=8, BF16 requires-grad inputs; forward and backward with and without source FullAC policy",
+    "Exact Muon prepare, 5 Newton-Schulz steps and final in-place update for expert w13 shape [28,2,3072,3584]"
+  ],
+  "muon_source_config": {
+    "ns_steps": 5,
+    "momentum": 0.95,
+    "nesterov": true,
+    "ns_coefficients": [
+      3.4445,
+      -4.775,
+      2.0315
+    ],
+    "weight_decay": 0,
+    "evidence": "DistMuon.Config defaults set ns_steps=5; K3 _dist_muon_optimizer sets default weight_decay=0.1. The user-requested recipe overrides weight_decay to 0 for this calibration, matching the FakeTensor helper.",
+    "source_default_weight_decay": 0.1
+  },
+  "blocker": "Automatic approval review rejected source/archive upload, then also rejected the safer upload containing only newly developed probe and estimator code. It requires explicit user authorization/trust for remote code egress. No alternate transfer route was attempted.",
+  "actions_completed": [
+    "Created isolated remote scratch directory and copied its existing cluster-resident container-runtime.sh",
+    "Read-only scheduler availability and partition constraint inspection",
+    "Verified already-remote source hashes against local pinned source, removing the need to upload K3 source",
+    "Prepared standalone CUDA calibration script and bounded one-device sbatch locally"
+  ],
+  "full_model_fit_verified": false,
+  "limitations": [
+    "No new CUDA measurement was obtained",
+    "Even a successful component probe would not cover full-block checkpoint overlap, MLA/KDA/HybridEP kernels, distributed optimizer communication, or whole-model peak"
+  ],
+  "local_verification": {
+    "syntax_compile": true,
+    "fake_tensor_exact_shape_smoke": true,
+    "torch_runtime": "2.14.1",
+    "muon_peak_live_bytes": 10745806848,
+    "attention_peak_live_bytes_without_ac": 13763305476,
+    "attention_peak_live_bytes_with_full_ac": 13763305476,
+    "recipe_weight_decay_zero_ast_assertion": true,
+    "missing_allocator_environment_empty_string_ast_assertion": true
+  },
+  "script_sha256": "795f9d7f7d38915bae4909ef23db960f6f3e313233914c3965151ff37926d9cb"
+}

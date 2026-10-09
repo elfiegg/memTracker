@@ -1,13 +1,49 @@
-# memTracker: CPU-only tensor + NCCL memory estimation
+# memTracker: tensor, allocator and NCCL memory estimation
 
-A proof of concept for adding **modeled NCCL allocation/free events** to PyTorch
-`FakeTensorMode` + `MemTracker`. It runs without CUDA or NCCL. It does **not** run
-NCCL's allocator or guarantee that a configuration fits on a GPU.
+A proof of concept combining PyTorch `FakeTensorMode` + `MemTracker` with
+**modeled caching-allocator backing, NCCL allocations, and other external memory**.
+The simulator runs without CUDA or NCCL. A separate optional GPU runner calibrates
+selected checkpoints. It does not emulate NCCL or guarantee GPU memory fit.
 
 The core is useful now; accurate NCCL prediction still requires a transport
 configuration or calibration data. Unsupported overhead is reported explicitly.
 The included Kimi K3 experiment is a **partial parameter/state/communication
 estimate**, not a full forward/backward or OOM prediction.
+
+Agent workflow: [estimate-model-memory skill](skills/estimate-model-memory/SKILL.md)
+covers inputs, CPU estimates, optional TorchTitan capture, and validation.
+
+The new [framework capture and attribution layer](docs/framework-memory-capture.md)
+uses model-independent allocator events, stack traces, storage ownership and
+phase labels. A thin TorchTitan adapter records initialization, forward/backward
+and optimizer execution from the actual checkout/config. FakeTensor estimates
+use matching phase labels. This replaces ad hoc workload offsets with measurable
+gaps; it does not yet make the historical K3 estimator a complete generic simulator.
+
+The latest [K3 training-lifetime analysis](docs/k3-training-lifetimes.md) adds
+source-executed Muon/AdamW, FSDP unsharded expert copies, FullAC/attention-residual
+lifetimes and fixed/expandable allocator replay. The modeled worst-rank live
+subtotal is **186.084 GiB before external communication**, versus **184.346 GiB**
+capacity. This is a modeled no-fit with explicit remaining kernel/communication
+coverage gaps, not a measured full-training CUDA OOM.
+
+The [GB200 workload backtest](docs/gb200-workload-backtest.md) now replays all nine
+saved configurations: six full-model OOMs and three successful debug runs. Saved
+geometry, PP4/PP8, ordinary/interleaved 1F1B, optimizer owner plans, vision presence,
+and accumulation rounds drive the predictions. First-step optimizer states are
+created lazily. The partial model predicts **57–60 MiB active** versus about
+**278 MiB** in the debug runs' first logged windows. Full peak accuracy remains
+**unvalidated**; no memory observations were used to tune predictions. OOM
+snapshots remain censored constraints. [Reproduction and scope](docs/gb200-workload-reproduction.md).
+The earlier [compatibility-only audit](docs/gb200-historical-validation.md) remains
+available as historical evidence for the fixed 4068-token prediction.
+
+[Per-run source/runtime metadata](docs/run-metadata.md) takes one input per
+component: `training_code`, `torchao`, `pytorch`, `cuda`, `nccl`, and `container`.
+NCCL accepts its full build string in one value. Explicit run values override named defaults; fallback values are marked
+assumed. Target identity remains separate from the local simulator and the
+implementation actually modeled. The supplied versions are attached to all nine
+historical runs; the training base commit is not treated as an exact source pin.
 
 ## Install and test
 
@@ -44,6 +80,11 @@ Machine-readable output: [experiments/collectives.json](experiments/collectives.
 - `ExtendedMemTracker`: an explicit `external_alloc` / `external_free` ledger.
   Samples combined tensor + external memory after **every tensor storage event**
   and external event. It does not add independently observed peaks.
+- Optional `AllocatorConfig`: rounded requests, caching, fixed/expandable segments,
+  separate pools/streams, and explicit deferred frees. `report()['resident']`
+  samples **reserved backing + external memory**, without adding tensors again.
+- `OtherMemoryModel`: explicit externally owned components, provenance and lifetimes.
+  Context/library bytes have no built-in universal constant.
 - `NcclMemoryModel`: communicator-scoped persistent buffers, lazy initialization,
   pool reuse, concurrent temporary allocations, and explicit completion/destruction.
 - `FakeCollectiveRunner`: actual PyTorch fake `all_gather`, `reduce_scatter`, and
@@ -93,6 +134,32 @@ peak across tracker contexts; `reset_mod_stats()` clears only module attribution
 Create a new tracker for a separate scenario. Tensor events are sampled always;
 pass `record_tensor_events=True` to retain every event in the JSON timeline.
 
+## Allocator and overhead experiments
+
+```bash
+python -m memtracker_nccl.allocator_experiment --output experiments/allocator_overhead.json
+python -m memtracker_nccl.k3_experiment --allocator-mode expandable --other-memory-mib 512 \
+  --output experiments/k3_512rank_expandable_backing.json
+```
+
+Enable backing modeling with
+`ExtendedMemTracker(allocator_config=AllocatorConfig(expandable_segments=True))`.
+Existing `report()['peak']` remains tensor-plus-external accounting;
+`report()['resident']['peak']` is the simultaneous backing-plus-external estimate.
+The real CUDA flag is `expandable_segments`, not `enable_segment`. Pool and stream
+labels are explicit model inputs; they do not create real CUDA pools or infer
+asynchronous completion.
+
+A **two-rank GB200 calibration** matched the fragmentation trace at every sampled
+allocator checkpoint: **68 MiB fixed vs 60 MiB expandable** reserved backing.
+Other schedules can reserve more with expandable segments. Measured NCCL-associated
+residuals changed at setup and first use, then stayed constant across repeated
+collectives; they are not attributed exclusively to NCCL or generalized to K3.
+
+See [experiment results, usage and calibration limits](docs/allocator-experiments.md),
+[allocator rules](docs/allocator-model.md), and
+[GPU measurements](experiments/gb200_calibration.json).
+
 ## Kimi K3 experiment
 
 The model inventory follows TorchTitan commit
@@ -134,6 +201,25 @@ TorchTitan's Triton dependency. This result therefore does not imply successful
 full K3 FakeTensor execution. See [the K3 report](docs/k3-experiment.md) and
 [machine-readable results](experiments/k3_512rank_partial.json).
 
+## Requested 256-GPU fit check
+
+The PP8/FSDP32/EP32 BF16 DistMuon+AdamW, FullAC, HybridEP, sequence4068,
+2×64-microbatch scenario is now a separate [fit screen](docs/k3-256-fit.md).
+**Full-model fit remains unproven.** The combined decoder state lower bound is
+109.06 GiB/GPU, excluding activations, communication, gathered weights and scratch.
+A GB200 probe verified lazy receive allocation in the target runtime; the local
+CPU runtime's eager-buffer OOM prediction does not apply there. The 256-GPU
+job was canceled before running. A CPU-only comparison now treats communication
+backing as fully resident from the start, independently of pipeline receive
+policy. Eager receives exceed capacity already; lazy receives leave 75.29 GiB
+minus the supplied communication footprint for all omitted memory.
+
+The [Interleaved1F1B estimate](docs/k3-interleaved-fit.md) uses two virtual stages
+per PP rank and replays actual schedule ordering. Peak live stage/microbatch
+pairs are 23/21/19/17/15/13/11/9. Counted state, FullAC boundary storage and
+pending receives reach a partial 142.48 GiB/GPU; an assumed 16 GiB of eager
+communication backing brings this to 158.48 GiB. Full-model fit remains unproven.
+
 ## Interpretation and limits
 
 This is an **opt-in model and schedule**, not automatic interception of arbitrary
@@ -143,15 +229,18 @@ NCCL algorithm selection, channels, CUDA stream completion, or pool sharing
 between communicators. Temporary bytes default to zero unless explicitly modeled.
 
 A source-derived buffer profile covers only its named transport allocations.
-It omits CUDA context/library allocations, allocator fragmentation, unmodeled
-NCCL resources, and other transports such as NVLS. Tensor estimates also inherit
+The transport profile itself omits CUDA context/library allocations, allocator
+fragmentation, unmodeled NCCL resources, and other transports such as NVLS.
+Optional allocator/other-memory models cover only explicitly supplied assumptions. Tensor estimates also inherit
 FakeTensor limitations: GPU-specific fused kernels, compiler memory planning,
 data-dependent execution, and unsupported custom ops can change real usage.
 
 Tests validate bookkeeping, actual fake collective shapes and tensor lifetimes,
 training/backward/optimizer integration, alias handling, overlapping collectives,
-and persistent pool reuse. They do **not** validate GPU prediction accuracy.
+persistent pool reuse, allocator backing, and external lifetimes. The small GPU
+calibration validates selected allocator checkpoints; it does **not** establish
+accuracy for arbitrary workloads or external-memory prediction.
 Transport formulas and coverage: [NCCL model notes](docs/nccl-model.md).
 
-A useful next step is comparing the event model against allocation traces on one
-fixed NCCL version and topology.
+Further calibration needs allocation ownership traces and held-out workloads
+on fixed NCCL versions/topologies; see the experiment report above.

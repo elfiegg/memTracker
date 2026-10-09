@@ -1,0 +1,2233 @@
+{
+  "schema_version": 1,
+  "kind": "normalized_gb200_validation_observations",
+  "source_sha256": "94049c448e51368346c888dacdf3b7c1d2b9710aeff28acaef33ef556b452b45",
+  "source_generated_at": "2026-10-08T11:47:17.368264-07:00",
+  "interpretation": [
+    "Snapshot of historical training runs; PASS rows are reduced debug models, NOT full K3 passes. Pending jobs3256151 and3263359 are excluded from measured labels.",
+    "OOM allocated/free/process values are rounded failure-point observations, not successful full-iteration peaks. Unknown values are null, not zero. A failed requested allocation was never successfully added to the live tensor total.",
+    "PyTorch peak allocated, peak reserved, process GPU usage and device total usage are distinct targets. Do not add allocated to reserved; reserved includes allocated. PyTorch allocator metrics do not include every external NCCL/HybridEP allocation.",
+    "OOM rows are censored fit/fail labels for the actual executed phase. They do not establish exact required peak memory or steady-state graph memory. NCCL OOMs lack requested-byte/free-memory snapshots.",
+    "Older full runs had sibling GPU contexts (~684MiB each on GPU0); GPU isolation changed in sequence1024 runs. Preserve that runtime difference when evaluating estimator error.",
+    "Per-rank passing metrics are step-window metrics reported by the training logger, not a sampled maximum of total device usage. CUDA graph replay and allocator peak-reset behavior can change later reported peaks. Use startup/warmup and steady-state separately.",
+    "Exact numerical parity for optimizer communication warmup was not established; PASS means verified functional training and traces, not bitwise equivalence.",
+    "Use effective_config for the complete saved configuration, including every layer, attention geometry, vision geometry, optimizer bucketing and sharding maps. Config JSON may serialize Python objects as repr; exact recipe and launcher are bundled to retain class identities."
+  ],
+  "experiments": [
+    {
+      "job": 3227951,
+      "outcome": "OOM",
+      "scope": "full_model",
+      "phase": "pipeline backward",
+      "world_size": 256,
+      "representative_rank": 224,
+      "configuration": {
+        "layers": 93,
+        "hidden_dim": 7168,
+        "vocab_size": 163840,
+        "experts": 896,
+        "top_k": 16,
+        "expert_input_dim": 3584,
+        "expert_ffn_dim": 3072,
+        "vision_encoder": true,
+        "sequence": 4068,
+        "microbatch_size": 2,
+        "microbatches": 64,
+        "accumulation_rounds": 1,
+        "pp": 8,
+        "fsdp": 32,
+        "ep": 32,
+        "tp": 1,
+        "cp": 1,
+        "replication": 1,
+        "schedule": "1F1B",
+        "cuda_graphs": false,
+        "parameter_dtype": "bfloat16",
+        "storage_dtype": "bfloat16",
+        "reduction_dtype": "float32",
+        "checkpointing": "FullAC",
+        "optimizer_types": [
+          "DistMuon",
+          "AdamW"
+        ],
+        "reshard_after_forward": "always",
+        "forced_load_balance": true
+      },
+      "effective_config_sha256": "a0bc5b2ff88355692bd86cc430b66a4600da0749cc0adadca0b875ebfb1f3160",
+      "run_metadata": {
+        "schema_version": 1,
+        "values": {
+          "training_code_commit": null,
+          "training_code_base_commit": "53a45ee31d260bcaacaa319dae29080c68675a49",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "6352062064145e9ca0d37b05a677c420ba5a7bb6",
+          "pytorch_version": "2.15.0.dev20260928+cu130",
+          "cuda_version": "13.0",
+          "nccl_version": "2.30.7",
+          "nccl_build": "2.30.7+cuda13.3",
+          "container_identifier": "/lustre/fsw/coreai_dlfw_dev/elfieg/kimi-k3-distmuon-20260928/containers/kimi-distmuon-hybridep.sqsh",
+          "container_digest": null
+        },
+        "origins": {
+          "training_code_commit": "manifest:shared",
+          "training_code_base_commit": "manifest:shared",
+          "training_code_patch_sha256": "manifest:shared",
+          "torchao_commit": "manifest:shared",
+          "pytorch_version": "manifest:shared",
+          "cuda_version": "manifest:shared",
+          "nccl_version": "manifest:shared",
+          "nccl_build": "manifest:shared",
+          "container_identifier": "manifest:shared",
+          "container_digest": "manifest:shared"
+        },
+        "assumed_fields": [],
+        "overrides": []
+      },
+      "failure_point_memory_gib": {
+        "requested_gib": 1.96,
+        "device_capacity_gib": 184.31,
+        "device_free_gib": 1.47,
+        "process_gpu_gib": 180.79,
+        "torch_allocated_gib": 154.26,
+        "torch_reserved_unused_gib": 1.74
+      },
+      "per_rank_step_memory_metrics": {},
+      "runtime_environment_evidence": [
+        {
+          "file": "train.sbatch",
+          "line": 44,
+          "text": "export NCCL_RUNTIME_CONNECT=0 NCCL_NET_PLUGIN=none"
+        },
+        {
+          "file": "train.sbatch",
+          "line": 48,
+          "text": "export PYTORCH_ALLOC_CONF=expandable_segments:True TORCH_NCCL_ASYNC_ERROR_HANDLING=1"
+        },
+        {
+          "file": "train.sbatch",
+          "line": 80,
+          "text": "export RANK=$SLURM_PROCID WORLD_SIZE=$SLURM_NTASKS LOCAL_RANK=$SLURM_LOCALID"
+        }
+      ],
+      "warmup_observations": [],
+      "log_references": [
+        {
+          "file": "rank-224.err",
+          "line": 73
+        }
+      ]
+    },
+    {
+      "job": 3233459,
+      "outcome": "OOM",
+      "scope": "full_model",
+      "phase": "pipeline backward",
+      "world_size": 256,
+      "representative_rank": 224,
+      "configuration": {
+        "layers": 93,
+        "hidden_dim": 7168,
+        "vocab_size": 163840,
+        "experts": 896,
+        "top_k": 16,
+        "expert_input_dim": 3584,
+        "expert_ffn_dim": 3072,
+        "vision_encoder": true,
+        "sequence": 2048,
+        "microbatch_size": 2,
+        "microbatches": 64,
+        "accumulation_rounds": 1,
+        "pp": 8,
+        "fsdp": 32,
+        "ep": 32,
+        "tp": 1,
+        "cp": 1,
+        "replication": 1,
+        "schedule": "1F1B",
+        "cuda_graphs": false,
+        "parameter_dtype": "bfloat16",
+        "storage_dtype": "bfloat16",
+        "reduction_dtype": "float32",
+        "checkpointing": "FullAC",
+        "optimizer_types": [
+          "DistMuon",
+          "AdamW"
+        ],
+        "reshard_after_forward": "always",
+        "forced_load_balance": true
+      },
+      "effective_config_sha256": "7c783b3d053464e151a07cb48040016634af7773aa2e8c138770149c0a29dcb4",
+      "run_metadata": {
+        "schema_version": 1,
+        "values": {
+          "training_code_commit": null,
+          "training_code_base_commit": "53a45ee31d260bcaacaa319dae29080c68675a49",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "6352062064145e9ca0d37b05a677c420ba5a7bb6",
+          "pytorch_version": "2.15.0.dev20260928+cu130",
+          "cuda_version": "13.0",
+          "nccl_version": "2.30.7",
+          "nccl_build": "2.30.7+cuda13.3",
+          "container_identifier": "/lustre/fsw/coreai_dlfw_dev/elfieg/kimi-k3-distmuon-20260928/containers/kimi-distmuon-hybridep.sqsh",
+          "container_digest": null
+        },
+        "origins": {
+          "training_code_commit": "manifest:shared",
+          "training_code_base_commit": "manifest:shared",
+          "training_code_patch_sha256": "manifest:shared",
+          "torchao_commit": "manifest:shared",
+          "pytorch_version": "manifest:shared",
+          "cuda_version": "manifest:shared",
+          "nccl_version": "manifest:shared",
+          "nccl_build": "manifest:shared",
+          "container_identifier": "manifest:shared",
+          "container_digest": "manifest:shared"
+        },
+        "assumed_fields": [],
+        "overrides": []
+      },
+      "failure_point_memory_gib": {
+        "requested_gib": 0.984375,
+        "device_capacity_gib": 184.31,
+        "device_free_gib": 0.373046875,
+        "process_gpu_gib": 181.89,
+        "torch_allocated_gib": 156.87,
+        "torch_reserved_unused_gib": 2.06
+      },
+      "per_rank_step_memory_metrics": {},
+      "runtime_environment_evidence": [
+        {
+          "file": "train.sbatch",
+          "line": 44,
+          "text": "export NCCL_RUNTIME_CONNECT=0 NCCL_NET_PLUGIN=none"
+        },
+        {
+          "file": "train.sbatch",
+          "line": 48,
+          "text": "export PYTORCH_ALLOC_CONF=expandable_segments:True TORCH_NCCL_ASYNC_ERROR_HANDLING=1"
+        },
+        {
+          "file": "train.sbatch",
+          "line": 80,
+          "text": "export RANK=$SLURM_PROCID WORLD_SIZE=$SLURM_NTASKS LOCAL_RANK=$SLURM_LOCALID"
+        }
+      ],
+      "warmup_observations": [],
+      "log_references": [
+        {
+          "file": "rank-224.err",
+          "line": 75
+        }
+      ]
+    },
+    {
+      "job": 3238922,
+      "outcome": "OOM",
+      "scope": "full_model",
+      "phase": "pipeline backward",
+      "world_size": 256,
+      "representative_rank": 224,
+      "configuration": {
+        "layers": 93,
+        "hidden_dim": 7168,
+        "vocab_size": 163840,
+        "experts": 896,
+        "top_k": 16,
+        "expert_input_dim": 3584,
+        "expert_ffn_dim": 3072,
+        "vision_encoder": true,
+        "sequence": 2048,
+        "microbatch_size": 2,
+        "microbatches": 64,
+        "accumulation_rounds": 1,
+        "pp": 8,
+        "fsdp": 32,
+        "ep": 32,
+        "tp": 1,
+        "cp": 1,
+        "replication": 1,
+        "schedule": "1F1B",
+        "cuda_graphs": false,
+        "parameter_dtype": "bfloat16",
+        "storage_dtype": "bfloat16",
+        "reduction_dtype": "float32",
+        "checkpointing": "FullAC",
+        "optimizer_types": [
+          "DistMuon",
+          "AdamW"
+        ],
+        "reshard_after_forward": "always",
+        "forced_load_balance": true
+      },
+      "effective_config_sha256": "f1735c8c9db8443dc55b7a8c79341d8e9e541a8a4634fe62a0c12ac3b79d997e",
+      "run_metadata": {
+        "schema_version": 1,
+        "values": {
+          "training_code_commit": null,
+          "training_code_base_commit": "53a45ee31d260bcaacaa319dae29080c68675a49",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "6352062064145e9ca0d37b05a677c420ba5a7bb6",
+          "pytorch_version": "2.15.0.dev20260928+cu130",
+          "cuda_version": "13.0",
+          "nccl_version": "2.30.7",
+          "nccl_build": "2.30.7+cuda13.3",
+          "container_identifier": "/lustre/fsw/coreai_dlfw_dev/elfieg/kimi-k3-distmuon-20260928/containers/kimi-distmuon-hybridep.sqsh",
+          "container_digest": null
+        },
+        "origins": {
+          "training_code_commit": "manifest:shared",
+          "training_code_base_commit": "manifest:shared",
+          "training_code_patch_sha256": "manifest:shared",
+          "torchao_commit": "manifest:shared",
+          "pytorch_version": "manifest:shared",
+          "cuda_version": "manifest:shared",
+          "nccl_version": "manifest:shared",
+          "nccl_build": "manifest:shared",
+          "container_identifier": "manifest:shared",
+          "container_digest": "manifest:shared"
+        },
+        "assumed_fields": [],
+        "overrides": []
+      },
+      "failure_point_memory_gib": {
+        "requested_gib": 0.984375,
+        "device_capacity_gib": 184.31,
+        "device_free_gib": 0.373046875,
+        "process_gpu_gib": 181.89,
+        "torch_allocated_gib": 156.87,
+        "torch_reserved_unused_gib": 2.06
+      },
+      "per_rank_step_memory_metrics": {},
+      "runtime_environment_evidence": [
+        {
+          "file": "train.sbatch",
+          "line": 44,
+          "text": "export NCCL_RUNTIME_CONNECT=0 NCCL_NET_PLUGIN=none"
+        },
+        {
+          "file": "train.sbatch",
+          "line": 48,
+          "text": "export PYTORCH_ALLOC_CONF=expandable_segments:True TORCH_NCCL_ASYNC_ERROR_HANDLING=1"
+        },
+        {
+          "file": "train.sbatch",
+          "line": 80,
+          "text": "export RANK=$SLURM_PROCID WORLD_SIZE=$SLURM_NTASKS LOCAL_RANK=$SLURM_LOCALID"
+        }
+      ],
+      "warmup_observations": [],
+      "log_references": [
+        {
+          "file": "rank-224.err",
+          "line": 75
+        }
+      ]
+    },
+    {
+      "job": 3240283,
+      "outcome": "OOM",
+      "scope": "full_model",
+      "phase": "DistMuon optimizer NCCL storage-to-compute redistribution",
+      "world_size": 256,
+      "representative_rank": 211,
+      "configuration": {
+        "layers": 93,
+        "hidden_dim": 7168,
+        "vocab_size": 163840,
+        "experts": 896,
+        "top_k": 16,
+        "expert_input_dim": 3584,
+        "expert_ffn_dim": 3072,
+        "vision_encoder": true,
+        "sequence": 2048,
+        "microbatch_size": 1,
+        "microbatches": 128,
+        "accumulation_rounds": 1,
+        "pp": 8,
+        "fsdp": 32,
+        "ep": 32,
+        "tp": 1,
+        "cp": 1,
+        "replication": 1,
+        "schedule": "1F1B",
+        "cuda_graphs": false,
+        "parameter_dtype": "bfloat16",
+        "storage_dtype": "bfloat16",
+        "reduction_dtype": "float32",
+        "checkpointing": "FullAC",
+        "optimizer_types": [
+          "DistMuon",
+          "AdamW"
+        ],
+        "reshard_after_forward": "always",
+        "forced_load_balance": true
+      },
+      "effective_config_sha256": "a01e97442a38016b3c8795ae192911cee51178b52b776550231a41b387af80f8",
+      "run_metadata": {
+        "schema_version": 1,
+        "values": {
+          "training_code_commit": null,
+          "training_code_base_commit": "53a45ee31d260bcaacaa319dae29080c68675a49",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "6352062064145e9ca0d37b05a677c420ba5a7bb6",
+          "pytorch_version": "2.15.0.dev20260928+cu130",
+          "cuda_version": "13.0",
+          "nccl_version": "2.30.7",
+          "nccl_build": "2.30.7+cuda13.3",
+          "container_identifier": "/lustre/fsw/coreai_dlfw_dev/elfieg/kimi-k3-distmuon-20260928/containers/kimi-distmuon-hybridep.sqsh",
+          "container_digest": null
+        },
+        "origins": {
+          "training_code_commit": "manifest:shared",
+          "training_code_base_commit": "manifest:shared",
+          "training_code_patch_sha256": "manifest:shared",
+          "torchao_commit": "manifest:shared",
+          "pytorch_version": "manifest:shared",
+          "cuda_version": "manifest:shared",
+          "nccl_version": "manifest:shared",
+          "nccl_build": "manifest:shared",
+          "container_identifier": "manifest:shared",
+          "container_digest": "manifest:shared"
+        },
+        "assumed_fields": [],
+        "overrides": []
+      },
+      "failure_point_memory_gib": {
+        "requested_gib": null,
+        "device_capacity_gib": null,
+        "device_free_gib": null,
+        "process_gpu_gib": null,
+        "torch_allocated_gib": null,
+        "torch_reserved_unused_gib": null
+      },
+      "per_rank_step_memory_metrics": {},
+      "runtime_environment_evidence": [
+        {
+          "file": "train.sbatch",
+          "line": 44,
+          "text": "export NCCL_RUNTIME_CONNECT=0 NCCL_NET_PLUGIN=none"
+        },
+        {
+          "file": "train.sbatch",
+          "line": 48,
+          "text": "export PYTORCH_ALLOC_CONF=expandable_segments:True TORCH_NCCL_ASYNC_ERROR_HANDLING=1"
+        },
+        {
+          "file": "train.sbatch",
+          "line": 80,
+          "text": "export RANK=$SLURM_PROCID WORLD_SIZE=$SLURM_NTASKS LOCAL_RANK=$SLURM_LOCALID"
+        }
+      ],
+      "warmup_observations": [],
+      "log_references": [
+        {
+          "file": "rank-0.log",
+          "line": 4902
+        },
+        {
+          "file": "rank-0.err",
+          "line": 131
+        },
+        {
+          "file": "rank-211.log",
+          "line": 3719
+        },
+        {
+          "file": "rank-211.err",
+          "line": 103
+        }
+      ]
+    },
+    {
+      "job": 3244815,
+      "outcome": "OOM",
+      "scope": "full_model",
+      "phase": "first-step eager graph warmup; virtual stage13 backward microbatch40",
+      "world_size": 256,
+      "representative_rank": 160,
+      "configuration": {
+        "layers": 93,
+        "hidden_dim": 7168,
+        "vocab_size": 163840,
+        "experts": 896,
+        "top_k": 16,
+        "expert_input_dim": 3584,
+        "expert_ffn_dim": 3072,
+        "vision_encoder": false,
+        "sequence": 2048,
+        "microbatch_size": 1,
+        "microbatches": 128,
+        "accumulation_rounds": 1,
+        "pp": 8,
+        "fsdp": 32,
+        "ep": 32,
+        "tp": 1,
+        "cp": 1,
+        "replication": 1,
+        "schedule": "Interleaved1F1B",
+        "cuda_graphs": true,
+        "parameter_dtype": "bfloat16",
+        "storage_dtype": "bfloat16",
+        "reduction_dtype": "float32",
+        "checkpointing": "FullAC",
+        "optimizer_types": [
+          "DistMuon",
+          "AdamW"
+        ],
+        "reshard_after_forward": "always",
+        "forced_load_balance": true
+      },
+      "effective_config_sha256": "56fe5699237d60639f9dd3ae825ee9b95f93d3e7a1d10e753a82d8952719fcd1",
+      "run_metadata": {
+        "schema_version": 1,
+        "values": {
+          "training_code_commit": null,
+          "training_code_base_commit": "53a45ee31d260bcaacaa319dae29080c68675a49",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "6352062064145e9ca0d37b05a677c420ba5a7bb6",
+          "pytorch_version": "2.15.0.dev20260928+cu130",
+          "cuda_version": "13.0",
+          "nccl_version": "2.30.7",
+          "nccl_build": "2.30.7+cuda13.3",
+          "container_identifier": "/lustre/fsw/coreai_dlfw_dev/elfieg/kimi-k3-distmuon-20260928/containers/kimi-distmuon-hybridep.sqsh",
+          "container_digest": null
+        },
+        "origins": {
+          "training_code_commit": "manifest:shared",
+          "training_code_base_commit": "manifest:shared",
+          "training_code_patch_sha256": "manifest:shared",
+          "torchao_commit": "manifest:shared",
+          "pytorch_version": "manifest:shared",
+          "cuda_version": "manifest:shared",
+          "nccl_version": "manifest:shared",
+          "nccl_build": "manifest:shared",
+          "container_identifier": "manifest:shared",
+          "container_digest": "manifest:shared"
+        },
+        "assumed_fields": [],
+        "overrides": []
+      },
+      "failure_point_memory_gib": {
+        "requested_gib": 0.2734375,
+        "device_capacity_gib": 184.31,
+        "device_free_gib": 0.142578125,
+        "process_gpu_gib": 182.12,
+        "torch_allocated_gib": 156.22,
+        "torch_reserved_unused_gib": 1.74
+      },
+      "per_rank_step_memory_metrics": {},
+      "runtime_environment_evidence": [
+        {
+          "file": "train.sbatch",
+          "line": 44,
+          "text": "export NCCL_RUNTIME_CONNECT=0 NCCL_NET_PLUGIN=none"
+        },
+        {
+          "file": "train.sbatch",
+          "line": 48,
+          "text": "export PYTORCH_ALLOC_CONF=expandable_segments:True TORCH_NCCL_ASYNC_ERROR_HANDLING=1"
+        },
+        {
+          "file": "train.sbatch",
+          "line": 69,
+          "text": "export RANK=$SLURM_PROCID WORLD_SIZE=$SLURM_NTASKS LOCAL_RANK=$SLURM_LOCALID"
+        }
+      ],
+      "warmup_observations": [],
+      "log_references": [
+        {
+          "file": "rank-160.err",
+          "line": 1623
+        }
+      ]
+    },
+    {
+      "job": 3250222,
+      "outcome": "OOM",
+      "scope": "full_model",
+      "phase": "first optimizer NCCL storage-to-compute redistribution",
+      "world_size": 256,
+      "representative_rank": 0,
+      "configuration": {
+        "layers": 93,
+        "hidden_dim": 7168,
+        "vocab_size": 163840,
+        "experts": 896,
+        "top_k": 16,
+        "expert_input_dim": 3584,
+        "expert_ffn_dim": 3072,
+        "vision_encoder": false,
+        "sequence": 1024,
+        "microbatch_size": 1,
+        "microbatches": 16,
+        "accumulation_rounds": 16,
+        "pp": 8,
+        "fsdp": 32,
+        "ep": 32,
+        "tp": 1,
+        "cp": 1,
+        "replication": 1,
+        "schedule": "Interleaved1F1B",
+        "cuda_graphs": true,
+        "parameter_dtype": "bfloat16",
+        "storage_dtype": "bfloat16",
+        "reduction_dtype": "float32",
+        "checkpointing": "FullAC",
+        "optimizer_types": [
+          "DistMuon",
+          "AdamW"
+        ],
+        "reshard_after_forward": "always",
+        "forced_load_balance": true
+      },
+      "effective_config_sha256": "0afe0308579eb5885c9e08d3dd2efcd2c5c81ec93402a229a1e69f1407395b37",
+      "run_metadata": {
+        "schema_version": 1,
+        "values": {
+          "training_code_commit": null,
+          "training_code_base_commit": "53a45ee31d260bcaacaa319dae29080c68675a49",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "6352062064145e9ca0d37b05a677c420ba5a7bb6",
+          "pytorch_version": "2.15.0.dev20260928+cu130",
+          "cuda_version": "13.0",
+          "nccl_version": "2.30.7",
+          "nccl_build": "2.30.7+cuda13.3",
+          "container_identifier": "/lustre/fsw/coreai_dlfw_dev/elfieg/kimi-k3-distmuon-20260928/containers/kimi-distmuon-hybridep.sqsh",
+          "container_digest": null
+        },
+        "origins": {
+          "training_code_commit": "manifest:shared",
+          "training_code_base_commit": "manifest:shared",
+          "training_code_patch_sha256": "manifest:shared",
+          "torchao_commit": "manifest:shared",
+          "pytorch_version": "manifest:shared",
+          "cuda_version": "manifest:shared",
+          "nccl_version": "manifest:shared",
+          "nccl_build": "manifest:shared",
+          "container_identifier": "manifest:shared",
+          "container_digest": "manifest:shared"
+        },
+        "assumed_fields": [],
+        "overrides": []
+      },
+      "failure_point_memory_gib": {
+        "requested_gib": null,
+        "device_capacity_gib": null,
+        "device_free_gib": null,
+        "process_gpu_gib": null,
+        "torch_allocated_gib": null,
+        "torch_reserved_unused_gib": null
+      },
+      "per_rank_step_memory_metrics": {},
+      "runtime_environment_evidence": [
+        {
+          "file": "train.sbatch",
+          "line": 44,
+          "text": "export NCCL_RUNTIME_CONNECT=0 NCCL_NET_PLUGIN=none"
+        },
+        {
+          "file": "train.sbatch",
+          "line": 48,
+          "text": "export PYTORCH_ALLOC_CONF=expandable_segments:True TORCH_NCCL_ASYNC_ERROR_HANDLING=1"
+        },
+        {
+          "file": "train.sbatch",
+          "line": 72,
+          "text": "export CUDA_VISIBLE_DEVICES=\"$TASK_GPU_UUID\" LOCAL_RANK=0"
+        }
+      ],
+      "warmup_observations": [],
+      "log_references": [
+        {
+          "file": "rank-0.log",
+          "line": 5815
+        },
+        {
+          "file": "rank-0.err",
+          "line": 111
+        }
+      ]
+    },
+    {
+      "job": 3244745,
+      "outcome": "PASS",
+      "scope": "reduced_debug_model",
+      "phase": "small-model functional gate",
+      "world_size": 8,
+      "representative_rank": 0,
+      "configuration": {
+        "layers": 17,
+        "hidden_dim": 256,
+        "vocab_size": 2048,
+        "experts": 8,
+        "top_k": 2,
+        "expert_input_dim": 128,
+        "expert_ffn_dim": 128,
+        "vision_encoder": false,
+        "sequence": 128,
+        "microbatch_size": 1,
+        "microbatches": 8,
+        "accumulation_rounds": 1,
+        "pp": 4,
+        "fsdp": 2,
+        "ep": 2,
+        "tp": 1,
+        "cp": 1,
+        "replication": 1,
+        "schedule": "Interleaved1F1B",
+        "cuda_graphs": true,
+        "parameter_dtype": "bfloat16",
+        "storage_dtype": "bfloat16",
+        "reduction_dtype": "float32",
+        "checkpointing": "FullAC",
+        "optimizer_types": [
+          "DistMuon",
+          "AdamW"
+        ],
+        "reshard_after_forward": "always",
+        "forced_load_balance": true
+      },
+      "effective_config_sha256": "fb28798c3aa1b49db8fe3ed361e39d5970310d99ecee8f60858fc611a15cf3a3",
+      "run_metadata": {
+        "schema_version": 1,
+        "values": {
+          "training_code_commit": null,
+          "training_code_base_commit": "53a45ee31d260bcaacaa319dae29080c68675a49",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "6352062064145e9ca0d37b05a677c420ba5a7bb6",
+          "pytorch_version": "2.15.0.dev20260928+cu130",
+          "cuda_version": "13.0",
+          "nccl_version": "2.30.7",
+          "nccl_build": "2.30.7+cuda13.3",
+          "container_identifier": "/lustre/fsw/coreai_dlfw_dev/elfieg/kimi-k3-distmuon-20260928/containers/kimi-distmuon-hybridep.sqsh",
+          "container_digest": null
+        },
+        "origins": {
+          "training_code_commit": "manifest:shared",
+          "training_code_base_commit": "manifest:shared",
+          "training_code_patch_sha256": "manifest:shared",
+          "torchao_commit": "manifest:shared",
+          "pytorch_version": "manifest:shared",
+          "cuda_version": "manifest:shared",
+          "nccl_version": "manifest:shared",
+          "nccl_build": "manifest:shared",
+          "container_identifier": "manifest:shared",
+          "container_digest": "manifest:shared"
+        },
+        "assumed_fields": [],
+        "overrides": []
+      },
+      "failure_point_memory_gib": {
+        "requested_gib": null,
+        "device_capacity_gib": null,
+        "device_free_gib": null,
+        "process_gpu_gib": null,
+        "torch_allocated_gib": null,
+        "torch_reserved_unused_gib": null
+      },
+      "per_rank_step_memory_metrics": {
+        "0": {
+          "memory/max_active(GiB)": [
+            0.2717723846435547,
+            0.10558366775512695,
+            0.10558462142944336,
+            0.05965232849121094,
+            0.05965232849121094,
+            0.05965232849121094,
+            0.05965232849121094,
+            0.05965232849121094,
+            0.05965232849121094,
+            0.05965232849121094
+          ],
+          "memory/max_reserved(GiB)": [
+            0.451171875,
+            0.455078125,
+            0.455078125,
+            0.279296875,
+            0.279296875,
+            0.279296875,
+            0.279296875,
+            0.279296875,
+            0.279296875,
+            0.279296875
+          ]
+        },
+        "1": {
+          "memory/max_active(GiB)": [
+            0.2717113494873047,
+            0.1055140495300293,
+            0.1055150032043457,
+            0.05958271026611328,
+            0.05958271026611328,
+            0.05958271026611328,
+            0.05958271026611328,
+            0.05958271026611328,
+            0.05958271026611328,
+            0.05958271026611328
+          ],
+          "memory/max_reserved(GiB)": [
+            0.451171875,
+            0.455078125,
+            0.455078125,
+            0.279296875,
+            0.279296875,
+            0.279296875,
+            0.279296875,
+            0.279296875,
+            0.279296875,
+            0.279296875
+          ]
+        },
+        "2": {
+          "memory/max_active(GiB)": [
+            0.26613664627075195,
+            0.08220386505126953,
+            0.08220481872558594,
+            0.04988241195678711,
+            0.04988241195678711,
+            0.04988241195678711,
+            0.04988241195678711,
+            0.04988241195678711,
+            0.04988241195678711,
+            0.04988241195678711
+          ],
+          "memory/max_reserved(GiB)": [
+            0.4296875,
+            0.4296875,
+            0.4296875,
+            0.21875,
+            0.21875,
+            0.21875,
+            0.21875,
+            0.21875,
+            0.21875,
+            0.21875
+          ]
+        },
+        "3": {
+          "memory/max_active(GiB)": [
+            0.26609086990356445,
+            0.08215045928955078,
+            0.08215141296386719,
+            0.04982900619506836,
+            0.04982900619506836,
+            0.04982900619506836,
+            0.04982900619506836,
+            0.04982900619506836,
+            0.04982900619506836,
+            0.04982900619506836
+          ],
+          "memory/max_reserved(GiB)": [
+            0.4296875,
+            0.4296875,
+            0.4296875,
+            0.21875,
+            0.21875,
+            0.21875,
+            0.21875,
+            0.21875,
+            0.21875,
+            0.21875
+          ]
+        },
+        "4": {
+          "memory/max_active(GiB)": [
+            0.2685236930847168,
+            0.09125137329101562,
+            0.09125232696533203,
+            0.052892208099365234,
+            0.052892208099365234,
+            0.052892208099365234,
+            0.052892208099365234,
+            0.052892208099365234,
+            0.052892208099365234,
+            0.052892208099365234
+          ],
+          "memory/max_reserved(GiB)": [
+            0.4375,
+            0.44140625,
+            0.44140625,
+            0.2265625,
+            0.2265625,
+            0.2265625,
+            0.2265625,
+            0.2265625,
+            0.2265625,
+            0.2265625
+          ]
+        },
+        "5": {
+          "memory/max_active(GiB)": [
+            0.2685236930847168,
+            0.09124374389648438,
+            0.09124469757080078,
+            0.052884578704833984,
+            0.052884578704833984,
+            0.052884578704833984,
+            0.052884578704833984,
+            0.052884578704833984,
+            0.052884578704833984,
+            0.052884578704833984
+          ],
+          "memory/max_reserved(GiB)": [
+            0.4375,
+            0.44140625,
+            0.44140625,
+            0.2265625,
+            0.2265625,
+            0.2265625,
+            0.2265625,
+            0.2265625,
+            0.2265625,
+            0.2265625
+          ]
+        },
+        "6": {
+          "memory/max_active(GiB)": [
+            0.265413761138916,
+            0.08323383331298828,
+            0.08323478698730469,
+            0.05033683776855469,
+            0.05033683776855469,
+            0.05033683776855469,
+            0.05033683776855469,
+            0.05033683776855469,
+            0.05033683776855469,
+            0.05033683776855469
+          ],
+          "memory/max_reserved(GiB)": [
+            0.4296875,
+            0.431640625,
+            0.431640625,
+            0.21875,
+            0.21875,
+            0.21875,
+            0.21875,
+            0.21875,
+            0.21875,
+            0.21875
+          ]
+        },
+        "7": {
+          "memory/max_active(GiB)": [
+            0.26536035537719727,
+            0.08317184448242188,
+            0.08317279815673828,
+            0.05027484893798828,
+            0.05027484893798828,
+            0.05027484893798828,
+            0.05027484893798828,
+            0.05027484893798828,
+            0.05027484893798828,
+            0.05027484893798828
+          ],
+          "memory/max_reserved(GiB)": [
+            0.4296875,
+            0.4296875,
+            0.4296875,
+            0.216796875,
+            0.216796875,
+            0.216796875,
+            0.216796875,
+            0.216796875,
+            0.216796875,
+            0.216796875
+          ]
+        }
+      },
+      "runtime_environment_evidence": [
+        {
+          "file": "train.sbatch",
+          "line": 44,
+          "text": "export NCCL_RUNTIME_CONNECT=0 NCCL_NET_PLUGIN=none"
+        },
+        {
+          "file": "train.sbatch",
+          "line": 48,
+          "text": "export PYTORCH_ALLOC_CONF=expandable_segments:True TORCH_NCCL_ASYNC_ERROR_HANDLING=1"
+        },
+        {
+          "file": "train.sbatch",
+          "line": 69,
+          "text": "export RANK=$SLURM_PROCID WORLD_SIZE=$SLURM_NTASKS LOCAL_RANK=$SLURM_LOCALID"
+        }
+      ],
+      "warmup_observations": [],
+      "log_references": [
+        {
+          "file": "rank-0.log",
+          "line": 3851
+        },
+        {
+          "file": "rank-0.log",
+          "line": 3959
+        },
+        {
+          "file": "rank-1.log",
+          "line": 3368
+        },
+        {
+          "file": "rank-1.log",
+          "line": 3477
+        },
+        {
+          "file": "rank-2.log",
+          "line": 3562
+        },
+        {
+          "file": "rank-2.log",
+          "line": 3643
+        },
+        {
+          "file": "rank-3.log",
+          "line": 3288
+        },
+        {
+          "file": "rank-3.log",
+          "line": 3363
+        },
+        {
+          "file": "rank-4.log",
+          "line": 3564
+        },
+        {
+          "file": "rank-4.log",
+          "line": 3643
+        },
+        {
+          "file": "rank-5.log",
+          "line": 3291
+        },
+        {
+          "file": "rank-5.log",
+          "line": 3363
+        },
+        {
+          "file": "rank-6.log",
+          "line": 3561
+        },
+        {
+          "file": "rank-6.log",
+          "line": 3643
+        },
+        {
+          "file": "rank-7.log",
+          "line": 3287
+        },
+        {
+          "file": "rank-7.log",
+          "line": 3363
+        }
+      ]
+    },
+    {
+      "job": 3250214,
+      "outcome": "PASS",
+      "scope": "reduced_debug_model",
+      "phase": "small-model functional gate",
+      "world_size": 8,
+      "representative_rank": 0,
+      "configuration": {
+        "layers": 17,
+        "hidden_dim": 256,
+        "vocab_size": 2048,
+        "experts": 8,
+        "top_k": 2,
+        "expert_input_dim": 128,
+        "expert_ffn_dim": 128,
+        "vision_encoder": false,
+        "sequence": 128,
+        "microbatch_size": 1,
+        "microbatches": 16,
+        "accumulation_rounds": 16,
+        "pp": 4,
+        "fsdp": 2,
+        "ep": 2,
+        "tp": 1,
+        "cp": 1,
+        "replication": 1,
+        "schedule": "Interleaved1F1B",
+        "cuda_graphs": true,
+        "parameter_dtype": "bfloat16",
+        "storage_dtype": "bfloat16",
+        "reduction_dtype": "float32",
+        "checkpointing": "FullAC",
+        "optimizer_types": [
+          "DistMuon",
+          "AdamW"
+        ],
+        "reshard_after_forward": "always",
+        "forced_load_balance": true
+      },
+      "effective_config_sha256": "f2769f262d8e99931402028920cb10c23c908eeee1b3d2f19de2cbcb3584d673",
+      "run_metadata": {
+        "schema_version": 1,
+        "values": {
+          "training_code_commit": null,
+          "training_code_base_commit": "53a45ee31d260bcaacaa319dae29080c68675a49",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "6352062064145e9ca0d37b05a677c420ba5a7bb6",
+          "pytorch_version": "2.15.0.dev20260928+cu130",
+          "cuda_version": "13.0",
+          "nccl_version": "2.30.7",
+          "nccl_build": "2.30.7+cuda13.3",
+          "container_identifier": "/lustre/fsw/coreai_dlfw_dev/elfieg/kimi-k3-distmuon-20260928/containers/kimi-distmuon-hybridep.sqsh",
+          "container_digest": null
+        },
+        "origins": {
+          "training_code_commit": "manifest:shared",
+          "training_code_base_commit": "manifest:shared",
+          "training_code_patch_sha256": "manifest:shared",
+          "torchao_commit": "manifest:shared",
+          "pytorch_version": "manifest:shared",
+          "cuda_version": "manifest:shared",
+          "nccl_version": "manifest:shared",
+          "nccl_build": "manifest:shared",
+          "container_identifier": "manifest:shared",
+          "container_digest": "manifest:shared"
+        },
+        "assumed_fields": [],
+        "overrides": []
+      },
+      "failure_point_memory_gib": {
+        "requested_gib": null,
+        "device_capacity_gib": null,
+        "device_free_gib": null,
+        "process_gpu_gib": null,
+        "torch_allocated_gib": null,
+        "torch_reserved_unused_gib": null
+      },
+      "per_rank_step_memory_metrics": {
+        "0": {
+          "memory/max_active(GiB)": [
+            0.2718372344970703,
+            0.10461139678955078,
+            0.10461187362670898,
+            0.05971717834472656,
+            0.05971717834472656,
+            0.05971717834472656,
+            0.05971717834472656,
+            0.05971717834472656,
+            0.05971717834472656,
+            0.05971717834472656
+          ],
+          "memory/max_reserved(GiB)": [
+            0.455078125,
+            0.455078125,
+            0.455078125,
+            0.259765625,
+            0.259765625,
+            0.259765625,
+            0.259765625,
+            0.259765625,
+            0.259765625,
+            0.259765625
+          ]
+        },
+        "1": {
+          "memory/max_active(GiB)": [
+            0.2717761993408203,
+            0.10454177856445312,
+            0.10454225540161133,
+            0.059647560119628906,
+            0.059647560119628906,
+            0.059647560119628906,
+            0.059647560119628906,
+            0.059647560119628906,
+            0.059647560119628906,
+            0.059647560119628906
+          ],
+          "memory/max_reserved(GiB)": [
+            0.455078125,
+            0.455078125,
+            0.455078125,
+            0.259765625,
+            0.259765625,
+            0.259765625,
+            0.259765625,
+            0.259765625,
+            0.259765625,
+            0.259765625
+          ]
+        },
+        "2": {
+          "memory/max_active(GiB)": [
+            0.26619386672973633,
+            0.08412313461303711,
+            0.08412361145019531,
+            0.049939632415771484,
+            0.049939632415771484,
+            0.049939632415771484,
+            0.049939632415771484,
+            0.049939632415771484,
+            0.049939632415771484,
+            0.049939632415771484
+          ],
+          "memory/max_reserved(GiB)": [
+            0.431640625,
+            0.431640625,
+            0.431640625,
+            0.22265625,
+            0.22265625,
+            0.22265625,
+            0.22265625,
+            0.22265625,
+            0.22265625,
+            0.22265625
+          ]
+        },
+        "3": {
+          "memory/max_active(GiB)": [
+            0.26614809036254883,
+            0.08406972885131836,
+            0.08407020568847656,
+            0.049886226654052734,
+            0.049886226654052734,
+            0.049886226654052734,
+            0.049886226654052734,
+            0.049886226654052734,
+            0.049886226654052734,
+            0.049886226654052734
+          ],
+          "memory/max_reserved(GiB)": [
+            0.431640625,
+            0.431640625,
+            0.431640625,
+            0.220703125,
+            0.220703125,
+            0.220703125,
+            0.220703125,
+            0.220703125,
+            0.220703125,
+            0.220703125
+          ]
+        },
+        "4": {
+          "memory/max_active(GiB)": [
+            0.26858091354370117,
+            0.0922389030456543,
+            0.0922393798828125,
+            0.05294942855834961,
+            0.05294942855834961,
+            0.05294942855834961,
+            0.05294942855834961,
+            0.05294942855834961,
+            0.05294942855834961,
+            0.05294942855834961
+          ],
+          "memory/max_reserved(GiB)": [
+            0.443359375,
+            0.443359375,
+            0.443359375,
+            0.228515625,
+            0.228515625,
+            0.228515625,
+            0.228515625,
+            0.228515625,
+            0.228515625,
+            0.228515625
+          ]
+        },
+        "5": {
+          "memory/max_active(GiB)": [
+            0.26858091354370117,
+            0.09223127365112305,
+            0.09223175048828125,
+            0.05294179916381836,
+            0.05294179916381836,
+            0.05294179916381836,
+            0.05294179916381836,
+            0.05294179916381836,
+            0.05294179916381836,
+            0.05294179916381836
+          ],
+          "memory/max_reserved(GiB)": [
+            0.443359375,
+            0.443359375,
+            0.443359375,
+            0.228515625,
+            0.228515625,
+            0.228515625,
+            0.228515625,
+            0.228515625,
+            0.228515625,
+            0.228515625
+          ]
+        },
+        "6": {
+          "memory/max_active(GiB)": [
+            0.26547861099243164,
+            0.08577346801757812,
+            0.08577346801757812,
+            0.05040168762207031,
+            0.05040168762207031,
+            0.05040168762207031,
+            0.05040168762207031,
+            0.05040168762207031,
+            0.05040168762207031,
+            0.05040168762207031
+          ],
+          "memory/max_reserved(GiB)": [
+            0.43359375,
+            0.435546875,
+            0.435546875,
+            0.22265625,
+            0.22265625,
+            0.22265625,
+            0.22265625,
+            0.22265625,
+            0.22265625,
+            0.22265625
+          ]
+        },
+        "7": {
+          "memory/max_active(GiB)": [
+            0.2654252052307129,
+            0.08571147918701172,
+            0.08571147918701172,
+            0.050339698791503906,
+            0.050339698791503906,
+            0.050339698791503906,
+            0.050339698791503906,
+            0.050339698791503906,
+            0.050339698791503906,
+            0.050339698791503906
+          ],
+          "memory/max_reserved(GiB)": [
+            0.43359375,
+            0.43359375,
+            0.43359375,
+            0.220703125,
+            0.220703125,
+            0.220703125,
+            0.220703125,
+            0.220703125,
+            0.220703125,
+            0.220703125
+          ]
+        }
+      },
+      "runtime_environment_evidence": [
+        {
+          "file": "train.sbatch",
+          "line": 44,
+          "text": "export NCCL_RUNTIME_CONNECT=0 NCCL_NET_PLUGIN=none"
+        },
+        {
+          "file": "train.sbatch",
+          "line": 48,
+          "text": "export PYTORCH_ALLOC_CONF=expandable_segments:True TORCH_NCCL_ASYNC_ERROR_HANDLING=1"
+        },
+        {
+          "file": "train.sbatch",
+          "line": 72,
+          "text": "export CUDA_VISIBLE_DEVICES=\"$TASK_GPU_UUID\" LOCAL_RANK=0"
+        }
+      ],
+      "warmup_observations": [],
+      "log_references": [
+        {
+          "file": "rank-0.log",
+          "line": 3851
+        },
+        {
+          "file": "rank-0.log",
+          "line": 3959
+        },
+        {
+          "file": "rank-1.log",
+          "line": 3368
+        },
+        {
+          "file": "rank-1.log",
+          "line": 3477
+        },
+        {
+          "file": "rank-2.log",
+          "line": 3562
+        },
+        {
+          "file": "rank-2.log",
+          "line": 3643
+        },
+        {
+          "file": "rank-3.log",
+          "line": 3288
+        },
+        {
+          "file": "rank-3.log",
+          "line": 3363
+        },
+        {
+          "file": "rank-4.log",
+          "line": 3604
+        },
+        {
+          "file": "rank-4.log",
+          "line": 3643
+        },
+        {
+          "file": "rank-5.log",
+          "line": 3327
+        },
+        {
+          "file": "rank-5.log",
+          "line": 3363
+        },
+        {
+          "file": "rank-6.log",
+          "line": 3601
+        },
+        {
+          "file": "rank-6.log",
+          "line": 3643
+        },
+        {
+          "file": "rank-7.log",
+          "line": 3324
+        },
+        {
+          "file": "rank-7.log",
+          "line": 3363
+        }
+      ]
+    },
+    {
+      "job": 3256150,
+      "outcome": "PASS",
+      "scope": "reduced_debug_model",
+      "phase": "small-model functional gate with optimizer warmup",
+      "world_size": 8,
+      "representative_rank": 0,
+      "configuration": {
+        "layers": 17,
+        "hidden_dim": 256,
+        "vocab_size": 2048,
+        "experts": 8,
+        "top_k": 2,
+        "expert_input_dim": 128,
+        "expert_ffn_dim": 128,
+        "vision_encoder": false,
+        "sequence": 128,
+        "microbatch_size": 1,
+        "microbatches": 16,
+        "accumulation_rounds": 16,
+        "pp": 4,
+        "fsdp": 2,
+        "ep": 2,
+        "tp": 1,
+        "cp": 1,
+        "replication": 1,
+        "schedule": "Interleaved1F1B",
+        "cuda_graphs": true,
+        "parameter_dtype": "bfloat16",
+        "storage_dtype": "bfloat16",
+        "reduction_dtype": "float32",
+        "checkpointing": "FullAC",
+        "optimizer_types": [
+          "DistMuon",
+          "AdamW"
+        ],
+        "reshard_after_forward": "always",
+        "forced_load_balance": true
+      },
+      "effective_config_sha256": "f04154466b5132cac4b7c933b730263e37c5c9b65fcb3d294200428c1cb3d9c9",
+      "run_metadata": {
+        "schema_version": 1,
+        "values": {
+          "training_code_commit": null,
+          "training_code_base_commit": "53a45ee31d260bcaacaa319dae29080c68675a49",
+          "training_code_patch_sha256": null,
+          "torchao_commit": "6352062064145e9ca0d37b05a677c420ba5a7bb6",
+          "pytorch_version": "2.15.0.dev20260928+cu130",
+          "cuda_version": "13.0",
+          "nccl_version": "2.30.7",
+          "nccl_build": "2.30.7+cuda13.3",
+          "container_identifier": "/lustre/fsw/coreai_dlfw_dev/elfieg/kimi-k3-distmuon-20260928/containers/kimi-distmuon-hybridep.sqsh",
+          "container_digest": null
+        },
+        "origins": {
+          "training_code_commit": "manifest:shared",
+          "training_code_base_commit": "manifest:shared",
+          "training_code_patch_sha256": "manifest:shared",
+          "torchao_commit": "manifest:shared",
+          "pytorch_version": "manifest:shared",
+          "cuda_version": "manifest:shared",
+          "nccl_version": "manifest:shared",
+          "nccl_build": "manifest:shared",
+          "container_identifier": "manifest:shared",
+          "container_digest": "manifest:shared"
+        },
+        "assumed_fields": [],
+        "overrides": []
+      },
+      "failure_point_memory_gib": {
+        "requested_gib": null,
+        "device_capacity_gib": null,
+        "device_free_gib": null,
+        "process_gpu_gib": null,
+        "torch_allocated_gib": null,
+        "torch_reserved_unused_gib": null
+      },
+      "per_rank_step_memory_metrics": {
+        "0": {
+          "memory/max_active(GiB)": [
+            0.2718372344970703,
+            0.10461139678955078,
+            0.10461187362670898,
+            0.05971717834472656,
+            0.05971717834472656,
+            0.05971717834472656,
+            0.05971717834472656,
+            0.05971717834472656,
+            0.05971717834472656,
+            0.05971717834472656
+          ],
+          "memory/max_reserved(GiB)": [
+            0.412109375,
+            0.240234375,
+            0.259765625,
+            0.259765625,
+            0.259765625,
+            0.259765625,
+            0.259765625,
+            0.259765625,
+            0.259765625,
+            0.259765625
+          ]
+        },
+        "1": {
+          "memory/max_active(GiB)": [
+            0.2717761993408203,
+            0.10454177856445312,
+            0.10454225540161133,
+            0.059647560119628906,
+            0.059647560119628906,
+            0.059647560119628906,
+            0.059647560119628906,
+            0.059647560119628906,
+            0.059647560119628906,
+            0.059647560119628906
+          ],
+          "memory/max_reserved(GiB)": [
+            0.412109375,
+            0.240234375,
+            0.259765625,
+            0.259765625,
+            0.259765625,
+            0.259765625,
+            0.259765625,
+            0.259765625,
+            0.259765625,
+            0.259765625
+          ]
+        },
+        "2": {
+          "memory/max_active(GiB)": [
+            0.26619386672973633,
+            0.08412313461303711,
+            0.08412361145019531,
+            0.049939632415771484,
+            0.049939632415771484,
+            0.049939632415771484,
+            0.049939632415771484,
+            0.049939632415771484,
+            0.049939632415771484,
+            0.049939632415771484
+          ],
+          "memory/max_reserved(GiB)": [
+            0.388671875,
+            0.216796875,
+            0.22265625,
+            0.22265625,
+            0.22265625,
+            0.22265625,
+            0.22265625,
+            0.22265625,
+            0.22265625,
+            0.22265625
+          ]
+        },
+        "3": {
+          "memory/max_active(GiB)": [
+            0.26614809036254883,
+            0.08406972885131836,
+            0.08407020568847656,
+            0.049886226654052734,
+            0.049886226654052734,
+            0.049886226654052734,
+            0.049886226654052734,
+            0.049886226654052734,
+            0.049886226654052734,
+            0.049886226654052734
+          ],
+          "memory/max_reserved(GiB)": [
+            0.388671875,
+            0.216796875,
+            0.220703125,
+            0.220703125,
+            0.220703125,
+            0.220703125,
+            0.220703125,
+            0.220703125,
+            0.220703125,
+            0.220703125
+          ]
+        },
+        "4": {
+          "memory/max_active(GiB)": [
+            0.26858091354370117,
+            0.0922389030456543,
+            0.0922393798828125,
+            0.05294942855834961,
+            0.05294942855834961,
+            0.05294942855834961,
+            0.05294942855834961,
+            0.05294942855834961,
+            0.05294942855834961,
+            0.05294942855834961
+          ],
+          "memory/max_reserved(GiB)": [
+            0.400390625,
+            0.228515625,
+            0.228515625,
+            0.228515625,
+            0.228515625,
+            0.228515625,
+            0.228515625,
+            0.228515625,
+            0.228515625,
+            0.228515625
+          ]
+        },
+        "5": {
+          "memory/max_active(GiB)": [
+            0.26858091354370117,
+            0.09223127365112305,
+            0.09223175048828125,
+            0.05294179916381836,
+            0.05294179916381836,
+            0.05294179916381836,
+            0.05294179916381836,
+            0.05294179916381836,
+            0.05294179916381836,
+            0.05294179916381836
+          ],
+          "memory/max_reserved(GiB)": [
+            0.400390625,
+            0.228515625,
+            0.228515625,
+            0.228515625,
+            0.228515625,
+            0.228515625,
+            0.228515625,
+            0.228515625,
+            0.228515625,
+            0.228515625
+          ]
+        },
+        "6": {
+          "memory/max_active(GiB)": [
+            0.26547861099243164,
+            0.08577346801757812,
+            0.08577346801757812,
+            0.05040168762207031,
+            0.05040168762207031,
+            0.05040168762207031,
+            0.05040168762207031,
+            0.05040168762207031,
+            0.05040168762207031,
+            0.05040168762207031
+          ],
+          "memory/max_reserved(GiB)": [
+            0.390625,
+            0.21875,
+            0.22265625,
+            0.22265625,
+            0.22265625,
+            0.22265625,
+            0.22265625,
+            0.22265625,
+            0.22265625,
+            0.22265625
+          ]
+        },
+        "7": {
+          "memory/max_active(GiB)": [
+            0.2654252052307129,
+            0.08571147918701172,
+            0.08571147918701172,
+            0.050339698791503906,
+            0.050339698791503906,
+            0.050339698791503906,
+            0.050339698791503906,
+            0.050339698791503906,
+            0.050339698791503906,
+            0.050339698791503906
+          ],
+          "memory/max_reserved(GiB)": [
+            0.390625,
+            0.216796875,
+            0.220703125,
+            0.220703125,
+            0.220703125,
+            0.220703125,
+            0.220703125,
+            0.220703125,
+            0.220703125,
+            0.220703125
+          ]
+        }
+      },
+      "runtime_environment_evidence": [
+        {
+          "file": "train.sbatch",
+          "line": 44,
+          "text": "export NCCL_RUNTIME_CONNECT=0 NCCL_NET_PLUGIN=none"
+        },
+        {
+          "file": "train.sbatch",
+          "line": 48,
+          "text": "export PYTORCH_ALLOC_CONF=expandable_segments:True TORCH_NCCL_ASYNC_ERROR_HANDLING=1"
+        },
+        {
+          "file": "train.sbatch",
+          "line": 72,
+          "text": "export CUDA_VISIBLE_DEVICES=\"$TASK_GPU_UUID\" LOCAL_RANK=0"
+        }
+      ],
+      "warmup_observations": [
+        {
+          "file": "rank-0.log",
+          "line": 3225,
+          "before": {
+            "free": 185563938816,
+            "total": 197897617408,
+            "allocated": 11418624,
+            "reserved": 12582912,
+            "device_used_minus_reserved": 12321095680
+          },
+          "after": {
+            "free": 185110953984,
+            "total": 197897617408,
+            "allocated": 11418624,
+            "reserved": 12582912,
+            "device_used_minus_reserved": 12774080512
+          },
+          "external_delta_bytes": 452984832,
+          "allocated_delta_bytes": 0,
+          "reserved_delta_bytes": 0
+        },
+        {
+          "file": "rank-0.log",
+          "line": 3228,
+          "before": {
+            "free": 185106759680,
+            "total": 197897617408,
+            "allocated": 13786112,
+            "reserved": 16777216,
+            "device_used_minus_reserved": 12774080512
+          },
+          "after": {
+            "free": 185106759680,
+            "total": 197897617408,
+            "allocated": 13786112,
+            "reserved": 16777216,
+            "device_used_minus_reserved": 12774080512
+          },
+          "external_delta_bytes": 0,
+          "allocated_delta_bytes": 0,
+          "reserved_delta_bytes": 0
+        },
+        {
+          "file": "rank-1.log",
+          "line": 2849,
+          "before": {
+            "free": 185503121408,
+            "total": 197897617408,
+            "allocated": 11353088,
+            "reserved": 12582912,
+            "device_used_minus_reserved": 12381913088
+          },
+          "after": {
+            "free": 185050136576,
+            "total": 197897617408,
+            "allocated": 11353088,
+            "reserved": 12582912,
+            "device_used_minus_reserved": 12834897920
+          },
+          "external_delta_bytes": 452984832,
+          "allocated_delta_bytes": 0,
+          "reserved_delta_bytes": 0
+        },
+        {
+          "file": "rank-1.log",
+          "line": 2852,
+          "before": {
+            "free": 185045942272,
+            "total": 197897617408,
+            "allocated": 13720576,
+            "reserved": 16777216,
+            "device_used_minus_reserved": 12834897920
+          },
+          "after": {
+            "free": 185045942272,
+            "total": 197897617408,
+            "allocated": 13720576,
+            "reserved": 16777216,
+            "device_used_minus_reserved": 12834897920
+          },
+          "external_delta_bytes": 0,
+          "allocated_delta_bytes": 0,
+          "reserved_delta_bytes": 0
+        },
+        {
+          "file": "rank-2.log",
+          "line": 3037,
+          "before": {
+            "free": 185400360960,
+            "total": 197897617408,
+            "allocated": 6948352,
+            "reserved": 8388608,
+            "device_used_minus_reserved": 12488867840
+          },
+          "after": {
+            "free": 184947376128,
+            "total": 197897617408,
+            "allocated": 6948352,
+            "reserved": 8388608,
+            "device_used_minus_reserved": 12941852672
+          },
+          "external_delta_bytes": 452984832,
+          "allocated_delta_bytes": 0,
+          "reserved_delta_bytes": 0
+        },
+        {
+          "file": "rank-2.log",
+          "line": 3040,
+          "before": {
+            "free": 184945278976,
+            "total": 197897617408,
+            "allocated": 9180672,
+            "reserved": 10485760,
+            "device_used_minus_reserved": 12941852672
+          },
+          "after": {
+            "free": 184945278976,
+            "total": 197897617408,
+            "allocated": 9180672,
+            "reserved": 10485760,
+            "device_used_minus_reserved": 12941852672
+          },
+          "external_delta_bytes": 0,
+          "allocated_delta_bytes": 0,
+          "reserved_delta_bytes": 0
+        },
+        {
+          "file": "rank-3.log",
+          "line": 2760,
+          "before": {
+            "free": 185406652416,
+            "total": 197897617408,
+            "allocated": 6923776,
+            "reserved": 8388608,
+            "device_used_minus_reserved": 12482576384
+          },
+          "after": {
+            "free": 184953667584,
+            "total": 197897617408,
+            "allocated": 6923776,
+            "reserved": 8388608,
+            "device_used_minus_reserved": 12935561216
+          },
+          "external_delta_bytes": 452984832,
+          "allocated_delta_bytes": 0,
+          "reserved_delta_bytes": 0
+        },
+        {
+          "file": "rank-3.log",
+          "line": 2763,
+          "before": {
+            "free": 184951570432,
+            "total": 197897617408,
+            "allocated": 9131520,
+            "reserved": 10485760,
+            "device_used_minus_reserved": 12935561216
+          },
+          "after": {
+            "free": 184951570432,
+            "total": 197897617408,
+            "allocated": 9131520,
+            "reserved": 10485760,
+            "device_used_minus_reserved": 12935561216
+          },
+          "external_delta_bytes": 0,
+          "allocated_delta_bytes": 0,
+          "reserved_delta_bytes": 0
+        },
+        {
+          "file": "rank-4.log",
+          "line": 3020,
+          "before": {
+            "free": 185400360960,
+            "total": 197897617408,
+            "allocated": 8065536,
+            "reserved": 8388608,
+            "device_used_minus_reserved": 12488867840
+          },
+          "after": {
+            "free": 184947376128,
+            "total": 197897617408,
+            "allocated": 8065536,
+            "reserved": 8388608,
+            "device_used_minus_reserved": 12941852672
+          },
+          "external_delta_bytes": 452984832,
+          "allocated_delta_bytes": 0,
+          "reserved_delta_bytes": 0
+        },
+        {
+          "file": "rank-4.log",
+          "line": 3023,
+          "before": {
+            "free": 184943181824,
+            "total": 197897617408,
+            "allocated": 10433024,
+            "reserved": 12582912,
+            "device_used_minus_reserved": 12941852672
+          },
+          "after": {
+            "free": 184943181824,
+            "total": 197897617408,
+            "allocated": 10433024,
+            "reserved": 12582912,
+            "device_used_minus_reserved": 12941852672
+          },
+          "external_delta_bytes": 0,
+          "allocated_delta_bytes": 0,
+          "reserved_delta_bytes": 0
+        },
+        {
+          "file": "rank-5.log",
+          "line": 2743,
+          "before": {
+            "free": 185406652416,
+            "total": 197897617408,
+            "allocated": 8065536,
+            "reserved": 8388608,
+            "device_used_minus_reserved": 12482576384
+          },
+          "after": {
+            "free": 184953667584,
+            "total": 197897617408,
+            "allocated": 8065536,
+            "reserved": 8388608,
+            "device_used_minus_reserved": 12935561216
+          },
+          "external_delta_bytes": 452984832,
+          "allocated_delta_bytes": 0,
+          "reserved_delta_bytes": 0
+        },
+        {
+          "file": "rank-5.log",
+          "line": 2746,
+          "before": {
+            "free": 184949473280,
+            "total": 197897617408,
+            "allocated": 10433024,
+            "reserved": 12582912,
+            "device_used_minus_reserved": 12935561216
+          },
+          "after": {
+            "free": 184949473280,
+            "total": 197897617408,
+            "allocated": 10433024,
+            "reserved": 12582912,
+            "device_used_minus_reserved": 12935561216
+          },
+          "external_delta_bytes": 0,
+          "allocated_delta_bytes": 0,
+          "reserved_delta_bytes": 0
+        },
+        {
+          "file": "rank-6.log",
+          "line": 3017,
+          "before": {
+            "free": 185901580288,
+            "total": 197897617408,
+            "allocated": 6983168,
+            "reserved": 10485760,
+            "device_used_minus_reserved": 11985551360
+          },
+          "after": {
+            "free": 185448595456,
+            "total": 197897617408,
+            "allocated": 6983168,
+            "reserved": 10485760,
+            "device_used_minus_reserved": 12438536192
+          },
+          "external_delta_bytes": 452984832,
+          "allocated_delta_bytes": 0,
+          "reserved_delta_bytes": 0
+        },
+        {
+          "file": "rank-6.log",
+          "line": 3020,
+          "before": {
+            "free": 185446498304,
+            "total": 197897617408,
+            "allocated": 9072128,
+            "reserved": 12582912,
+            "device_used_minus_reserved": 12438536192
+          },
+          "after": {
+            "free": 185446498304,
+            "total": 197897617408,
+            "allocated": 9072128,
+            "reserved": 12582912,
+            "device_used_minus_reserved": 12438536192
+          },
+          "external_delta_bytes": 0,
+          "allocated_delta_bytes": 0,
+          "reserved_delta_bytes": 0
+        },
+        {
+          "file": "rank-7.log",
+          "line": 2743,
+          "before": {
+            "free": 186243416064,
+            "total": 197897617408,
+            "allocated": 6958592,
+            "reserved": 10485760,
+            "device_used_minus_reserved": 11643715584
+          },
+          "after": {
+            "free": 185790431232,
+            "total": 197897617408,
+            "allocated": 6958592,
+            "reserved": 10485760,
+            "device_used_minus_reserved": 12096700416
+          },
+          "external_delta_bytes": 452984832,
+          "allocated_delta_bytes": 0,
+          "reserved_delta_bytes": 0
+        },
+        {
+          "file": "rank-7.log",
+          "line": 2746,
+          "before": {
+            "free": 185788334080,
+            "total": 197897617408,
+            "allocated": 9014784,
+            "reserved": 12582912,
+            "device_used_minus_reserved": 12096700416
+          },
+          "after": {
+            "free": 185788334080,
+            "total": 197897617408,
+            "allocated": 9014784,
+            "reserved": 12582912,
+            "device_used_minus_reserved": 12096700416
+          },
+          "external_delta_bytes": 0,
+          "allocated_delta_bytes": 0,
+          "reserved_delta_bytes": 0
+        }
+      ],
+      "log_references": [
+        {
+          "file": "rank-0.log",
+          "line": 3225
+        },
+        {
+          "file": "rank-0.log",
+          "line": 3228
+        },
+        {
+          "file": "rank-0.log",
+          "line": 3895
+        },
+        {
+          "file": "rank-0.log",
+          "line": 3896
+        },
+        {
+          "file": "rank-0.log",
+          "line": 3900
+        },
+        {
+          "file": "rank-0.log",
+          "line": 3963
+        },
+        {
+          "file": "rank-1.log",
+          "line": 2849
+        },
+        {
+          "file": "rank-1.log",
+          "line": 2852
+        },
+        {
+          "file": "rank-1.log",
+          "line": 3404
+        },
+        {
+          "file": "rank-1.log",
+          "line": 3405
+        },
+        {
+          "file": "rank-1.log",
+          "line": 3409
+        },
+        {
+          "file": "rank-1.log",
+          "line": 3481
+        },
+        {
+          "file": "rank-2.log",
+          "line": 3037
+        },
+        {
+          "file": "rank-2.log",
+          "line": 3040
+        },
+        {
+          "file": "rank-2.log",
+          "line": 3600
+        },
+        {
+          "file": "rank-2.log",
+          "line": 3601
+        },
+        {
+          "file": "rank-2.log",
+          "line": 3605
+        },
+        {
+          "file": "rank-2.log",
+          "line": 3647
+        },
+        {
+          "file": "rank-3.log",
+          "line": 2760
+        },
+        {
+          "file": "rank-3.log",
+          "line": 2763
+        },
+        {
+          "file": "rank-3.log",
+          "line": 3323
+        },
+        {
+          "file": "rank-3.log",
+          "line": 3324
+        },
+        {
+          "file": "rank-3.log",
+          "line": 3328
+        },
+        {
+          "file": "rank-3.log",
+          "line": 3367
+        },
+        {
+          "file": "rank-4.log",
+          "line": 3020
+        },
+        {
+          "file": "rank-4.log",
+          "line": 3023
+        },
+        {
+          "file": "rank-4.log",
+          "line": 3564
+        },
+        {
+          "file": "rank-4.log",
+          "line": 3565
+        },
+        {
+          "file": "rank-4.log",
+          "line": 3569
+        },
+        {
+          "file": "rank-4.log",
+          "line": 3647
+        },
+        {
+          "file": "rank-5.log",
+          "line": 2743
+        },
+        {
+          "file": "rank-5.log",
+          "line": 2746
+        },
+        {
+          "file": "rank-5.log",
+          "line": 3290
+        },
+        {
+          "file": "rank-5.log",
+          "line": 3291
+        },
+        {
+          "file": "rank-5.log",
+          "line": 3295
+        },
+        {
+          "file": "rank-5.log",
+          "line": 3367
+        },
+        {
+          "file": "rank-6.log",
+          "line": 3017
+        },
+        {
+          "file": "rank-6.log",
+          "line": 3020
+        },
+        {
+          "file": "rank-6.log",
+          "line": 3561
+        },
+        {
+          "file": "rank-6.log",
+          "line": 3562
+        },
+        {
+          "file": "rank-6.log",
+          "line": 3566
+        },
+        {
+          "file": "rank-6.log",
+          "line": 3647
+        },
+        {
+          "file": "rank-7.log",
+          "line": 2743
+        },
+        {
+          "file": "rank-7.log",
+          "line": 2746
+        },
+        {
+          "file": "rank-7.log",
+          "line": 3286
+        },
+        {
+          "file": "rank-7.log",
+          "line": 3287
+        },
+        {
+          "file": "rank-7.log",
+          "line": 3291
+        },
+        {
+          "file": "rank-7.log",
+          "line": 3367
+        }
+      ]
+    }
+  ]
+}
